@@ -33,6 +33,8 @@ const PostSchema = new mongoose.Schema({
       type: mongoose.Schema.Types.ObjectId,
       ref: 'category',
     },
+}, {
+  versionKey: false 
 });
 
 const Post = mongoose.model('post', PostSchema);

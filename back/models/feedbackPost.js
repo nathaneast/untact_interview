@@ -22,6 +22,8 @@ const FeedbackPostSchema = new mongoose.Schema({
       ref: 'post',
     },
   ],
+}, {
+  versionKey: false 
 });
 
 const FeedbackPost = mongoose.model('feedbackPost', FeedbackPostSchema);

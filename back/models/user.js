@@ -37,6 +37,8 @@ const UserSchema = new mongoose.Schema({
       ref: 'post',
     },
   ],
+}, {
+  versionKey: false 
 });
 
 const User = mongoose.model('user', UserSchema);

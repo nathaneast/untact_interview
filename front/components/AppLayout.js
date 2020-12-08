@@ -1,14 +1,22 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 import Link from 'next/link';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Col, Menu, Row } from 'antd';
 
 import LoginModal from './modal/LoginModal';
+import { LOG_OUT_REQUEST } from '../reducers/user';
 
 const AppLayout = ({ children }) => {
   const [tryLogin, setTryLogin] = useState(false);
   const { me } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+
+  const onLogOut = useCallback(() => {
+    dispatch({
+      type: LOG_OUT_REQUEST,
+    });
+  });
 
   return (
     <>
@@ -32,7 +40,10 @@ const AppLayout = ({ children }) => {
                 </Link>
               </Menu.Item>
               <Menu.Item>
-                <span>로그아웃</span>
+                <span onClick={onLogOut}>로그아웃</span>
+              </Menu.Item>
+              <Menu.Item>
+                <span>{me.nickname}</span>
               </Menu.Item>
             </>
           ) : (
@@ -41,7 +52,7 @@ const AppLayout = ({ children }) => {
                 <span onClick={() => setTryLogin((prev) => !prev)}>로그인</span>
               </Menu.Item>
               <Menu.Item>
-                <Link href="/">
+                <Link href="/signup">
                   <a>회원가입</a>
                 </Link>
               </Menu.Item>

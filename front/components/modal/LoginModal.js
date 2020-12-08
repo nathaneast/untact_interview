@@ -60,7 +60,6 @@ const LoginModal = ({ visible, onCancel }) => {
         >
           <InputPassword value={password} onChange={onChangePassword} />
         </Form.Item>
-        {/* {termError && <div style={{ color: 'red' }}>{termError}</div>} */}
         <Button type="primary" htmlType="submit">
           로그인
         </Button>

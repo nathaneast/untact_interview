@@ -26,6 +26,7 @@ router.post('/', isNotLoggedIn, async (req, res, next) => {
   }
 });
 
+// 로그인시 내 글, 좋아요 글, 피드백 글 모두 가져오기
 router.post('/login', isNotLoggedIn, (req, res, next) => {
   passport.authenticate('local', (err, user, info) => {
     if (err) {
@@ -41,9 +42,6 @@ router.post('/login', isNotLoggedIn, (req, res, next) => {
         return next(loginErr);
       }
       const fullUserWithoutPassword = await User.findById(user._id)
-        .populate('posts', '_id')
-        .populate('feedbackPosts', '_id')
-        .populate('starPosts', '_id')
         .select('-password');
       return res.status(200).json(fullUserWithoutPassword);
     });

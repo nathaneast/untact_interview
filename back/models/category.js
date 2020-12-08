@@ -11,6 +11,8 @@ const CategorySchema = new mongoose.Schema({
       ref: 'post',
     },
   ],
+}, {
+  versionKey: false 
 });
 
 const Category = mongoose.model('category', CategorySchema);
