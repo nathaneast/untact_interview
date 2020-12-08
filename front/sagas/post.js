@@ -8,18 +8,27 @@ import {
   SAVE_PLAY_POST_REQUEST,
   SAVE_PLAY_POST_SUCCESS,
   SAVE_PLAY_POST_FAILURE,
+  LOAD_POST_REQUEST,
+  LOAD_POST_SUCCESS,
+  LOAD_POST_FAILURE,
 } from '../reducers/post';
 
-function* savePlayPost(action) {
+function loadPostAPI(data) {
+  return axios.get('/post', data);
+}
+
+function* loadPost(action) {
   try {
+    const result = yield call(loadPostAPI, action.data);
+    console.log('loadPost', result);
     yield put({
-      type: SAVE_PLAY_POST_SUCCESS,
-      data: action.data,
+      type: LOAD_POST_SUCCESS,
+      data: result.data,
     });
   } catch (err) {
     console.error(err);
     yield put({
-      type: SAVE_PLAY_POST_FAILURE,
+      type: LOAD_POST_FAILURE,
       error: err.response.data,
     });
   }
@@ -46,6 +55,25 @@ function* uploadPost(action) {
   }
 }
 
+function* savePlayPost(action) {
+  try {
+    yield put({
+      type: SAVE_PLAY_POST_SUCCESS,
+      data: action.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: SAVE_PLAY_POST_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+function* watchLoadPost() {
+  yield takeLatest(LOAD_POST_REQUEST, loadPost);
+}
+
 function* watchSavePlayPost() {
   yield takeLatest(SAVE_PLAY_POST_REQUEST, savePlayPost);
 }
@@ -55,5 +83,9 @@ function* watchUploadPost() {
 }
 
 export default function* userSaga() {
-  yield all([fork(watchUploadPost), fork(watchSavePlayPost)]);
+  yield all([
+    fork(watchLoadPost),
+    fork(watchUploadPost),
+    fork(watchSavePlayPost),
+  ]);
 }

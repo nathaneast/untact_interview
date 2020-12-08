@@ -1,46 +1,49 @@
-const mongoose = require('mongoose');
-const dayjs = require('dayjs');
+const mongoose = require("mongoose");
+const dayjs = require("dayjs");
 
-const UserSchema = new mongoose.Schema({
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  password: {
-    type: String,
-    required: true,
-  },
-  nickname: {
-    type: String,
-    required: true,
-  },
-  createdAt: {
-    type: Date,
-    default: dayjs().format('YYYY-MM-DD'),
-  },
-  posts: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'post',
+const UserSchema = new mongoose.Schema(
+  {
+    email: {
+      type: String,
+      required: true,
+      unique: true,
     },
-  ],
-  feedbackPosts: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'feedbackPost',
+    password: {
+      type: String,
+      required: true,
     },
-  ],
-  starPosts: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'post',
+    nickname: {
+      type: String,
+      required: true,
     },
-  ],
-}, {
-  versionKey: false 
-});
+    createdAt: {
+      type: Date,
+      default: dayjs().format("YYYY-MM-DD"),
+    },
+    posts: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "post",
+      },
+    ],
+    feedbackPosts: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "feedbackPost",
+      },
+    ],
+    starPosts: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "post",
+      },
+    ],
+  },
+  {
+    versionKey: false,
+  }
+);
 
-const User = mongoose.model('user', UserSchema);
+const User = mongoose.model("user", UserSchema);
 
 module.exports = User;

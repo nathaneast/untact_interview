@@ -1,20 +1,23 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-const CategorySchema = new mongoose.Schema({
-  name: {
-    type: String,
-    default: '기타',
-  },
-  posts: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'post',
+const CategorySchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      default: "others",
     },
-  ],
-}, {
-  versionKey: false 
-});
+    posts: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "post",
+      },
+    ],
+  },
+  {
+    versionKey: false,
+  }
+);
 
-const Category = mongoose.model('category', CategorySchema);
+const Category = mongoose.model("category", CategorySchema);
 
 module.exports = Category;

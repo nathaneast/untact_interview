@@ -16,7 +16,7 @@ const StartPostModal = ({ post, resetPost, onModal, isLogin }) => {
         type: SAVE_PLAY_POST_REQUEST,
         data: post,
       });
-      router.push(`/play/${post.postId}`);
+      router.push(`/post/${post._id}`);
     } else {
       alert('로그인 후에 이용 가능 합니다.');
     }

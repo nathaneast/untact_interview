@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Form, Input, Button, Select } from 'antd';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
+import { useRouter } from 'next/router';
 
 import AppLayout from '../components/AppLayout';
 import { UPLOAD_POST_REQUEST } from '../reducers/post';
@@ -46,9 +47,17 @@ const formItemLayoutWithOutLabel = {
 const postWrite = () => {
   const dispatch = useDispatch();
   const { me } = useSelector((state) => state.user);
+  const { postDone } = useSelector((state) => state.post);
   const [desc, onChangeDesc, setDesc] = useInput('');
   const [title, onChangeTitle, setTitle] = useInput('');
-  const [category, onChangeCategory] = useInput('');
+  const [category, onChangeCategory] = useState('');
+  const router = useRouter();
+
+  useEffect(() => {
+    if (postDone) {
+      router.push('/');
+    }
+  }, [postDone]);
 
   const onSubmit = (values) => {
     if (!title.length) {
@@ -68,6 +77,10 @@ const postWrite = () => {
     setTitle('');
   };
 
+  const handleChangeCategory = (value) => {
+    onChangeCategory(value);
+  };
+
   return (
     <AppLayout>
       <Form
@@ -84,12 +97,12 @@ const postWrite = () => {
         </Form.Item>
         <Form.Item label="카테고리">
           <Select
-            defaultValue="frontEnd"
+            defaultValue="FrontEnd"
             style={{ width: 120 }}
-            onChange={onChangeCategory}
+            onChange={handleChangeCategory}
           >
-            <Select.Option value="frontEnd">FrontEnd</Select.Option>
-            <Select.Option value="backEnd">BackEnd</Select.Option>
+            <Select.Option value="FrontEnd">FrontEnd</Select.Option>
+            <Select.Option value="BackEnd">BackEnd</Select.Option>
             <Select.Option value="others">others</Select.Option>
           </Select>
         </Form.Item>

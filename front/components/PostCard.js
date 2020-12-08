@@ -12,7 +12,7 @@ const PostCard = ({ post, onModal, startPost }) => {
     <Card
       title={post.title}
       style={{ width: 300 }}
-      extra={<span>작성자: {post.userId}</span>}
+      extra={<span>작성자: {post.userId.nickname}</span>}
     >
       <p>{post.desc}</p>
       <Button onClick={onClick}>시작하기</Button>
