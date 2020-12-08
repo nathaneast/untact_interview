@@ -1,4 +1,4 @@
-import { all, call, fork, put, takeLatest, delay } from 'redux-saga/effects';
+import { all, call, fork, put, takeLatest } from 'redux-saga/effects';
 import axios from 'axios';
 
 import {
@@ -26,17 +26,16 @@ function* savePlayPost(action) {
 }
 
 function uploadPostAPI(data) {
-  return axios.post('/user/login', data);
+  return axios.post('/post', data);
 }
 
 function* uploadPost(action) {
   try {
-    // const result = yield call(logInAPI, action.data);
-    console.log('uploadPost');
-    yield delay(1000);
+    const result = yield call(uploadPostAPI, action.data);
+    console.log('uploadPost', result);
     yield put({
       type: UPLOAD_POST_SUCCESS,
-      data: action.data,
+      data: result.data,
     });
   } catch (err) {
     console.error(err);

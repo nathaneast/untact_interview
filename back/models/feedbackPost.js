@@ -10,18 +10,14 @@ const FeedbackPostSchema = new mongoose.Schema({
     type: Date,
     default: dayjs().format('YYYY-MM-DD'),
   },
-  userId: [
-    {
+  userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'user',
-    },
-  ],
-  postId: [
-    {
+  },
+  postId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'post',
     },
-  ],
 }, {
   versionKey: false 
 });

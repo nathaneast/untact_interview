@@ -12,6 +12,7 @@ const config = require('./config');
 const { MONGO_URI, PORT, COOKIE_SECRET } = config;
 
 const userRouter = require('./routes/user');
+const postRouter = require('./routes/post');
 const passportConfig = require('./passport');
 
 const app = express();
@@ -54,6 +55,7 @@ app.get('/', (req, res) => {
   res.send('untect_interview_backend_server !');
 });
 app.use('/user', userRouter);
+app.use('/post', postRouter);
 
 app.listen(PORT, () => {
   console.log(`${PORT} 서버 실행중 !`);

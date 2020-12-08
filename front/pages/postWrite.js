@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Input, Button } from 'antd';
+import { Form, Input, Button, Select } from 'antd';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
@@ -45,9 +45,10 @@ const formItemLayoutWithOutLabel = {
 
 const postWrite = () => {
   const dispatch = useDispatch();
+  const { me } = useSelector((state) => state.user);
   const [desc, onChangeDesc, setDesc] = useInput('');
   const [title, onChangeTitle, setTitle] = useInput('');
-  const { me } = useSelector((state) => state.user);
+  const [category, onChangeCategory] = useInput('');
 
   const onSubmit = (values) => {
     if (!title.length) {
@@ -56,10 +57,11 @@ const postWrite = () => {
     dispatch({
       type: UPLOAD_POST_REQUEST,
       data: {
-        userId: me.email,
+        userId: me._id,
         questions: values.questions,
         title,
         desc,
+        category,
       },
     });
     setDesc('');
@@ -73,8 +75,23 @@ const postWrite = () => {
         {...formItemLayoutWithOutLabel}
         onFinish={onSubmit}
       >
-        <Form.Item label='제목'>
-          <Input placeholder="제목을 입력 해주세요" value={title} onChange={onChangeTitle} />
+        <Form.Item label="제목">
+          <Input
+            placeholder="제목을 입력 해주세요"
+            value={title}
+            onChange={onChangeTitle}
+          />
+        </Form.Item>
+        <Form.Item label="카테고리">
+          <Select
+            defaultValue="frontEnd"
+            style={{ width: 120 }}
+            onChange={onChangeCategory}
+          >
+            <Select.Option value="frontEnd">FrontEnd</Select.Option>
+            <Select.Option value="backEnd">BackEnd</Select.Option>
+            <Select.Option value="others">others</Select.Option>
+          </Select>
         </Form.Item>
         <Form.List
           name="questions"
@@ -143,7 +160,7 @@ const postWrite = () => {
             </>
           )}
         </Form.List>
-        <Form.Item label='설명'>
+        <Form.Item label="설명">
           <Input.TextArea
             value={desc}
             onChange={onChangeDesc}
