@@ -3,15 +3,15 @@ const cors = require('cors');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const passport = require('passport');
-const dotenv = require('dotenv');
 const morgan = require('morgan');
-const path = require('path');
+// const path = require('path');
 const hpp = require('hpp');
 const helmet = require('helmet');
 const mongoose = require('mongoose');
-
-const config = require('./config/index');
+const config = require('./config');
 const { MONGO_URI, PORT, COOKIE_SECRET } = config;
+
+const userRouter = require('./routes/user');
 
 const app = express();
 mongoose
@@ -20,8 +20,8 @@ mongoose
     useUnifiedTopology: true,
     useCreateIndex: true,
   })
-  .then(() => console.log('MongoDB connecting Success !!'))
-  .catch((e) => console.log(e));
+  .then(() => console.log('MongoDB connecting Success!'))
+  .catch((e) => console.error(e));
 
 // production, dev 설정
 app.use(morgan('dev'));
@@ -48,10 +48,11 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-//route
 app.get('/', (req, res) => {
   res.send('untect_interview_backend_server !');
 });
+app.use('/user', userRouter);
+
 
 app.listen(PORT, () => {
   console.log(`${PORT} 서버 실행중 !`);
