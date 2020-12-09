@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Form, Input, Button, Select } from 'antd';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
-import { useRouter } from 'next/router';
 
 import AppLayout from '../components/AppLayout';
 import { UPLOAD_POST_REQUEST } from '../reducers/post';
@@ -47,17 +46,10 @@ const formItemLayoutWithOutLabel = {
 const postWrite = () => {
   const dispatch = useDispatch();
   const { me } = useSelector((state) => state.user);
-  const { postDone } = useSelector((state) => state.post);
+  // const { postDone } = useSelector((state) => state.post);
   const [desc, onChangeDesc, setDesc] = useInput('');
   const [title, onChangeTitle, setTitle] = useInput('');
-  const [category, onChangeCategory] = useState('');
-  const router = useRouter();
-
-  useEffect(() => {
-    if (postDone) {
-      router.push('/');
-    }
-  }, [postDone]);
+  const [category, onChangeCategory] = useState('frontEnd');
 
   const onSubmit = (values) => {
     if (!title.length) {
@@ -97,12 +89,12 @@ const postWrite = () => {
         </Form.Item>
         <Form.Item label="카테고리">
           <Select
-            defaultValue="FrontEnd"
+            defaultValue="frontEnd"
             style={{ width: 120 }}
             onChange={handleChangeCategory}
           >
-            <Select.Option value="FrontEnd">FrontEnd</Select.Option>
-            <Select.Option value="BackEnd">BackEnd</Select.Option>
+            <Select.Option value="frontEnd">FrontEnd</Select.Option>
+            <Select.Option value="backEnd">BackEnd</Select.Option>
             <Select.Option value="others">others</Select.Option>
           </Select>
         </Form.Item>
@@ -115,11 +107,6 @@ const postWrite = () => {
                   return Promise.reject(
                     new Error('질문을 5개 이상 작성 해주세요.'),
                   );
-                } else if (questions.length > 10) {
-                  return Promise.reject(
-                    new Error('질문은 10개 까지 작성 가능 합니다.'),
-                  );
-                }
               },
             },
           ]}
@@ -128,12 +115,12 @@ const postWrite = () => {
             <>
               {fields.map((field, index) => (
                 <Form.Item
-                  {...(index === 0
-                    ? formItemLayout
-                    : formItemLayoutWithOutLabel)}
+                  // {...(index === 0
+                  //   ? formItemLayout
+                  //   : formItemLayoutWithOutLabel)}
                   label={`${index + 1}: `}
                   required={false}
-                  key={field.key}
+                  key={field.index}
                 >
                   <Form.Item
                     {...field}

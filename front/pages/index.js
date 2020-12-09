@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import AppLayout from '../components/AppLayout';
 import StartPostModal from '../components/modal/StartPostModal';
 import PostCard from '../components/PostCard';
-import { LOAD_POST_REQUEST } from '../reducers/post';
+// import { LOAD_POST_REQUEST } from '../reducers/post';
 
 const Home = () => {
   const { me } = useSelector((state) => state.user);
@@ -13,11 +13,11 @@ const Home = () => {
   const [selectPost, setSelectPost] = useState('');
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    dispatch({
-      type: LOAD_POST_REQUEST,
-    });
-  }, []);
+  // useEffect(() => {
+  //   dispatch({
+  //     type: LOAD_POST_REQUEST,
+  //   });
+  // }, []);
 
   return (
     <>

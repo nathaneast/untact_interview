@@ -7,7 +7,7 @@ const PostSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    questons: {
+    questions: {
       type: Array,
       required: true,
     },

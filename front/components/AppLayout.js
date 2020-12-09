@@ -62,7 +62,7 @@ const AppLayout = ({ children }) => {
         <Row>
           <Col>{children}</Col>
         </Row>
-        <Row>푸터</Row>
+        <footer>푸터</footer>
       </nav>
       {tryLogin && (
         <LoginModal

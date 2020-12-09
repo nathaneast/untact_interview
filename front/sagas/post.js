@@ -1,5 +1,6 @@
 import { all, call, fork, put, takeLatest } from 'redux-saga/effects';
 import axios from 'axios';
+import Router from 'next/router';
 
 import {
   UPLOAD_POST_FAILURE,
@@ -46,12 +47,14 @@ function* uploadPost(action) {
       type: UPLOAD_POST_SUCCESS,
       data: result.data,
     });
+    yield call(Router.push, '/');
   } catch (err) {
     console.error(err);
     yield put({
       type: UPLOAD_POST_FAILURE,
       error: err.response.data,
     });
+    yield call(Router.push, '/');
   }
 }
 

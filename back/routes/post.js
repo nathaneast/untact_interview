@@ -31,7 +31,6 @@ router.post("/", async (req, res, next) => {
       questions,
       title,
       desc,
-      createdAt: dayjs().format("YYYY-MM-DD"),
     });
     const findCategory = await Category.findOne({
       name: category,
@@ -63,7 +62,12 @@ router.post("/", async (req, res, next) => {
         posts: newPost._id,
       },
     });
-    return res.status(201).send("ok");
+    // 홈에 LOAD_POST 서버사이드 적용 전 임시
+    const fullPost =  await Post.findById(newPost._id)
+      .populate('star', 'email')
+      .populate('userId', 'email nickname')
+      .populate('category', 'name')
+    return res.status(201).send(fullPost);
   } catch (error) {
     console.error(error);
     next(error);
