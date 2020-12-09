@@ -15,7 +15,7 @@ const PostSchema = new mongoose.Schema(
       type: String,
     },
     createdAt: {
-      type: Date,
+      type: String,
       default: dayjs().format("YYYY-MM-DD"),
     },
     star: [
@@ -24,7 +24,7 @@ const PostSchema = new mongoose.Schema(
         ref: "user",
       },
     ],
-    userId: {
+    creator: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "user",
     },

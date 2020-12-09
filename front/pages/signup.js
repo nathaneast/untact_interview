@@ -15,7 +15,7 @@ const Signup = () => {
   const [password, onChangePassword] = useInput('');
   const [passwordCheck, onChangePasswordCheck] = useInput('');
 
-  const { me, userError, userDone, userLoading } = useSelector((state) => state.user);
+  const { me, signUpError } = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -25,25 +25,18 @@ const Signup = () => {
   }, [me && me.id]);
 
   useEffect(() => {
-    if (userDone) {
-      Router.replace('/');
+    if (signUpError) {
+      alert(signUpError);
     }
-  }, [userDone]);
-
-  useEffect(() => {
-    if (userError) {
-      alert(userError);
-    }
-  }, [userError]);
+  }, [signUpError]);
 
   const onSubmit = useCallback(() => {
     if (password !== passwordCheck) {
       return alert('두 비밀번호가 다릅니다');
     }
-    const data = { email, nickname, password };
     dispatch({
       type: SIGN_UP_REQUEST,
-      data,
+      data: { email, nickname, password },
     });
   }, [email, nickname, password, passwordCheck]);
 

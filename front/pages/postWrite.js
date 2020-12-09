@@ -58,7 +58,7 @@ const postWrite = () => {
     dispatch({
       type: UPLOAD_POST_REQUEST,
       data: {
-        userId: me._id,
+        creator: me._id,
         questions: values.questions,
         title,
         desc,
@@ -107,6 +107,7 @@ const postWrite = () => {
                   return Promise.reject(
                     new Error('질문을 5개 이상 작성 해주세요.'),
                   );
+                }
               },
             },
           ]}

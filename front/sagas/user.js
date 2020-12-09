@@ -1,5 +1,6 @@
 import { all, call, fork, put, takeLatest } from 'redux-saga/effects';
 import axios from 'axios';
+import Router from 'next/router';
 
 import {
   LOG_IN_FAILURE,
@@ -46,6 +47,7 @@ function* signUp(action) {
       type: SIGN_UP_SUCCESS,
       data: result.data,
     });
+    yield call(Router.push, '/');
   } catch (err) {
     console.error(err);
     yield put({

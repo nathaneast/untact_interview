@@ -1,20 +1,21 @@
-const express = require("express");
-const dayjs = require("dayjs");
+const express = require('express');
+const dayjs = require('dayjs');
 
-const Post = require("../models/post");
-const Category = require("../models/category");
-const User = require("../models/user");
-const { isLoggedIn, isNotLoggedIn } = require("./middlewares");
+const Post = require('../models/post');
+const Category = require('../models/category');
+const User = require('../models/user');
+const { isLoggedIn, isNotLoggedIn } = require('./middlewares');
 
 const router = express.Router();
 
-router.get("/", async (req, res, next) => {
+// 내림차순으로 post 받아오기
+router.get('/', async (req, res, next) => {
   try {
     const allPosts = await Post.find()
-      .sort({ date: -1 })
-      .populate("star", "email")
-      .populate("userId", "nickname email")
-      .populate("category", "name");
+      .populate('star', 'email')
+      .populate('creator', 'nickname email')
+      .populate('category', 'name')
+      .sort({ date: -1 });
     return res.json(allPosts);
   } catch (error) {
     console.error(error);
@@ -22,12 +23,11 @@ router.get("/", async (req, res, next) => {
   }
 });
 
-router.post("/", async (req, res, next) => {
+router.post('/', isLoggedIn, async (req, res, next) => {
   try {
-    const { userId, questions, title, desc, category } = req.body;
-    console.log(userId, questions, title, desc, category, "req.body");
+    const { creator, questions, title, desc, category } = req.body;
     const newPost = await Post.create({
-      userId,
+      creator,
       questions,
       title,
       desc,
@@ -57,16 +57,17 @@ router.post("/", async (req, res, next) => {
         },
       });
     }
-    await User.findByIdAndUpdate(userId, {
+    await User.findByIdAndUpdate(creator, {
       $push: {
         posts: newPost._id,
       },
     });
+
     // 홈에 LOAD_POST 서버사이드 적용 전 임시
-    const fullPost =  await Post.findById(newPost._id)
+    const fullPost = await Post.findById(newPost._id)
       .populate('star', 'email')
-      .populate('userId', 'email nickname')
-      .populate('category', 'name')
+      .populate('creator', 'email nickname')
+      .populate('category', 'name');
     return res.status(201).send(fullPost);
   } catch (error) {
     console.error(error);

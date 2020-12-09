@@ -2,9 +2,15 @@ import produce from '../util/produce';
 
 export const initialState = {
   me: null,
-  userLoading: null,
-  userError: null,
-  userDone: null,
+  signUpLoading: false,
+  signUpError: null,
+  signUpDone: false,
+  logInLoading: false,
+  logInError: null,
+  logInDone: false,
+  logOutLoading: false,
+  logOutError: null,
+  logOutDone: false,
 };
 
 export const LOG_OUT_REQUEST = 'LOG_OUT_REQUEST';
@@ -23,45 +29,45 @@ const reducer = (state = initialState, action) => {
   return produce(state, (draft) => {
     switch (action.type) {
       case LOG_OUT_REQUEST:
-        draft.userLoading = true;
-        draft.userError = null;
-        draft.userDone = false;
+        draft.logOutLoading = true;
+        draft.logOutError = null;
+        draft.logOutDone = false;
         break;
       case LOG_OUT_SUCCESS:
-        draft.userLoading = false;
-        draft.userDone = true;
+        draft.logOutLoading = false;
+        draft.logOutDone = true;
         draft.me = null;
         break;
       case LOG_OUT_FAILURE:
-        draft.userLoading = false;
-        draft.userError = action.error;
+        draft.logOutLoading = false;
+        draft.logOutError = action.error;
         break;
       case LOG_IN_REQUEST:
-        draft.userLoading = true;
-        draft.userError = null;
-        draft.userDone = false;
+        draft.logInLoading = true;
+        draft.logInError = null;
+        draft.logInDone = false;
         break;
       case LOG_IN_SUCCESS:
-        draft.userLoading = false;
-        draft.userDone = true;
+        draft.logInLoading = false;
+        draft.logInDone = true;
         draft.me = action.data;
         break;
       case LOG_IN_FAILURE:
-        draft.userLoading = false;
-        draft.userError = action.error;
+        draft.logInLoading = false;
+        draft.logInError = action.error;
         break;
       case SIGN_UP_REQUEST:
-        draft.userLoading = true;
-        draft.userError = null;
-        draft.userDone = false;
+        draft.signUpLoading = true;
+        draft.signUpError = null;
+        draft.signUpDone = false;
         break;
       case SIGN_UP_SUCCESS:
-        draft.userLoading = false;
-        draft.userDone = true;
+        draft.signUpLoading = false;
+        draft.signUpDone = true;
         break;
       case SIGN_UP_FAILURE:
-        draft.userLoading = false;
-        draft.userError = action.error;
+        draft.signUpLoading = false;
+        draft.signUpError = action.error;
         break;
       default:
         break;
