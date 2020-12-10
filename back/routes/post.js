@@ -64,11 +64,11 @@ router.post('/', isLoggedIn, async (req, res, next) => {
     });
 
     // 홈에 LOAD_POST 서버사이드 적용 전 임시
-    const fullPost = await Post.findById(newPost._id)
-      .populate('star', 'email')
-      .populate('creator', 'email nickname')
-      .populate('category', 'name');
-    return res.status(201).send(fullPost);
+    // const fullPost = await Post.findById(newPost._id)
+    //   .populate('star', 'email')
+    //   .populate('creator', 'email nickname')
+    //   .populate('category', 'name');
+    return res.status(201).send(ok);
   } catch (error) {
     console.error(error);
     next(error);

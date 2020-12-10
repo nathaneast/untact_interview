@@ -1,6 +1,6 @@
-import { all, call, fork, put, takeLatest } from "redux-saga/effects";
-import axios from "axios";
-import Router from "next/router";
+import { all, call, fork, put, takeLatest } from 'redux-saga/effects';
+import axios from 'axios';
+import Router from 'next/router';
 
 import {
   LOG_IN_FAILURE,
@@ -15,16 +15,16 @@ import {
   LOAD_MY_INFO_REQUEST,
   LOAD_MY_INFO_SUCCESS,
   LOAD_MY_INFO_FAILURE,
-} from "../reducers/user";
+} from '../reducers/user';
 
 function loadMyInfoAPI() {
-  return axios.get("/user");
+  return axios.get('/user');
 }
 
 function* loadMyInfo() {
   try {
     const result = yield call(loadMyInfoAPI);
-    console.log("saga loadMyInfo", result);
+    console.log('saga loadMyInfo', result);
     yield put({
       type: LOAD_MY_INFO_SUCCESS,
       data: result.data,
@@ -39,13 +39,13 @@ function* loadMyInfo() {
 }
 
 function logOutAPI() {
-  return axios.post("/user/logout");
+  return axios.post('/user/logout');
 }
 
 function* logOut() {
   try {
     const result = yield call(logOutAPI);
-    console.log("saga logOut", result);
+    console.log('saga logOut', result);
     yield put({
       type: LOG_OUT_SUCCESS,
       data: result.data,
@@ -60,18 +60,18 @@ function* logOut() {
 }
 
 function signUpAPI(data) {
-  return axios.post("/user", data);
+  return axios.post('/user', data);
 }
 
 function* signUp(action) {
   try {
     const result = yield call(signUpAPI, action.data);
-    console.log("saga signUp", result);
+    console.log('saga signUp', result);
     yield put({
       type: SIGN_UP_SUCCESS,
       data: result.data,
     });
-    yield call(Router.push, "/");
+    yield call(Router.push, '/');
   } catch (err) {
     console.error(err);
     yield put({
@@ -82,13 +82,13 @@ function* signUp(action) {
 }
 
 function logInAPI(data) {
-  return axios.post("/user/login", data);
+  return axios.post('/user/login', data);
 }
 
 function* logIn(action) {
   try {
     const result = yield call(logInAPI, action.data);
-    console.log("saga logIn", result);
+    console.log('saga logIn', result);
     yield put({
       type: LOG_IN_SUCCESS,
       data: result.data,
