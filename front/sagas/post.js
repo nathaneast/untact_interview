@@ -6,9 +6,9 @@ import {
   UPLOAD_POST_FAILURE,
   UPLOAD_POST_REQUEST,
   UPLOAD_POST_SUCCESS,
-  SAVE_PLAY_POST_REQUEST,
-  SAVE_PLAY_POST_SUCCESS,
-  SAVE_PLAY_POST_FAILURE,
+  LOAD_POST_REQUEST,
+  LOAD_POST_SUCCESS,
+  LOAD_POST_FAILURE,
   LOAD_POSTS_REQUEST,
   LOAD_POSTS_SUCCESS,
   LOAD_POSTS_FAILURE,
@@ -67,16 +67,22 @@ function* uploadPost(action) {
   }
 }
 
-function* savePlayPost(action) {
+function loadPostAPI(data) {
+  return axios.get(`/post/${data}`);
+}
+
+function* loadPost(action) {
   try {
+    const result = yield call(loadPostAPI, action.data);
+    console.log('loadPost', result);
     yield put({
-      type: SAVE_PLAY_POST_SUCCESS,
-      data: action.data,
+      type: LOAD_POST_SUCCESS,
+      data: result.data,
     });
   } catch (err) {
     console.error(err);
     yield put({
-      type: SAVE_PLAY_POST_FAILURE,
+      type: LOAD_POST_FAILURE,
       error: err.response.data,
     });
   }
@@ -86,8 +92,8 @@ function* watchLoadPosts() {
   yield takeLatest(LOAD_POSTS_REQUEST, loadPosts);
 }
 
-function* watchSavePlayPost() {
-  yield takeLatest(SAVE_PLAY_POST_REQUEST, savePlayPost);
+function* watchLoadPost() {
+  yield takeLatest(LOAD_POST_REQUEST, loadPost);
 }
 
 function* watchUploadPost() {
@@ -95,9 +101,5 @@ function* watchUploadPost() {
 }
 
 export default function* userSaga() {
-  yield all([
-    fork(watchLoadPosts),
-    fork(watchUploadPost),
-    fork(watchSavePlayPost),
-  ]);
+  yield all([fork(watchLoadPosts), fork(watchUploadPost), fork(watchLoadPost)]);
 }

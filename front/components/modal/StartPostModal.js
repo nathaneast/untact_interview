@@ -4,20 +4,14 @@ import { Modal } from 'antd';
 import { useDispatch } from 'react-redux';
 import { useRouter } from 'next/router';
 
-import { SAVE_PLAY_POST_REQUEST } from '../../reducers/post';
-
-const StartPostModal = ({ post, resetPost, onModal, isLogin }) => {
+const StartPostModal = ({ postId, resetPost, onModal, isLogin, modal }) => {
   const dispatch = useDispatch();
   const router = useRouter();
 
   // not login 텍스트 에러로 처리하기
   const onStart = useCallback(() => {
     if (isLogin) {
-      dispatch({
-        type: SAVE_PLAY_POST_REQUEST,
-        data: post,
-      });
-      router.push(`/post/${post._id}`);
+      router.push(`/post/${postId}`);
     } else {
       alert('로그인 후에 이용 가능 합니다.');
     }
@@ -31,17 +25,18 @@ const StartPostModal = ({ post, resetPost, onModal, isLogin }) => {
   });
 
   return (
-    <Modal visible={true} onCancel={onCalcel} onOk={onStart}>
+    <Modal visible={modal} onCancel={onCalcel} onOk={onStart}>
       <p>세션을 시작 하시겠습니까 ?</p>
     </Modal>
   );
 };
 
 StartPostModal.propTypes = {
-  post: PropTypes.object.isRequired,
+  postId: PropTypes.string.isRequired,
   resetPost: PropTypes.func.isRequired,
   onModal: PropTypes.func.isRequired,
   isLogin: PropTypes.bool.isRequired,
+  modal: PropTypes.bool.isRequired,
 };
 
 export default StartPostModal;

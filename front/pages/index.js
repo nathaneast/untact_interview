@@ -13,15 +13,20 @@ import wrapper from '../store/configureStore';
 const Home = () => {
   const dispatch = useDispatch();
   const { me } = useSelector((state) => state.user);
-  const { mainPosts, hasMorePosts, loadPostsLoading } = useSelector((state) => state.post);
+  const { mainPosts, hasMorePosts, loadPostsLoading } = useSelector(
+    (state) => state.post
+  );
   const [modal, setModal] = useState(false);
-  const [selectPost, setSelectPost] = useState('');
+  const [selectedPostId, setSelectedPostId] = useState('');
   const [beforeCategory, setBeforeCategory] = useState('all');
   const [selectCategory, setSelectCategory] = useState('all');
 
   useEffect(() => {
     function onScroll() {
-      if (window.pageYOffset + document.documentElement.clientHeight > document.documentElement.scrollHeight - 100) {
+      if (
+        window.pageYOffset + document.documentElement.clientHeight >
+        document.documentElement.scrollHeight - 100
+      ) {
         if (beforeCategory !== selectCategory) {
           dispatch({
             type: LOAD_POSTS_REQUEST,
@@ -36,7 +41,11 @@ const Home = () => {
           setBeforeCategory(selectCategory);
           return;
         }
-        if (beforeCategory === selectCategory && hasMorePosts && !loadPostsLoading) {
+        if (
+          beforeCategory === selectCategory &&
+          hasMorePosts &&
+          !loadPostsLoading
+        ) {
           const lastId = mainPosts[mainPosts.length - 1]?._id;
           dispatch({
             type: LOAD_POSTS_REQUEST,
@@ -84,15 +93,16 @@ const Home = () => {
             key={post._id}
             post={post}
             onModal={() => setModal((prev) => !prev)}
-            startPost={setSelectPost}
+            startPost={setSelectedPostId}
           />
         ))}
       </AppLayout>
       {modal && (
         <StartPostModal
-          post={selectPost}
+          postId={selectedPostId}
           isLogin={Boolean(me)}
-          resetPost={() => setSelectPost('')}
+          resetPost={() => setSelectedPostId('')}
+          modal={modal}
           onModal={() => setModal((prev) => !prev)}
         />
       )}
@@ -100,27 +110,29 @@ const Home = () => {
   );
 };
 
-export const getServerSideProps = wrapper.getServerSideProps(async (context) => {
-  const cookie = context.req ? context.req.headers.cookie : '';
-  axios.defaults.headers.Cookie = '';
-  if (context.req && cookie) {
-    axios.defaults.headers.Cookie = cookie;
-  }
-  context.store.dispatch({
-    type: LOAD_MY_INFO_REQUEST,
-  });
-  context.store.dispatch({
-    type: LOAD_POSTS_REQUEST,
-    data: {
-      category: {
-        name: 'all',
-        isSame: true,
+export const getServerSideProps = wrapper.getServerSideProps(
+  async (context) => {
+    const cookie = context.req ? context.req.headers.cookie : '';
+    axios.defaults.headers.Cookie = '';
+    if (context.req && cookie) {
+      axios.defaults.headers.Cookie = cookie;
+    }
+    context.store.dispatch({
+      type: LOAD_MY_INFO_REQUEST,
+    });
+    context.store.dispatch({
+      type: LOAD_POSTS_REQUEST,
+      data: {
+        category: {
+          name: 'all',
+          isSame: true,
+        },
+        lastId: null,
       },
-      lastId: null,
-    },
-  });
-  context.store.dispatch(END);
-  await context.store.sagaTask.toPromise();
-});
+    });
+    context.store.dispatch(END);
+    await context.store.sagaTask.toPromise();
+  }
+);
 
 export default Home;

@@ -70,4 +70,17 @@ router.post('/', isLoggedIn, async (req, res, next) => {
   }
 });
 
+router.get('/:postId', isLoggedIn, async (req, res, next) => {
+  try {
+    const post = await Post.findById(req.params.postId)
+      .populate('star', 'email')
+      .populate('creator', 'nickname email')
+      .populate('category', 'name');
+    return res.send(post);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
 module.exports = router;

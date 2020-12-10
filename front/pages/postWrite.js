@@ -80,36 +80,36 @@ const postWrite = () => {
   return (
     <AppLayout>
       <Form
-        name="dynamic_form_item"
+        name='dynamic_form_item'
         {...formItemLayoutWithOutLabel}
         onFinish={onSubmit}
       >
-        <Form.Item label="제목">
+        <Form.Item label='제목'>
           <Input
-            placeholder="제목을 입력 해주세요"
+            placeholder='제목을 입력 해주세요'
             value={title}
             onChange={onChangeTitle}
           />
         </Form.Item>
-        <Form.Item label="카테고리">
+        <Form.Item label='카테고리'>
           <Select
-            defaultValue="frontEnd"
+            defaultValue='frontEnd'
             style={{ width: 120 }}
             onChange={handleChangeCategory}
           >
-            <Select.Option value="frontEnd">FrontEnd</Select.Option>
-            <Select.Option value="backEnd">BackEnd</Select.Option>
-            <Select.Option value="others">others</Select.Option>
+            <Select.Option value='frontEnd'>FrontEnd</Select.Option>
+            <Select.Option value='backEnd'>BackEnd</Select.Option>
+            <Select.Option value='others'>others</Select.Option>
           </Select>
         </Form.Item>
         <Form.List
-          name="questions"
+          name='questions'
           rules={[
             {
               validator: async (_, questions) => {
                 if (!questions || questions.length < 5) {
                   return Promise.reject(
-                    new Error('질문을 5개 이상 작성 해주세요.'),
+                    new Error('질문을 5개 이상 작성 해주세요.')
                   );
                 }
               },
@@ -125,7 +125,7 @@ const postWrite = () => {
                   //   : formItemLayoutWithOutLabel)}
                   label={`${index + 1}: `}
                   required={false}
-                  key={field.index}
+                  key={Math.random().toString(36).substr(2, 10)}
                 >
                   <Form.Item
                     {...field}
@@ -140,7 +140,7 @@ const postWrite = () => {
                     noStyle
                   >
                     <Input
-                      placeholder="질문을 입력 해주세요"
+                      placeholder='질문을 입력 해주세요'
                       style={{ width: '100%' }}
                     />
                   </Form.Item>
@@ -152,7 +152,7 @@ const postWrite = () => {
               <Form.Item>
                 {fields.length < 10 && (
                   <Button
-                    type="dashed"
+                    type='dashed'
                     onClick={() => add()}
                     style={{ width: '100%' }}
                     icon={<PlusOutlined />}
@@ -165,16 +165,16 @@ const postWrite = () => {
             </>
           )}
         </Form.List>
-        <Form.Item label="설명">
+        <Form.Item label='설명'>
           <Input.TextArea
             value={desc}
             onChange={onChangeDesc}
             maxLength={200}
-            placeholder="세션 설명을 적어주세요"
+            placeholder='세션 설명을 적어주세요'
           />
         </Form.Item>
         <Form.Item>
-          <Button type="primary" htmlType="submit">
+          <Button type='primary' htmlType='submit'>
             글 작성
           </Button>
         </Form.Item>
@@ -183,17 +183,19 @@ const postWrite = () => {
   );
 };
 
-export const getServerSideProps = wrapper.getServerSideProps(async (context) => {
-  const cookie = context.req ? context.req.headers.cookie : '';
-  axios.defaults.headers.Cookie = '';
-  if (context.req && cookie) {
-    axios.defaults.headers.Cookie = cookie;
+export const getServerSideProps = wrapper.getServerSideProps(
+  async (context) => {
+    const cookie = context.req ? context.req.headers.cookie : '';
+    axios.defaults.headers.Cookie = '';
+    if (context.req && cookie) {
+      axios.defaults.headers.Cookie = cookie;
+    }
+    context.store.dispatch({
+      type: LOAD_MY_INFO_REQUEST,
+    });
+    context.store.dispatch(END);
+    await context.store.sagaTask.toPromise();
   }
-  context.store.dispatch({
-    type: LOAD_MY_INFO_REQUEST,
-  });
-  context.store.dispatch(END);
-  await context.store.sagaTask.toPromise();
-});
+);
 
 export default postWrite;

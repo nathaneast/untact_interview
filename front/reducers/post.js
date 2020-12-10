@@ -13,18 +13,18 @@ export const initialState = {
   uploadPostLoading: false,
   uploadPostError: null,
   uploadPostDone: false,
-  savePlayPostLoading: false,
-  savePlayPostError: null,
-  savePlayPostDone: false,
+  loadPostLoading: false,
+  loadPostError: null,
+  loadPostDone: false,
 };
 
 export const UPLOAD_POST_REQUEST = 'UPLOAD_POST_REQUEST';
 export const UPLOAD_POST_SUCCESS = 'UPLOAD_POST_SUCCESS';
 export const UPLOAD_POST_FAILURE = 'UPLOAD_POST_FAILURE';
 
-export const SAVE_PLAY_POST_REQUEST = 'SAVE_PLAY_POST_REQUEST';
-export const SAVE_PLAY_POST_SUCCESS = 'SAVE_PLAY_POST_SUCCESS';
-export const SAVE_PLAY_POST_FAILURE = 'SAVE_PLAY_POST_FAILURE';
+export const LOAD_POST_REQUEST = 'LOAD_POST_REQUEST';
+export const LOAD_POST_SUCCESS = 'LOAD_POST_SUCCESS';
+export const LOAD_POST_FAILURE = 'LOAD_POST_FAILURE';
 
 export const LOAD_POSTS_REQUEST = 'LOAD_POSTS_REQUEST';
 export const LOAD_POSTS_SUCCESS = 'LOAD_POSTS_SUCCESS';
@@ -63,19 +63,19 @@ const reducer = (state = initialState, action) => {
         draft.uploadPostLoading = false;
         draft.uploadPostError = action.error;
         break;
-      case SAVE_PLAY_POST_REQUEST:
-        draft.savePlayPostLoading = true;
-        draft.savePlayPostError = null;
-        draft.savePlayPostDone = false;
+      case LOAD_POST_REQUEST:
+        draft.loadPostLoading = true;
+        draft.loadPostError = null;
+        draft.loadPostDone = false;
         break;
-      case SAVE_PLAY_POST_SUCCESS:
-        draft.savePlayPostLoading = false;
-        draft.savePlayPostDone = true;
+      case LOAD_POST_SUCCESS:
+        draft.loadPostLoading = false;
+        draft.loadPostDone = true;
         draft.singlePost = action.data;
         break;
-      case SAVE_PLAY_POST_FAILURE:
-        draft.savePlayPostLoading = false;
-        draft.savePlayPostError = action.error;
+      case LOAD_POST_FAILURE:
+        draft.loadPostLoading = false;
+        draft.loadPostError = action.error;
         break;
       default:
         break;

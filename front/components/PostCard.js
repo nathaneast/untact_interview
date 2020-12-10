@@ -5,7 +5,7 @@ import { Button, Card } from 'antd';
 const PostCard = ({ post, onModal, startPost }) => {
   const onClick = useCallback(() => {
     onModal();
-    startPost(post);
+    startPost(post._id);
   });
 
   return (
