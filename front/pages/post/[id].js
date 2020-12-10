@@ -1,9 +1,13 @@
 import React, { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Button } from 'antd';
+import { END } from 'redux-saga';
+import axios from 'axios';
 
 import AppLayout from '../../components/AppLayout';
 import useInterval from '../../hooks/useInterval';
+import wrapper from '../../store/configureStore';
+import { LOAD_MY_INFO_REQUEST } from '../../reducers/user';
 
 // 세션 끝날때 시간, 문제수 디테일
 // 버튼 한번 클릭후 3초 동안 클릭 못하도록
@@ -41,5 +45,18 @@ const Play = () => {
     </AppLayout>
   );
 };
+
+export const getServerSideProps = wrapper.getServerSideProps(async (context) => {
+  const cookie = context.req ? context.req.headers.cookie : '';
+  axios.defaults.headers.Cookie = '';
+  if (context.req && cookie) {
+    axios.defaults.headers.Cookie = cookie;
+  }
+  context.store.dispatch({
+    type: LOAD_MY_INFO_REQUEST,
+  });
+  context.store.dispatch(END);
+  await context.store.sagaTask.toPromise();
+});
 
 export default Play;

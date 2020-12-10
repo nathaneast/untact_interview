@@ -10,6 +10,7 @@ const StartPostModal = ({ post, resetPost, onModal, isLogin }) => {
   const dispatch = useDispatch();
   const router = useRouter();
 
+  // not login 텍스트 에러로 처리하기
   const onStart = useCallback(() => {
     if (isLogin) {
       dispatch({

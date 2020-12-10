@@ -3,10 +3,14 @@ import { Form, Input, Button, Select } from 'antd';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
+import { END } from 'redux-saga';
+import axios from 'axios';
 
 import AppLayout from '../components/AppLayout';
 import { UPLOAD_POST_REQUEST } from '../reducers/post';
+import { LOAD_MY_INFO_REQUEST } from '../reducers/user';
 import useInput from '../hooks/useInput';
+import wrapper from '../store/configureStore';
 
 const DeleteButton = styled(MinusCircleOutlined)`
   margin: 0 8px;
@@ -178,5 +182,18 @@ const postWrite = () => {
     </AppLayout>
   );
 };
+
+export const getServerSideProps = wrapper.getServerSideProps(async (context) => {
+  const cookie = context.req ? context.req.headers.cookie : '';
+  axios.defaults.headers.Cookie = '';
+  if (context.req && cookie) {
+    axios.defaults.headers.Cookie = cookie;
+  }
+  context.store.dispatch({
+    type: LOAD_MY_INFO_REQUEST,
+  });
+  context.store.dispatch(END);
+  await context.store.sagaTask.toPromise();
+});
 
 export default postWrite;

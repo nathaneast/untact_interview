@@ -7,22 +7,21 @@ const { isLoggedIn, isNotLoggedIn } = require('./middlewares');
 
 const router = express.Router();
 
-// 내림차순으로 post 받아오기
 router.get('/', async (req, res, next) => {
   try {
     const { lastId, category } = req.query;
     console.log(lastId, category, 'req.query');
-    if(category === 'all') {
-      const posts = await Post.find(lastId ? { _id: { $gt: lastId } } : null)
-      .limit(5)
-      .sort({ date: -1 })
-      .populate('star', 'email')
-      .populate('creator', 'nickname email')
-      .populate('category', 'name');
-     return res.status(200).send(posts);
+    if (category === 'all') {
+      const posts = await Post.find(lastId ? { _id: { $lt: lastId } } : null)
+        .limit(5)
+        .populate('star', 'email')
+        .populate('creator', 'nickname email')
+        .populate('category', 'name')
+        .sort({ createdAt: -1 });
+      return res.status(200).send(posts);
     } else {
       // 다른 카테고리일때
-    }   
+    }
   } catch (error) {
     console.error(error);
     next(error);

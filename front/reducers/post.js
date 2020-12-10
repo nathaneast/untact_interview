@@ -58,7 +58,6 @@ const reducer = (state = initialState, action) => {
       case UPLOAD_POST_SUCCESS:
         draft.uploadPostLoading = false;
         draft.uploadPostDone = true;
-        // draft.mainPosts = draft.mainPosts.concat(action.data);
         break;
       case UPLOAD_POST_FAILURE:
         draft.uploadPostLoading = false;

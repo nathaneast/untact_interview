@@ -1,11 +1,14 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { END } from 'redux-saga';
+import axios from 'axios';
 
 import AppLayout from '../components/AppLayout';
 import StartPostModal from '../components/modal/StartPostModal';
 import PostCard from '../components/PostCard';
 import { LOAD_POSTS_REQUEST } from '../reducers/post';
 import { LOAD_MY_INFO_REQUEST } from '../reducers/user';
+import wrapper from '../store/configureStore';
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -15,23 +18,6 @@ const Home = () => {
   const [selectPost, setSelectPost] = useState('');
   const [beforeCategory, setBeforeCategory] = useState('all');
   const [selectCategory, setSelectCategory] = useState('all');
-
-  useEffect(() => {
-    const lastId = mainPosts[mainPosts.length - 1]?._id;
-    dispatch({
-      type: LOAD_POSTS_REQUEST,
-      data: {
-        category: {
-          name: selectCategory,
-          isSame: true,
-        },
-        lastId,
-      },
-    });
-    dispatch({
-      type: LOAD_MY_INFO_REQUEST,
-    });
-  }, []);
 
   useEffect(() => {
     function onScroll() {
@@ -114,6 +100,27 @@ const Home = () => {
   );
 };
 
-// 서버사이드 렌더링
+export const getServerSideProps = wrapper.getServerSideProps(async (context) => {
+  const cookie = context.req ? context.req.headers.cookie : '';
+  axios.defaults.headers.Cookie = '';
+  if (context.req && cookie) {
+    axios.defaults.headers.Cookie = cookie;
+  }
+  context.store.dispatch({
+    type: LOAD_MY_INFO_REQUEST,
+  });
+  context.store.dispatch({
+    type: LOAD_POSTS_REQUEST,
+    data: {
+      category: {
+        name: 'all',
+        isSame: true,
+      },
+      lastId: null,
+    },
+  });
+  context.store.dispatch(END);
+  await context.store.sagaTask.toPromise();
+});
 
 export default Home;
