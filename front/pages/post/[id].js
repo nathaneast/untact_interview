@@ -4,7 +4,6 @@ import { Button } from 'antd';
 import { END } from 'redux-saga';
 import axios from 'axios';
 
-import AppLayout from '../../components/AppLayout';
 import useInterval from '../../hooks/useInterval';
 import wrapper from '../../store/configureStore';
 import { LOAD_MY_INFO_REQUEST } from '../../reducers/user';
@@ -31,7 +30,7 @@ const PlayPost = () => {
         setCount(count + 1);
       }
     },
-    isRunning ? 1000 : null
+    isRunning ? 1000 : null,
   );
 
   const onClick = useCallback(() => {
@@ -40,13 +39,13 @@ const PlayPost = () => {
   });
 
   return (
-    <AppLayout>
+    <div>
       <div>제한시간: {timer}</div>
       <div>{singlePost.questions[count]}</div>
       <div>실시간 비디오</div>
       <div>{`${count + 1} / ${singlePost.questions.length}`}</div>
       <Button onClick={onClick}>다음 문제</Button>
-    </AppLayout>
+    </div>
   );
 };
 
@@ -66,7 +65,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
     });
     context.store.dispatch(END);
     await context.store.sagaTask.toPromise();
-  }
+  },
 );
 
 export default PlayPost;
