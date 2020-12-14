@@ -1,8 +1,9 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Button } from 'antd';
 import { END } from 'redux-saga';
 import axios from 'axios';
+import Head from 'next/head';
 
 import useInterval from '../../hooks/useInterval';
 import wrapper from '../../store/configureStore';
@@ -17,10 +18,39 @@ const PlayPost = () => {
   const [timer, setTimer] = useState(5);
   const [count, setCount] = useState(0);
   const [isRunning, setIsRunning] = useState(true);
+  const videoElement = useRef();
+  const recorder = useRef();
+  const videoURL = useRef();
+
+  useEffect(() => {
+    navigator.mediaDevices
+      .getUserMedia({
+        video: true,
+        audio: true,
+      })
+      .then(async (stream) => {
+        recorder.current = RecordRTC(stream, {
+          type: 'video',
+        });
+        videoElement.current.srcObject = stream;
+        recorder.current.startRecording();
+        recorder.current.stream = stream;
+        // videoElement.current.play();
+      });
+  }, []);
 
   useInterval(
     () => {
       if (singlePost.questions.length - 1 < count) {
+        recorder.current.stopRecording((blobUrl) => {
+         videoElement.current.controls = true;
+          // videoElement.current.src = blobUrl;
+          videoElement.current.src = URL.createObjectURL(blobUrl);
+          recorder.current.stream.stop();
+          // recorder.current.destroy();
+          // recorder.current = null;
+        });
+
         setIsRunning(false);
         return alert('세션 끝');
       }
@@ -39,18 +69,33 @@ const PlayPost = () => {
   });
 
   return (
-    <div>
-      <div>제한시간: {timer}</div>
-      <div>{singlePost.questions[count]}</div>
-      <div>실시간 비디오</div>
-      <div>{`${count + 1} / ${singlePost.questions.length}`}</div>
-      <Button onClick={onClick}>다음 문제</Button>
-    </div>
+    <>
+      <Head>
+        <meta charSet="utf-8" />
+        <title>세션진행 | Untact_Interview </title>
+        <script src='https://www.WebRTC-Experiment.com/RecordRTC.js'></script>
+      </Head>
+      {singlePost && (
+        <div>
+          <div>제한시간: {timer}</div>
+          <div>{singlePost.questions[count]}</div>
+          <video ref={videoElement} autoPlay muted width='500px' height='500px' />
+          {/* {isRunning ? (
+            <video muted ref={videoElement} />
+          ) : (
+            <video src={videoURL} controls />
+          )} */}
+          <div>{`${count + 1} / ${singlePost.questions.length}`}</div>
+          <Button onClick={onClick}>다음 문제</Button>
+        </div>
+      )}
+    </>
   );
 };
 
 export const getServerSideProps = wrapper.getServerSideProps(
   async (context) => {
+    console.log('post/ id 서버사이드 렌더링 ');
     const cookie = context.req ? context.req.headers.cookie : '';
     axios.defaults.headers.Cookie = '';
     if (context.req && cookie) {

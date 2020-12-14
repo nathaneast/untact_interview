@@ -73,7 +73,7 @@ const Home = () => {
     setSelectCategory(e.target.dataset.name);
   });
 
-  console.log(beforeCategory, selectCategory, '//// beforeCate, selectCate');
+  // console.log(beforeCategory, selectCategory, '//// beforeCate, selectCate');
 
   return (
     <>
