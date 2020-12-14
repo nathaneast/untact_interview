@@ -4,6 +4,7 @@ import { Button } from 'antd';
 import { END } from 'redux-saga';
 import axios from 'axios';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 
 import useInterval from '../../hooks/useInterval';
 import wrapper from '../../store/configureStore';
@@ -13,14 +14,22 @@ import { LOAD_POST_REQUEST } from '../../reducers/post';
 // 세션 끝날때 시간, 문제수 디테일
 // 버튼 한번 클릭후 3초 동안 클릭 못하도록
 // 다음 버튼 클릭시 timer 바꾸는것말고 일정하게 바뀌도록 고민
+
+// 레코딩 화면 나올때 문제,시간 같이 나오도록
 const PlayPost = () => {
   const { singlePost } = useSelector((state) => state.post);
+  const { me } = useSelector((state) => state.user);
   const [timer, setTimer] = useState(5);
   const [count, setCount] = useState(0);
   const [isRunning, setIsRunning] = useState(true);
   const videoElement = useRef();
   const recorder = useRef();
-  const videoURL = useRef();
+  const router = useRouter();
+
+  if (!me) {
+    alert('로그인 후 이용 가능 합니다');
+    router.push('/');
+  }
 
   useEffect(() => {
     navigator.mediaDevices
@@ -42,15 +51,14 @@ const PlayPost = () => {
   useInterval(
     () => {
       if (singlePost.questions.length - 1 < count) {
-        recorder.current.stopRecording((blobUrl) => {
-         videoElement.current.controls = true;
-          // videoElement.current.src = blobUrl;
-          videoElement.current.src = URL.createObjectURL(blobUrl);
+        recorder.current.stopRecording(() => {
+          videoElement.current.controls = true;
+          videoElement.current.src = videoElement.current.srcObject = null;
+          videoElement.current.src = URL.createObjectURL(recorder.current.getBlob());
           recorder.current.stream.stop();
-          // recorder.current.destroy();
-          // recorder.current = null;
+          recorder.current.destroy();
+          recorder.current = null;
         });
-
         setIsRunning(false);
         return alert('세션 끝');
       }
@@ -79,12 +87,7 @@ const PlayPost = () => {
         <div>
           <div>제한시간: {timer}</div>
           <div>{singlePost.questions[count]}</div>
-          <video ref={videoElement} autoPlay muted width='500px' height='500px' />
-          {/* {isRunning ? (
-            <video muted ref={videoElement} />
-          ) : (
-            <video src={videoURL} controls />
-          )} */}
+          <video ref={videoElement} autoPlay width='500px' height='500px' />
           <div>{`${count + 1} / ${singlePost.questions.length}`}</div>
           <Button onClick={onClick}>다음 문제</Button>
         </div>
@@ -95,7 +98,6 @@ const PlayPost = () => {
 
 export const getServerSideProps = wrapper.getServerSideProps(
   async (context) => {
-    console.log('post/ id 서버사이드 렌더링 ');
     const cookie = context.req ? context.req.headers.cookie : '';
     axios.defaults.headers.Cookie = '';
     if (context.req && cookie) {
