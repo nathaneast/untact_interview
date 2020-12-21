@@ -5,17 +5,16 @@ import { END } from 'redux-saga';
 import axios from 'axios';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import socketIoClient from 'socket.io-client';
+import socket from '../../socket';
 
 import useInterval from '../../hooks/useInterval';
 import wrapper from '../../store/configureStore';
 import { LOAD_MY_INFO_REQUEST } from '../../reducers/user';
 import { LOAD_POST_REQUEST } from '../../reducers/post';
 
+// 다음 버튼 클릭시 timer 바꾸는것말고 일정하게 바뀌도록 고민
 // 세션 끝날때 시간, 문제수 디테일
 // 버튼 한번 클릭후 3초 동안 클릭 못하도록
-// 다음 버튼 클릭시 timer 바꾸는것말고 일정하게 바뀌도록 고민
-
 // 레코딩 화면 나올때 문제,시간 같이 나오도록
 const PlayPost = () => {
   const { singlePost } = useSelector((state) => state.post);
@@ -32,18 +31,6 @@ const PlayPost = () => {
     return router.push('/');
   }
 
-  const socket = socketIoClient.connect('http://localhost:7000');
-    socket.emit('startGoogleCloudStream', '');
-  
-    socket.on('connect',  function (data) {
-      console.log('소켓 커넥트 !!');
-      socket.emit('join', '소켓 클라-서버 연결 성공!');
-    });
-  
-    socket.on('messages', function (data) {
-      console.log(data);
-    });
-
   useEffect(() => {
     navigator.mediaDevices
       .getUserMedia({
@@ -58,6 +45,8 @@ const PlayPost = () => {
         recorder.current.startRecording();
         recorder.current.stream = stream;
         // videoElement.current.play();
+
+        socket.emit('startGoogleCloudStream', '');
       });
   }, []);
 
@@ -66,6 +55,7 @@ const PlayPost = () => {
       if (singlePost.questions.length - 1 < count) {
         recorder.current.stopRecording(() => {
           videoElement.current.controls = true;
+          videoElement.current.autoPlay = false;
           videoElement.current.src = videoElement.current.srcObject = null;
           videoElement.current.src = URL.createObjectURL(recorder.current.getBlob());
           recorder.current.stream.stop();

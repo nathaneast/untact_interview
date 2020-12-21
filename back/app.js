@@ -12,31 +12,18 @@ const helmet = require('helmet');
 const config = require('./config');
 const { MONGO_URI, PORT, COOKIE_SECRET } = config;
 
-// Google Cloud
-const speech = require('@google-cloud/speech');
-const speechClient = new speech.SpeechClient(); // Creates a client
-
 const userRouter = require('./routes/user');
 const postRouter = require('./routes/post');
 const postsRouter = require('./routes/posts');
 const passportConfig = require('./passport');
+const socket = require('./socket');
 
 const app = express();
 const server = require('http').createServer(app);
-const io = require('socket.io')(server);
-
-io.on('connection', function (client) {
-  console.log('소켓 connection');
-
-  client.on('join', function (data) {
-    console.log(data);
-    client.emit('messages', '소켓 서버-클라 연결 성공');
-  });
-
-  client.on('startGoogleCloudStream', function (data) {
-    console.log('startGoogleCloudStream 받음', data)
-    // startRecognitionStream(this, data);
-  });
+const io = require('socket.io')(server, {
+  cors: {
+    origin: '*',
+  }
 });
 
 mongoose
@@ -80,6 +67,8 @@ app.get('/', (req, res) => {
 app.use('/user', userRouter);
 app.use('/post', postRouter);
 app.use('/posts', postsRouter);
+
+socket(io);
 
 server.listen(PORT, () => {
   console.log(`${PORT} 서버 실행중 !`);
