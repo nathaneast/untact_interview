@@ -5,6 +5,7 @@ import { END } from 'redux-saga';
 import axios from 'axios';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
+import socketIoClient from 'socket.io-client';
 
 import useInterval from '../../hooks/useInterval';
 import wrapper from '../../store/configureStore';
@@ -28,8 +29,20 @@ const PlayPost = () => {
 
   if (!me) {
     alert('로그인 후 이용 가능 합니다');
-    router.push('/');
+    return router.push('/');
   }
+
+  const socket = socketIoClient.connect('http://localhost:7000');
+    socket.emit('startGoogleCloudStream', '');
+  
+    socket.on('connect',  function (data) {
+      console.log('소켓 커넥트 !!');
+      socket.emit('join', '소켓 클라-서버 연결 성공!');
+    });
+  
+    socket.on('messages', function (data) {
+      console.log(data);
+    });
 
   useEffect(() => {
     navigator.mediaDevices
@@ -78,20 +91,22 @@ const PlayPost = () => {
 
   return (
     <>
-      <Head>
-        <meta charSet="utf-8" />
-        <title>세션진행 | Untact_Interview </title>
-        <script src='https://www.WebRTC-Experiment.com/RecordRTC.js'></script>
-      </Head>
-      {singlePost && (
-        <div>
-          <div>제한시간: {timer}</div>
-          <div>{singlePost.questions[count]}</div>
-          <video ref={videoElement} autoPlay width='500px' height='500px' />
-          <div>{`${count + 1} / ${singlePost.questions.length}`}</div>
-          <Button onClick={onClick}>다음 문제</Button>
-        </div>
-      )}
+      <div>
+        <Head>
+          <meta charSet="utf-8" />
+          <title>세션진행 | Untact_Interview </title>
+          <script src="https://www.WebRTC-Experiment.com/RecordRTC.js" />
+        </Head>
+        {singlePost && (
+          <div>
+            <div>제한시간: {timer}</div>
+            <div>{singlePost.questions[count]}</div>
+            <video ref={videoElement} autoPlay width="500px" height="500px" />
+            <div>{`${count + 1} / ${singlePost.questions.length}`}</div>
+            <Button onClick={onClick}>다음 문제</Button>
+          </div>
+        )}
+      </div>
     </>
   );
 };
