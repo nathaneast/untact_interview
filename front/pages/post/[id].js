@@ -56,6 +56,7 @@ const PlayPost = () => {
         recorder.current.stopRecording(() => {
           videoElement.current.controls = true;
           videoElement.current.autoPlay = false;
+          videoElement.current.muted = true;
           videoElement.current.src = videoElement.current.srcObject = null;
           videoElement.current.src = URL.createObjectURL(recorder.current.getBlob());
           recorder.current.stream.stop();
@@ -91,7 +92,7 @@ const PlayPost = () => {
           <div>
             <div>제한시간: {timer}</div>
             <div>{singlePost.questions[count]}</div>
-            <video ref={videoElement} autoPlay width="500px" height="500px" />
+            <video ref={videoElement} autoPlay muted width="500px" height="500px" />
             <div>{`${count + 1} / ${singlePost.questions.length}`}</div>
             <Button onClick={onClick}>다음 문제</Button>
           </div>
