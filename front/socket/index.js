@@ -14,7 +14,6 @@ socket.on('messages', (data) => {
 socket.on('speechData', (data) => {
   // console.log(data.results[0].alternatives[0].transcript);
   console.log(data, 'speechData');
-
 });
 
 export default socket;

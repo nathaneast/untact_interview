@@ -5,10 +5,10 @@ import { END } from 'redux-saga';
 import axios from 'axios';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import socket from '../../socket';
 
 import useInterval from '../../hooks/useInterval';
 import wrapper from '../../store/configureStore';
+import socket from '../../socket';
 import { LOAD_MY_INFO_REQUEST } from '../../reducers/user';
 import { LOAD_POST_REQUEST } from '../../reducers/post';
 
