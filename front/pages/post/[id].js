@@ -8,9 +8,9 @@ import { useRouter } from 'next/router';
 
 import useInterval from '../../hooks/useInterval';
 import wrapper from '../../store/configureStore';
-import socket from '../../socket';
 import { LOAD_MY_INFO_REQUEST } from '../../reducers/user';
 import { LOAD_POST_REQUEST } from '../../reducers/post';
+import socket, { socketEmits } from '../../socket';
 
 // 다음 버튼 클릭시 timer 바꾸는것말고 일정하게 바뀌도록 고민
 // 세션 끝날때 시간, 문제수 디테일
@@ -19,20 +19,25 @@ import { LOAD_POST_REQUEST } from '../../reducers/post';
 const PlayPost = () => {
   const { singlePost } = useSelector((state) => state.post);
   const { me } = useSelector((state) => state.user);
-  const [timer, setTimer] = useState(5);
+
+  const [timer, setTimer] = useState(10);
   const [count, setCount] = useState(0);
   const [isRunning, setIsRunning] = useState(true);
+  const [saveSpeech, setSaveSpeech] = useState(true);
+  const [speech, setSpeech] = useState(true);
+
   const videoElement = useRef();
   const recorder = useRef();
   const router = useRouter();
-
-  const [saveSpeech, setSaveSpeech] = useState(true);
-  const [speech, setSpeech] = useState(true);
 
   if (!me) {
     alert('로그인 후 이용 가능 합니다');
     return router.push('/');
   }
+
+  const intervalLogic = useCallback(() => {
+    setTimer(timer - 1);
+  });
 
   useEffect(() => {
     navigator.mediaDevices
@@ -40,47 +45,81 @@ const PlayPost = () => {
         video: true,
         audio: true,
       })
-      .then(async (stream) => {
-        recorder.current = RecordRTC(stream, {
-          type: 'video',
+      .then((stream) => {
+        const sendRecord = new Promise((resolve) => {
+          recorder.current = RecordRTC(stream, {
+            type: 'video',
+          });
+          resolve();
         });
-        videoElement.current.srcObject = stream;
-        recorder.current.startRecording();
-        recorder.current.stream = stream;
-        // videoElement.current.play();
+        sendRecord.then(() => {
+          console.log('영상 나옴');
+          setInterval(intervalLogic, 1000);
+          // 문제 타임워치, 소켓
+        });
 
-        socket.emit('startGoogleCloudStream', '');
+        videoElement.current.srcObject = stream;
+        recorder.current.stream = stream;
+        recorder.current.startRecording();
+
+        // socket(setSpeech, setSaveSpeech);
+        // socketEmits.startGoogleCloudStream();
       });
   }, []);
 
-  useInterval(
-    () => {
-      if (singlePost.questions.length - 1 < count) {
-        recorder.current.stopRecording(() => {
-          videoElement.current.controls = true;
-          videoElement.current.autoPlay = false;
-          videoElement.current.muted = true;
-          videoElement.current.src = videoElement.current.srcObject = null;
-          videoElement.current.src = URL.createObjectURL(recorder.current.getBlob());
-          recorder.current.stream.stop();
-          recorder.current.destroy();
-          recorder.current = null;
-        });
-        setIsRunning(false);
-        return alert('세션 끝');
-      }
-      setTimer(timer - 1);
-      if (timer - 1 === 0) {
-        setTimer(5);
-        setCount(count + 1);
-      }
-    },
-    isRunning ? 1000 : null,
-  );
+  // useEffect(() => {
+  //   navigator.mediaDevices
+  //     .getUserMedia({
+  //       video: true,
+  //       audio: true,
+  //     })
+  //     .then(async (stream) => {
+  //       recorder.current = RecordRTC(stream, {
+  //         type: 'video',
+  //       });
+  //       videoElement.current.srcObject = stream;
+  //       recorder.current.startRecording();
+  //       recorder.current.stream = stream;
+
+  //       // socket(setSpeech, setSaveSpeech);
+  //       // socketEmits.startGoogleCloudStream();
+  //     });
+  // }, []);
+
+  // useInterval(
+  //   () => {
+  //     if (singlePost.questions.length - 1 < count) {
+  //       recorder.current.stopRecording(() => {
+  //         videoElement.current.controls = true;
+  //         videoElement.current.autoPlay = false;
+  //         videoElement.current.muted = true;
+  //         videoElement.current.srcObject = null;
+  //         // videoElement.current.src = null;
+  //         // videoElement.current.src = videoElement.current.srcObject = null;
+  //         videoElement.current.src = URL.createObjectURL(
+  //           recorder.current.getBlob(),
+  //         );
+  //         recorder.current.stream.stop();
+  //         recorder.current.destroy();
+  //         recorder.current = null;
+  //       });
+  //       setIsRunning(false);
+  //       // 세션 끝 소켓
+  //       return alert('세션 끝');
+  //     }
+  //     setTimer(timer - 1);
+  //     if (timer - 1 === 0) {
+  //       setTimer(10);
+  //       setCount(count + 1);
+  //     }
+  //   },
+  //   isRunning ? 1000 : null,
+  // );
 
   const onClick = useCallback(() => {
-    setTimer(5);
+    setTimer(10);
     setCount(count + 1);
+    // 다음문제 소켓
   });
 
   return (

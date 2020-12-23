@@ -20,7 +20,7 @@ const request = {
   interimResults: true,
 };
 
-let streamingLimit = 100000;
+let streamingLimit = 10000;
 let recognizeStream = null;
 let restartCounter = 0;
 let audioInput = [];
@@ -164,9 +164,11 @@ const audioInputStreamTransform = new Writable({
             (lastAudioInput.length - chunksFromMS) * chunkTime
           );
 
-          for (let i = chunksFromMS; i < lastAudioInput.length; i++) {
-            recognizeStream.write(lastAudioInput[i]);
-          }
+          recognizeStream.write(lastAudioInput[lastAudioInput.length - 1]);
+
+          // for (let i = chunksFromMS; i < lastAudioInput.length; i++) {
+          //   recognizeStream.write(lastAudioInput[i]);
+          // }
         }
         newStream = false;
       }
