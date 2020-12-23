@@ -11,9 +11,12 @@ socket.on('messages', (data) => {
   console.log(data);
 });
 
-socket.on('speechData', (data) => {
-  // console.log(data.results[0].alternatives[0].transcript);
-  console.log(data, 'speechData');
+socket.on('speechRealTime', (data) => {
+  console.log(data, 'speechRealTime');
+});
+
+socket.on('speechResult', (data) => {
+  console.log(data, 'speechResult');
 });
 
 export default socket;

@@ -1,10 +1,8 @@
-// const stt = require('./stt');
+const recorder = require('node-record-lpcm16');
+const { Writable } = require('stream');
 
 const speech = require('@google-cloud/speech');
 const speechClient = new speech.SpeechClient();
-
-const recorder = require('node-record-lpcm16');
-const { Writable } = require('stream');
 
 // Google STT request
 const encoding = 'LINEAR16';
@@ -22,17 +20,17 @@ const request = {
   interimResults: true,
 };
 
-let streamingLimit = 10000;
+let streamingLimit = 100000;
 let recognizeStream = null;
 let restartCounter = 0;
 let audioInput = [];
 let lastAudioInput = [];
-let resultEndTime = 0; // 끝나는 시간
+let resultEndTime = 0; // STT 마지막 인식 시간
 let isFinalEndTime = 0;
-let finalRequestEndTime = 0;
+let finalRequestEndTime = 0; // 재시작될때 마지막 stt 시간
 let newStream = true;
 let bridgingOffset = 0;
-let lastTranscriptWasFinal = false;
+// let lastTranscriptWasFinal = false;
 
 module.exports = (io) => {
   io.on('connection', function (client) {
@@ -46,12 +44,12 @@ module.exports = (io) => {
     client.on('startGoogleCloudStream', function (data) {
       console.log('startGoogleCloudStream 받음', data);
       startRecoding();
-      startStream();
+      startStream(client);
     });
   });
 };
 
-function restartStream() {
+function restartStream(client) {
   console.log('restartStream');
   
   // STT 인식 끝내기
@@ -72,9 +70,9 @@ function restartStream() {
 
   restartCounter++;
 
-  if (!lastTranscriptWasFinal) {
-    process.stdout.write('\n');
-  }
+  // if (!lastTranscriptWasFinal) {
+  //   process.stdout.write('\n');
+  // }
   console.log('레코딩 재시작', `${streamingLimit * restartCounter}`);
   // process.stdout.write(
   //   chalk.yellow(`${streamingLimit * restartCounter}: RESTARTING REQUEST\n`)
@@ -83,11 +81,11 @@ function restartStream() {
   newStream = true;
 
   // 1번 실행 반복
-  startStream();
+  startStream(client);
 }
 
 // 2번 실행
-function speechCallback (stream) {
+function speechCallback (stream, client) {
 console.log('speechCallback');
 // Convert API result end time from seconds + nanoseconds to milliseconds
 resultEndTime =
@@ -102,11 +100,13 @@ const correctedTime =
 // process.stdout.cursorTo(0);
 if (stream.results[0] && stream.results[0].alternatives[0]) {
   console.log('transcript', `${correctedTime} ${stream.results[0].alternatives[0].transcript}`);
+  client.emit('speechRealTime', stream.results[0].alternatives[0].transcript);
 }
 
 if (stream.results[0].isFinal) {
   // process.stdout.write(chalk.green(`${stdoutText}\n`));
   console.log('문장 완성',`${correctedTime} ${stream.results[0].alternatives[0].transcript}`);
+  client.emit('speechResult', stream.results[0].alternatives[0].transcript);
   
   // client.emit('speechData', stream);
 
@@ -123,7 +123,7 @@ if (stream.results[0].isFinal) {
   }
 };
 
-function startStream() {
+function startStream(client) {
   console.log('startStream');
   // Clear current audioInput
   audioInput = [];
@@ -137,13 +137,14 @@ function startStream() {
         console.error('API request error ' + err);
       }
     })
-    .on('data', speechCallback);
+    .on('data', (stream) => speechCallback(stream, client));
 
   // Restart stream when streamingLimit expires
   // 2-1번
-  setTimeout(restartStream, streamingLimit);
+  setTimeout(() => restartStream(client), streamingLimit);
 }
 
+// 리레코딩 newSteram true되면 이전 미완성 문장 가져오는 로직
 const audioInputStreamTransform = new Writable({
     write(chunk, encoding, next) {
       if (newStream && lastAudioInput.length !== 0) {

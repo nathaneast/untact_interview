@@ -26,6 +26,9 @@ const PlayPost = () => {
   const recorder = useRef();
   const router = useRouter();
 
+  const [saveSpeech, setSaveSpeech] = useState(true);
+  const [speech, setSpeech] = useState(true);
+
   if (!me) {
     alert('로그인 후 이용 가능 합니다');
     return router.push('/');
@@ -89,13 +92,23 @@ const PlayPost = () => {
           <script src="https://www.WebRTC-Experiment.com/RecordRTC.js" />
         </Head>
         {singlePost && (
-          <div>
+          <section>
             <div>제한시간: {timer}</div>
             <div>{singlePost.questions[count]}</div>
             <video ref={videoElement} autoPlay muted width="500px" height="500px" />
             <div>{`${count + 1} / ${singlePost.questions.length}`}</div>
+            <article>
+              <div>
+                <h2>스피치 저장</h2>
+                <p>{saveSpeech}</p>
+              </div>
+              <div>
+                <h2>스피치 리얼타임</h2>
+                <p>{speech}</p>
+              </div>
+            </article>
             <Button onClick={onClick}>다음 문제</Button>
-          </div>
+          </section>
         )}
       </div>
     </>
