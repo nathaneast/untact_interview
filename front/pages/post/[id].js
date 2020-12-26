@@ -20,21 +20,46 @@ const PlayPost = () => {
   const { singlePost } = useSelector((state) => state.post);
   const { me } = useSelector((state) => state.user);
 
-  const limitTime = 20;
+  const limitTime = 5;
   const [timer, setTimer] = useState(limitTime);
   const [count, setCount] = useState(0);
   const [isRunning, setIsRunning] = useState(true);
-  const [saveSpeech, setSaveSpeech] = useState('');
-  const [speech, setSpeech] = useState('');
+
+  const [saveSpeech, setSaveSpeech] = useState(null);
+  const [speech, setSpeech] = useState(null);
+  const [timeStamps, setTimeStamps] = useState([]);
 
   const videoElement = useRef();
   const recorder = useRef();
+  const currentTime = useRef();
   const router = useRouter();
 
   if (!me) {
     alert('로그인 후 이용 가능 합니다');
     return router.push('/');
   }
+
+  const storeTimeStamp = useCallback(() => {
+    console.log(currentTime, 'storeTimeStamp');
+    setTimeStamps((prev) => prev.concat(currentTime.current));
+  });
+
+  // 변수명 변경하기
+  const checkEmptySpeech = useCallback(() => {
+    console.log('checkEmptySpeech');
+    socketEmits.detectFirstSentence();
+    if (!timeStamps[count]) {
+      timeStamps[count] = null;
+    }
+  });
+
+  const onClick = useCallback(() => { // 다음 문제로 넘어감
+    console.log('버튼 클릭 다음문제');
+    checkEmptySpeech();
+    // socketEmits.detectFirstSentence();
+    setTimer(limitTime);
+    setCount(count + 1);
+  });
 
   useEffect(() => {
     navigator.mediaDevices
@@ -45,25 +70,25 @@ const PlayPost = () => {
       .then(async (stream) => {
         recorder.current = RecordRTC(await stream, {
           type: 'video',
+          timeSlice: 1000,
+          onTimeStamp: (timestamp, timestamps) => {
+            const duration = (new Date().getTime() - timestamps[0]) / 1000;
+            if (duration < 0) return;
+            currentTime.current = Math.floor(duration) - 1;
+          },
         });
         videoElement.current.srcObject = stream;
         recorder.current.stream = stream;
         recorder.current.startRecording();
         videoElement.current.play();
 
-        socket(setSpeech, setSaveSpeech);
+        socket(setSpeech, setSaveSpeech, storeTimeStamp);
         socketEmits.startGoogleCloudStream();
       });
   }, []);
 
   useInterval(
     () => {
-      // if (timer === 0) { // 다음문제로 넘어감
-      //   setTimer(10);
-      //   setCount(count + 1);
-      //   socketEmits.timeStamp();
-      //   return;
-      // }
       if (singlePost.questions.length - 1 < count) {
         recorder.current.stopRecording(() => {
           videoElement.current.controls = true;
@@ -84,19 +109,17 @@ const PlayPost = () => {
       }
       setTimer(timer - 1);
       if (timer - 1 === 0) { // 다음문제로 넘어감
+        console.log('다음문제');
+        checkEmptySpeech();
+        // socketEmits.detectFirstSentence();
         setTimer(limitTime);
         setCount(count + 1);
-        socketEmits.timeStamp();
       }
     },
     isRunning ? 1000 : null,
   );
 
-  const onClick = useCallback(() => {
-    setTimer(limitTime);
-    setCount(count + 1);
-    // 다음문제 소켓
-  });
+  console.log(timeStamps, 'timeStamps');
 
   return (
     <>
