@@ -24,7 +24,7 @@ const request = {
 const sttResults = [];
 let currentQuestionIndex = 0;
 
-let streamingLimit = 20000;
+let streamingLimit = 500000;
 let recognizeStream = null;
 let restartCounter = 0;
 let audioInput = [];
@@ -36,6 +36,10 @@ let newStream = true;
 let bridgingOffset = 0;
 let isDetectFirstSentence = true;
 // let lastTranscriptWasFinal = false;
+
+let isSentenceFinal;
+let isDivideSentence;
+let previousSentenceLength;
 
 // class Question {
 //   constructor(time, text) {
@@ -59,12 +63,15 @@ module.exports = (io) => {
       // markingTimeStamp();
     });
     client.on('detectFirstSentence', function (data) {
+      console.log('detectFirstSentence emit !');
       isDetectFirstSentence = true;
       if (!sttResults[currentQuestionIndex]) {
         sttResults[currentQuestionIndex] = '';
       }
+      if (!isSentenceFinal) {
+        isDivideSentence = true;
+      }
       currentQuestionIndex++;
-      console.log(sttResults, 'sttResults')
     });
   });
 };
@@ -127,16 +134,24 @@ resultEndTime =
  const currentRecTime =
   resultEndTime - bridgingOffset + streamingLimit * restartCounter;
 
-// process.stdout.clearLine();
+  isSentenceFinal = stream.results[0].isFinal;
+
+// process.stdout.clearLines();
 // process.stdout.cursorTo(0);
+
+const transcript = stream.results[0].alternatives[0].transcript;
 
 if (isDetectFirstSentence) {
   client.emit('timeStamp', '');
   isDetectFirstSentence = false;
-  console.log('첫 문장 감지', isDetectFirstSentence);
+  console.log('speechCallback 첫 문장 감지');
 }
 
-const transcript = stream.results[0].alternatives[0].transcript;
+if (isDivideSentence) {
+  previousSentenceLength = transcript.length;
+  isDivideSentence = false;
+}
+
 if (stream.results[0] && stream.results[0].alternatives[0]) {
   console.log('transcript', `${currentRecTime} ${transcript}`);
   client.emit('speechRealTime', transcript);
@@ -148,10 +163,28 @@ if (stream.results[0].isFinal) {
   console.log('문장 완성',`${currentRecTime} ${transcript}`);
   client.emit('speechResult', transcript);
 
-  sttResults[currentQuestionIndex] = sttResults[currentQuestionIndex]
-    ? `${sttResults[currentQuestionIndex]} ${transcript}`
-    : transcript;
+  if (previousSentenceLength) {
+    console.log('previousSentenceLength true 로직');
+    sttResults[currentQuestionIndex - 1] =
+    sttResults[currentQuestionIndex - 1] 
+    ? `${sttResults[currentQuestionIndex - 1]} ${transcript.substring(0, previousSentenceLength)}`
+    : transcript.substring(0, previousSentenceLength);
 
+    sttResults[currentQuestionIndex] =
+    sttResults[currentQuestionIndex] 
+    ? `${sttResults[currentQuestionIndex]} ${transcript.substring(previousSentenceLength, transcript.length)}`
+    : transcript.substring(previousSentenceLength, transcript.length);
+    
+    console.log('이전문장:',transcript.substring(0, previousSentenceLength));
+    console.log('다음문장:',transcript.substring(previousSentenceLength, transcript.length));
+    
+    previousSentenceLength = null;
+  } else {
+    console.log('previousSentenceLength false 로직');
+    sttResults[currentQuestionIndex] = sttResults[currentQuestionIndex]
+      ? `${sttResults[currentQuestionIndex]} ${transcript}`
+      : transcript;
+  }
   console.log(sttResults, currentQuestionIndex, 'sttResults');
 
   //  `${sttResults[currentQuestionIndex].text ? 

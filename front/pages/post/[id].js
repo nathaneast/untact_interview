@@ -20,7 +20,7 @@ const PlayPost = () => {
   const { singlePost } = useSelector((state) => state.post);
   const { me } = useSelector((state) => state.user);
 
-  const limitTime = 5;
+  const limitTime = 40;
   const [timer, setTimer] = useState(limitTime);
   const [count, setCount] = useState(0);
   const [isRunning, setIsRunning] = useState(true);
@@ -39,13 +39,12 @@ const PlayPost = () => {
     return router.push('/');
   }
 
-  const storeTimeStamp = useCallback(() => {
-    console.log(currentTime, 'storeTimeStamp');
+  const saveTimeStamp = useCallback(() => {
+    console.log(currentTime, 'saveTimeStamp');
     setTimeStamps((prev) => prev.concat(currentTime.current));
   });
 
-  // 변수명 변경하기
-  const checkEmptySpeech = useCallback(() => {
+  const nextQuestion = useCallback(() => {
     console.log('checkEmptySpeech');
     socketEmits.detectFirstSentence();
     if (!timeStamps[count]) {
@@ -55,8 +54,7 @@ const PlayPost = () => {
 
   const onClick = useCallback(() => { // 다음 문제로 넘어감
     console.log('버튼 클릭 다음문제');
-    checkEmptySpeech();
-    // socketEmits.detectFirstSentence();
+    nextQuestion();
     setTimer(limitTime);
     setCount(count + 1);
   });
@@ -82,8 +80,8 @@ const PlayPost = () => {
         recorder.current.startRecording();
         videoElement.current.play();
 
-        socket(setSpeech, setSaveSpeech, storeTimeStamp);
-        socketEmits.startGoogleCloudStream();
+        // socket(setSpeech, setSaveSpeech, saveTimeStamp);
+        // socketEmits.startGoogleCloudStream();
       });
   }, []);
 
@@ -110,8 +108,7 @@ const PlayPost = () => {
       setTimer(timer - 1);
       if (timer - 1 === 0) { // 다음문제로 넘어감
         console.log('다음문제');
-        checkEmptySpeech();
-        // socketEmits.detectFirstSentence();
+        nextQuestion();
         setTimer(limitTime);
         setCount(count + 1);
       }

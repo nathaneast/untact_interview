@@ -2,7 +2,7 @@ import socketIoClient from 'socket.io-client';
 
 const socket = socketIoClient.connect('http://localhost:7000');
 
-export default (setSpeech, setSaveSpeech, storeTimeStamp) => {
+export default (setSpeech, setSaveSpeech, saveTimeStamp) => {
   // setState이벤트 모조리 받기
   socket.on('connect', (data) => {
     console.log('소켓 프론트단 커넥트');
@@ -22,7 +22,7 @@ export default (setSpeech, setSaveSpeech, storeTimeStamp) => {
   });
   socket.on('timeStamp', (data) => {
     console.log('timeStamp 클라이언트');
-    storeTimeStamp();
+    saveTimeStamp();
   });
 
   socket.on('speechRealTimeData', (data) => {
