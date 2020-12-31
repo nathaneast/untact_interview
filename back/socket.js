@@ -19,9 +19,8 @@ const request = {
   },
   interimResults: true,
 };
-//
 
-const sttResults = [];
+const timeStamps = [];
 let currentQuestionIndex = 0;
 
 let streamingLimit = 500000;
@@ -37,16 +36,18 @@ let bridgingOffset = 0;
 let isDetectFirstSentence = true;
 // let lastTranscriptWasFinal = false;
 
-let isSentenceFinal;
-let isDivideSentence;
-let previousSentenceLength;
+let isSentenceFinal = false;
+let isDivideSentence = false;
+let previousSentenceLength = null;
 
-// class Question {
-//   constructor(time, text) {
-//     this.time = time;
-//     this.text = text;
-//   }
-// }
+let recording;
+
+class MyAnswer {
+  constructor(time, text) {
+    this.time = time;
+    this.text = text;
+  }
+}
 
 module.exports = (io) => {
   io.on('connection', function (client) {
@@ -57,35 +58,49 @@ module.exports = (io) => {
       client.emit('messages', '소켓 서버-클라 연결 성공');
     });
     client.on('startGoogleCloudStream', function (data) {
-      console.log('startGoogleCloudStream 받음', data);
+      console.log('startGoogleCloudStream 받음');
       startRecoding();
       startStream(client);
-      // markingTimeStamp();
     });
-    client.on('detectFirstSentence', function (data) {
+    client.on('endGoogleCloudStream', function (data) {
+      console.log('endGoogleCloudStream', data);
+      endGoogleCloudStream();
+      // 레코딩 stop시 오류
+      // stopRecoding();
+      client.emit('responseTimeStamps', timeStamps);
+    });
+    client.on('detectFirstSentence', function (data) { // 다음 문제 넘어갔다는것
       console.log('detectFirstSentence emit !');
       isDetectFirstSentence = true;
-      if (!sttResults[currentQuestionIndex]) {
-        sttResults[currentQuestionIndex] = '';
+      if (!timeStamps[currentQuestionIndex]) {
+        timeStamps[currentQuestionIndex] = '';
       }
       if (!isSentenceFinal) {
         isDivideSentence = true;
       }
       currentQuestionIndex++;
+      console.log(timeStamps, currentQuestionIndex, 'detectFirstSentence timeStamps, index');
     });
   });
 };
 
-// function markingTimeStamp() {
-//   // let question;
-//   // if (currentQuestionIndex) {
-//   //   question = new Question(currentRecTime / 1000);
-//   // } else {
-//   //   question = new Question(0);
-//   // }
-//   const question = new Question(currentRecTime);
-//   timeStamps.push(question);
-// }
+function markingTimeStamp(time) {
+  const question = new MyAnswer(Math.floor(time / 1000));
+  timeStamps[currentQuestionIndex] = question;
+}
+
+function stopRecoding() {
+  console.log('stopRecoding');
+  recording.stop();
+}
+
+function endGoogleCloudStream() {
+  console.log('endGoogleCloudStream 스트리밍 끝');
+  if (recognizeStream) {
+    recognizeStream.end();
+  }
+  recognizeStream = null;
+}
 
 function restartStream(client) {
   console.log('restartStream');
@@ -142,9 +157,9 @@ resultEndTime =
 const transcript = stream.results[0].alternatives[0].transcript;
 
 if (isDetectFirstSentence) {
-  client.emit('timeStamp', '');
-  isDetectFirstSentence = false;
   console.log('speechCallback 첫 문장 감지');
+  markingTimeStamp(currentRecTime);
+  isDetectFirstSentence = false;
 }
 
 if (isDivideSentence) {
@@ -155,7 +170,6 @@ if (isDivideSentence) {
 if (stream.results[0] && stream.results[0].alternatives[0]) {
   console.log('transcript', `${currentRecTime} ${transcript}`);
   client.emit('speechRealTime', transcript);
-  // client.emit('speechRealTimeData', stream);
 }
 
 if (stream.results[0].isFinal) {
@@ -164,35 +178,33 @@ if (stream.results[0].isFinal) {
   client.emit('speechResult', transcript);
 
   if (previousSentenceLength) {
-    console.log('previousSentenceLength true 로직');
-    sttResults[currentQuestionIndex - 1] =
-    sttResults[currentQuestionIndex - 1] 
-    ? `${sttResults[currentQuestionIndex - 1]} ${transcript.substring(0, previousSentenceLength)}`
-    : transcript.substring(0, previousSentenceLength);
-
-    sttResults[currentQuestionIndex] =
-    sttResults[currentQuestionIndex] 
-    ? `${sttResults[currentQuestionIndex]} ${transcript.substring(previousSentenceLength, transcript.length)}`
-    : transcript.substring(previousSentenceLength, transcript.length);
-    
-    console.log('이전문장:',transcript.substring(0, previousSentenceLength));
-    console.log('다음문장:',transcript.substring(previousSentenceLength, transcript.length));
-    
-    previousSentenceLength = null;
+      console.log('previousSentenceLength true 로직');
+      timeStamps[currentQuestionIndex - 1].text =
+      timeStamps[currentQuestionIndex - 1].text 
+      ? timeStamps[currentQuestionIndex - 1].text + transcript.substring(0, previousSentenceLength)
+      : transcript.substring(0, previousSentenceLength);
+  
+      timeStamps[currentQuestionIndex].text =
+      timeStamps[currentQuestionIndex].text 
+      ? timeStamps[currentQuestionIndex].text + transcript.substring(previousSentenceLength, transcript.length)
+      : transcript.substring(previousSentenceLength, transcript.length);
+      
+      console.log('이전문장:',transcript.substring(0, previousSentenceLength));
+      console.log('다음문장:',transcript.substring(previousSentenceLength, transcript.length));
+      
+      previousSentenceLength = null;
   } else {
     console.log('previousSentenceLength false 로직');
-    sttResults[currentQuestionIndex] = sttResults[currentQuestionIndex]
-      ? `${sttResults[currentQuestionIndex]} ${transcript}`
+    timeStamps[currentQuestionIndex].text = timeStamps[currentQuestionIndex].text
+      ? timeStamps[currentQuestionIndex].text + transcript
+      // ? `${timeStamps[currentQuestionIndex].text} ${transcript}` //
       : transcript;
   }
-  console.log(sttResults, currentQuestionIndex, 'sttResults');
+  console.log(timeStamps, currentQuestionIndex, 'timeStamps');
 
-  //  `${sttResults[currentQuestionIndex].text ? 
-  //   sttResults[currentQuestionIndex].text : ''} ${transcript}`
-  // console.log(sttResults);
   isFinalEndTime = resultEndTime; // 문장 완료 후 끝나는 시간 저장
-  // lastTranscriptWasFinal = true;
-} else {
+} 
+// else {
   // Make sure transcript does not exceed console character length
   // if (stdoutText.length > process.stdout.columns) {
   //   stdoutText =
@@ -200,7 +212,7 @@ if (stream.results[0].isFinal) {
   // }
   // process.stdout.write(chalk.red(`${stdoutText}`));
   // lastTranscriptWasFinal = false;
-  }
+  // }
 };
 
 function startStream(client) {
@@ -227,6 +239,7 @@ function startStream(client) {
 // 리레코딩 newSteram true되면 이전 미완성 문장 가져오는 로직
 const audioInputStreamTransform = new Writable({
     write(chunk, encoding, next) {
+      // console.log('audioInputStreamTransform write 안');
       if (newStream && lastAudioInput.length !== 0) {
         // Approximate math to calculate time of chunks
         const chunkTime = streamingLimit / lastAudioInput.length;
@@ -256,13 +269,14 @@ const audioInputStreamTransform = new Writable({
       audioInput.push(chunk);
 
       if (recognizeStream) {
+        // console.log('audioInputStreamTransform recognizeStream write');
         recognizeStream.write(chunk);
       }
-
       next();
     },
 
     final() {
+      console.log('audioInputStreamTransform final')
       if (recognizeStream) {
         recognizeStream.end();
       }
@@ -271,14 +285,15 @@ const audioInputStreamTransform = new Writable({
 
 function startRecoding() {
   console.log('startRecoding');
-  recorder
-    .record({
-      sampleRateHertz: sampleRateHertz,
-      threshold: 0, // Silence threshold
-      silence: 1000,
-      keepSilence: true,
-      recordProgram: 'rec', // Try also "arecord" or "sox"
-    })
+  recording = recorder.record({
+    sampleRateHertz: sampleRateHertz,
+    threshold: 0, // Silence threshold
+    silence: 1000,
+    keepSilence: true,
+    recordProgram: 'rec', // Try also "arecord" or "sox"
+  });
+
+  recording
     .stream()
     .on('error', (err) => {
       console.error('Audio recording error ' + err);

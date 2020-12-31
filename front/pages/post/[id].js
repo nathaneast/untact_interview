@@ -11,6 +11,7 @@ import wrapper from '../../store/configureStore';
 import { LOAD_MY_INFO_REQUEST } from '../../reducers/user';
 import { LOAD_POST_REQUEST } from '../../reducers/post';
 import socket, { socketEmits } from '../../socket';
+import Feedback from '../../components/Feedback';
 
 // 다음 버튼 클릭시 timer 바꾸는것말고 일정하게 바뀌도록 고민
 // 세션 끝날때 시간, 문제수 디테일
@@ -19,45 +20,26 @@ import socket, { socketEmits } from '../../socket';
 const PlayPost = () => {
   const { singlePost } = useSelector((state) => state.post);
   const { me } = useSelector((state) => state.user);
+  const router = useRouter();
 
-  const limitTime = 40;
+  const limitTime = 20;
   const [timer, setTimer] = useState(limitTime);
-  const [count, setCount] = useState(0);
+  const [questionIndex, setQuestionIndex] = useState(0);
   const [isRunning, setIsRunning] = useState(true);
 
   const [saveSpeech, setSaveSpeech] = useState(null);
   const [speech, setSpeech] = useState(null);
-  const [timeStamps, setTimeStamps] = useState([]);
+  const [timeStamps, setTimeStamps] = useState(null);
+  const [blob, setBlob] = useState(null);
 
   const videoElement = useRef();
   const recorder = useRef();
-  const currentTime = useRef();
-  const router = useRouter();
+  const nextQuestionButton = useRef();
 
   if (!me) {
     alert('로그인 후 이용 가능 합니다');
     return router.push('/');
   }
-
-  const saveTimeStamp = useCallback(() => {
-    console.log(currentTime, 'saveTimeStamp');
-    setTimeStamps((prev) => prev.concat(currentTime.current));
-  });
-
-  const nextQuestion = useCallback(() => {
-    console.log('checkEmptySpeech');
-    socketEmits.detectFirstSentence();
-    if (!timeStamps[count]) {
-      timeStamps[count] = null;
-    }
-  });
-
-  const onClick = useCallback(() => { // 다음 문제로 넘어감
-    console.log('버튼 클릭 다음문제');
-    nextQuestion();
-    setTimer(limitTime);
-    setCount(count + 1);
-  });
 
   useEffect(() => {
     navigator.mediaDevices
@@ -69,83 +51,134 @@ const PlayPost = () => {
         recorder.current = RecordRTC(await stream, {
           type: 'video',
           timeSlice: 1000,
-          onTimeStamp: (timestamp, timestamps) => {
-            const duration = (new Date().getTime() - timestamps[0]) / 1000;
-            if (duration < 0) return;
-            currentTime.current = Math.floor(duration) - 1;
-          },
         });
         videoElement.current.srcObject = stream;
         recorder.current.stream = stream;
         recorder.current.startRecording();
-        videoElement.current.play();
 
-        // socket(setSpeech, setSaveSpeech, saveTimeStamp);
-        // socketEmits.startGoogleCloudStream();
+        socket(setSpeech, setSaveSpeech, setTimeStamps);
+        socketEmits.startGoogleCloudStream();
       });
   }, []);
 
+  const endSession = useCallback(() => {
+    console.log('끝내기');
+    recorder.current.stopRecording(() => {
+      videoElement.current.controls = true;
+      videoElement.current.srcObject = null;
+      videoElement.current.muted = !videoElement.current.muted;
+      // videoElement.current.src = null;
+      // videoElement.current.src = videoElement.current.srcObject = null;
+      videoElement.current.src = URL.createObjectURL(
+        recorder.current.getBlob(),
+      );
+      setBlob(URL.createObjectURL(
+        recorder.current.getBlob(),
+      ));
+      recorder.current.stream.stop();
+      recorder.current.destroy();
+      recorder.current = null;
+    });
+    setIsRunning(false);
+    socketEmits.endGoogleCloudStream();
+    alert('세션 끝');
+  });
+
+  const onClick = useCallback(() => {
+    console.log('버튼 클릭 다음문제');
+    if (singlePost.questions.length - 1 > questionIndex) {
+      setQuestionIndex(questionIndex + 1);
+      setTimer(limitTime);
+      socketEmits.detectFirstSentence();
+    } else {
+      endSession();
+    }
+    // nextQuestionButton.current.disabled = true;
+    // setTimeout(() => {
+    //   nextQuestionButton.current.disabled = false;
+    // }, 3000);
+  });
+
   useInterval(
     () => {
-      if (singlePost.questions.length - 1 < count) {
-        recorder.current.stopRecording(() => {
-          videoElement.current.controls = true;
-          videoElement.current.srcObject = null;
-          videoElement.current.muted = !videoElement.current.muted;
-          // videoElement.current.src = null;
-          // videoElement.current.src = videoElement.current.srcObject = null;
-          videoElement.current.src = URL.createObjectURL(
-            recorder.current.getBlob(),
-          );
-          recorder.current.stream.stop();
-          recorder.current.destroy();
-          recorder.current = null;
-        });
-        setIsRunning(false);
-        // 세션 끝 소켓
-        return alert('세션 끝');
+      if (timer - 1 === 0 && singlePost.questions.length - 1 === questionIndex) {
+        endSession();
+        return;
       }
-      setTimer(timer - 1);
-      if (timer - 1 === 0) { // 다음문제로 넘어감
+      if (timer - 1 === 0) {
         console.log('다음문제');
-        nextQuestion();
-        setTimer(limitTime);
-        setCount(count + 1);
+        setQuestionIndex(questionIndex + 1);
+        setTimer(limitTime); // 타이머 취소하고 변경
+        socketEmits.detectFirstSentence();
+      } else {
+        setTimer(timer - 1);
       }
     },
     isRunning ? 1000 : null,
   );
 
-  console.log(timeStamps, 'timeStamps');
+  // 컴포넌트 분리
+  const playSession = (
+    <div>
+      <Head>
+        <meta charSet="utf-8" />
+        <title>세션진행 | Untact_Interview </title>
+        <script src="https://www.WebRTC-Experiment.com/RecordRTC.js" />
+      </Head>
+      {singlePost && (
+        <section>
+          <div>제한시간: {timer}</div>
+          <div>{singlePost.questions[questionIndex]}</div>
+          <video
+            ref={videoElement}
+            autoPlay
+            muted
+            width="500px"
+            height="500px"
+          />
+          <div>{`${questionIndex + 1} / ${singlePost.questions.length}`}</div>
+          <article>
+            <div>
+              <h2>스피치 저장</h2>
+              <p>{saveSpeech}</p>
+            </div>
+            <div>
+              <h2>스피치 리얼타임</h2>
+              <p>{speech}</p>
+            </div>
+          </article>
+          <Button onClick={onClick} ref={nextQuestionButton}>
+            다음 문제
+          </Button>
+        </section>
+      )}
+    </div>
+  );
+
+  const feedback = (
+    <div>
+      <Head>
+        <title>피드백 작성 | Untact_Interview </title>
+      </Head>
+      <section>
+
+      </section>
+    </div>
+  );
 
   return (
     <>
-      <div>
-        <Head>
-          <meta charSet="utf-8" />
-          <title>세션진행 | Untact_Interview </title>
-          <script src="https://www.WebRTC-Experiment.com/RecordRTC.js" />
-        </Head>
-        {singlePost && (
-          <section>
-            <div>제한시간: {timer}</div>
-            <div>{singlePost.questions[count]}</div>
-            <video ref={videoElement} muted width="500px" height="500px" />
-            <div>{`${count + 1} / ${singlePost.questions.length}`}</div>
-            <article>
-              <div>
-                <h2>스피치 저장</h2>
-                <p>{saveSpeech}</p>
-              </div>
-              <div>
-                <h2>스피치 리얼타임</h2>
-                <p>{speech}</p>
-              </div>
-            </article>
-            <Button onClick={onClick}>다음 문제</Button>
-          </section>
-        )}
-      </div>
+      {timeStamps ? (
+        // feedback
+        <Feedback
+          // questions={singlePost.questions}
+          // answers={timeStamps}
+          post={singlePost}
+          blob={blob}
+        />
+      ) : (
+        playSession
+      )}
     </>
   );
 };

@@ -2,7 +2,7 @@ import socketIoClient from 'socket.io-client';
 
 const socket = socketIoClient.connect('http://localhost:7000');
 
-export default (setSpeech, setSaveSpeech, saveTimeStamp) => {
+export default (setSpeech, setSaveSpeech, setTimeStamps) => {
   // setState이벤트 모조리 받기
   socket.on('connect', (data) => {
     console.log('소켓 프론트단 커넥트');
@@ -20,9 +20,9 @@ export default (setSpeech, setSaveSpeech, saveTimeStamp) => {
     setSaveSpeech((prev) => prev ? `${prev} ${data}` : data);
     setSpeech('');
   });
-  socket.on('timeStamp', (data) => {
-    console.log('timeStamp 클라이언트');
-    saveTimeStamp();
+  socket.on('responseTimeStamps', (data) => {
+    console.log(data, 'responseTimeStamps 클라이언트');
+    setTimeStamps(data);
   });
 
   socket.on('speechRealTimeData', (data) => {
@@ -36,5 +36,8 @@ export const socketEmits = {
   },
   detectFirstSentence() {
     socket.emit('detectFirstSentence', '');
+  },
+  endGoogleCloudStream() {
+    socket.emit('endGoogleCloudStream', '');
   },
 };
