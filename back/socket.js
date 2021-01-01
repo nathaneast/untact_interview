@@ -59,6 +59,7 @@ module.exports = (io) => {
     });
     client.on('startGoogleCloudStream', function (data) {
       console.log('startGoogleCloudStream 받음');
+      // 클래스 생성
       startRecoding();
       startStream(client);
     });
@@ -72,6 +73,7 @@ module.exports = (io) => {
     client.on('detectFirstSentence', function (data) { // 다음 문제 넘어갔다는것
       console.log('detectFirstSentence emit !');
       isDetectFirstSentence = true;
+      // stt exports fn으로 뺴기
       if (!timeStamps[currentQuestionIndex]) {
         timeStamps[currentQuestionIndex] = '';
       }

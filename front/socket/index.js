@@ -24,10 +24,6 @@ export default (setSpeech, setSaveSpeech, saveTimeStamp) => {
     console.log(data, 'responseTimeStamps 클라이언트');
     saveTimeStamp(data);
   });
-
-  socket.on('speechRealTimeData', (data) => {
-    console.log(data, 'speechRealTimeData');
-  });
 };
 
 export const socketEmits = {
@@ -37,7 +33,7 @@ export const socketEmits = {
   detectFirstSentence() {
     socket.emit('detectFirstSentence', '');
   },
-  endGoogleCloudStream() {
-    socket.emit('endGoogleCloudStream', '');
+  endGoogleCloudStream(data) {
+    socket.emit('endGoogleCloudStream', data ? data : '');
   },
 };

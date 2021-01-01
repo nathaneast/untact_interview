@@ -1,8 +1,8 @@
-const speech = require('@google-cloud/speech');
-const speechClient = new speech.SpeechClient();
-
 const recorder = require('node-record-lpcm16');
 const { Writable } = require('stream');
+
+const speech = require('@google-cloud/speech');
+const speechClient = new speech.SpeechClient();
 
 // Google STT request
 const encoding = 'LINEAR16';
@@ -20,169 +20,281 @@ const request = {
   interimResults: true,
 };
 
-let streamingLimit = 10000;
-let recognizeStream = null;
-let restartCounter = 0;
-let audioInput = [];
-let lastAudioInput = [];
-let resultEndTime = 0; // 끝나는 시간
-let isFinalEndTime = 0;
-let finalRequestEndTime = 0;
-let newStream = true;
-let bridgingOffset = 0;
-let lastTranscriptWasFinal = false;
+let sttInstance;
 
-function restartStream() {
-  console.log('restartStream');
+class SttProcess {
+  constructor() {
+    this.timeStamps = [];
+    this.currentQuestionIndex = 0;
+    this.streamingLimit = 20000;
+    this.recognizeStream = null;
+    this.restartCounter = 0;
+    this.audioInput = [];
+    this.lastAudioInput = [];
+    this.resultEndTime = 0;
+    this.isFinalEndTime = 0;
+    this.finalRequestEndTime = 0;
+    this.newStream = true;
+    this.bridgingOffset = 0;
+    this.isDetectFirstSentence = true;
+    this.isSentenceFinal = false;
+    this.isDivideSentence = false;
+    this.previousSentenceLength = null;
+    this.recording;
+    this.reStartTimerId = null;
+  }
+}
+
+class MyAnswer {
+  constructor(time, text) {
+    this.time = time;
+    this.text = text;
+  }
+}
+
+function stopRecoding() {
+  console.log('stopRecoding');
+  sttInstance.recording.stop();
+}
+
+function endGoogleCloudStream() {
+  console.log('endGoogleCloudStream 스트리밍 끝');
+  if (sttInstance.recognizeStream) {
+    sttInstance.recognizeStream.end();
+    sttInstance.recognizeStream = null;
+    clearTimeout(sttInstance.reStartTimerId);
+    checkEmptySTTResult();
+  }
+}
+
+function markingTimeStamp(time) {
+  const question = new MyAnswer(Math.floor(time / 1000));
+  sttInstance.timeStamps[sttInstance.currentQuestionIndex] = question;
+}
+
+function reStartStream(client) {
+  console.log('reStartStream');
   
   // STT 인식 끝내기
-  if (recognizeStream) {
-    recognizeStream.end();
-    recognizeStream.removeListener('data', speechCallback);
-    recognizeStream = null;
+  if (sttInstance.recognizeStream) {
+    sttInstance.recognizeStream.end();
+    sttInstance.recognizeStream.removeListener('data', speechCallback);
+    sttInstance.recognizeStream = null;
   }
-  if (resultEndTime > 0) {
+  if (sttInstance.resultEndTime > 0) {
     // STT 마무리 시간 저장
-    finalRequestEndTime = isFinalEndTime;
+    sttInstance.finalRequestEndTime = sttInstance.isFinalEndTime;
   }
-  resultEndTime = 0; // 문장마다 끝나는 시간 체크 초기화
+  sttInstance.resultEndTime = 0; // 문장마다 끝나는 시간 체크 초기화
 
   // 마지막 오디오에 저장
-  lastAudioInput = [];
-  lastAudioInput = audioInput;
+  sttInstance.lastAudioInput = [];
+  sttInstance.lastAudioInput = sttInstance.audioInput;
 
-  restartCounter++;
+  sttInstance.restartCounter++;
 
-  if (!lastTranscriptWasFinal) {
-    process.stdout.write('\n');
-  }
-  console.log('레코딩 재시작', `${streamingLimit * restartCounter}`);
+  // if (!lastTranscriptWasFinal) {
+  //   process.stdout.write('\n');
+  // }
+  console.log('레코딩 재시작', `${sttInstance.streamingLimit * sttInstance.restartCounter}`);
   // process.stdout.write(
-  //   chalk.yellow(`${streamingLimit * restartCounter}: RESTARTING REQUEST\n`)
+  //   chalk.yellow(`${sttInstance.streamingLimit * sttInstance.restartCounter}: RESTARTING REQUEST\n`)
   // );
 
-  newStream = true;
+  sttInstance.newStream = true;
 
   // 1번 실행 반복
-  startStream();
+  startStream(client);
 }
 
 // 2번 실행
-function speechCallback (stream) {
+function speechCallback (stream, client) {
 console.log('speechCallback');
 // Convert API result end time from seconds + nanoseconds to milliseconds
-resultEndTime =
+sttInstance.resultEndTime =
   stream.results[0].resultEndTime.seconds * 1000 +
   Math.round(stream.results[0].resultEndTime.nanos / 1000000);
 
 // Calculate correct time based on offset from audio sent twice
-const correctedTime =
-  resultEndTime - bridgingOffset + streamingLimit * restartCounter;
+ const currentRecTime =
+  sttInstance.resultEndTime - sttInstance.bridgingOffset + sttInstance.streamingLimit * sttInstance.restartCounter;
 
-// process.stdout.clearLine();
+  sttInstance.isSentenceFinal = stream.results[0].isFinal;
+
+// process.stdout.clearLines();
 // process.stdout.cursorTo(0);
+
+const transcript = stream.results[0].alternatives[0].transcript;
+
+if (sttInstance.isDetectFirstSentence) {
+  console.log('speechCallback 첫 문장 감지');
+  markingTimeStamp(currentRecTime);
+  sttInstance.isDetectFirstSentence = false;
+}
+
+if (sttInstance.isDivideSentence) {
+  sttInstance.previousSentenceLength = transcript.length;
+  sttInstance.isDivideSentence = false;
+}
+
 if (stream.results[0] && stream.results[0].alternatives[0]) {
-  console.log('transcript', `${correctedTime} ${stream.results[0].alternatives[0].transcript}`);
+  console.log('transcript', `${currentRecTime} ${transcript}`);
+  client.emit('speechRealTime', transcript);
 }
 
 if (stream.results[0].isFinal) {
   // process.stdout.write(chalk.green(`${stdoutText}\n`));
-  console.log('문장 완성',`${correctedTime} ${stream.results[0].alternatives[0].transcript}`);
-  isFinalEndTime = resultEndTime; // 문장 완료 후 끝나는 시간 저장
-  lastTranscriptWasFinal = true;
-} else {
+  console.log('문장 완성',`${currentRecTime} ${transcript}`);
+  client.emit('speechResult', transcript);
+
+  if (sttInstance.previousSentenceLength) {
+      console.log('sttInstance.previousSentenceLength true 로직');
+      sttInstance.timeStamps[sttInstance.currentQuestionIndex - 1].text =
+      sttInstance.timeStamps[sttInstance.currentQuestionIndex - 1].text 
+      ? sttInstance.timeStamps[sttInstance.currentQuestionIndex - 1].text + transcript.substring(0, sttInstance.previousSentenceLength)
+      : transcript.substring(0, sttInstance.previousSentenceLength);
+  
+      sttInstance.timeStamps[sttInstance.currentQuestionIndex].text =
+      sttInstance.timeStamps[sttInstance.currentQuestionIndex].text 
+      ? sttInstance.timeStamps[sttInstance.currentQuestionIndex].text + transcript.substring(sttInstance.previousSentenceLength, transcript.length)
+      : transcript.substring(sttInstance.previousSentenceLength, transcript.length);
+      
+      console.log('이전문장:',transcript.substring(0, sttInstance.previousSentenceLength));
+      console.log('다음문장:',transcript.substring(sttInstance.previousSentenceLength, transcript.length));
+      
+      sttInstance.previousSentenceLength = null;
+  } else {
+    console.log('sttInstance.previousSentenceLength false 로직');
+    sttInstance.timeStamps[sttInstance.currentQuestionIndex].text = sttInstance.timeStamps[sttInstance.currentQuestionIndex].text
+      ? sttInstance.timeStamps[sttInstance.currentQuestionIndex].text + transcript
+      // ? `${sttInstance.timeStamps[sttInstance.currentQuestionIndex].text} ${transcript}` //
+      : transcript;
+  }
+  console.log(sttInstance.timeStamps, sttInstance.currentQuestionIndex, 'sttInstance.timeStamps');
+
+  sttInstance.isFinalEndTime = sttInstance.resultEndTime; // 문장 완료 후 끝나는 시간 저장
+} 
+// else {
   // Make sure transcript does not exceed console character length
   // if (stdoutText.length > process.stdout.columns) {
   //   stdoutText =
   //     stdoutText.substring(0, process.stdout.columns - 4) + '...';
   // }
   // process.stdout.write(chalk.red(`${stdoutText}`));
-  lastTranscriptWasFinal = false;
-  }
+  // lastTranscriptWasFinal = false;
+  // }
 };
 
-function startStream() {
+function startStream(client) {
   console.log('startStream');
   // Clear current audioInput
-  audioInput = [];
+  sttInstance.audioInput = [];
   // Initiate (Reinitiate) a recognize stream
-  recognizeStream = speechClient
+  sttInstance.recognizeStream = speechClient
     .streamingRecognize(request)
     .on('error', (err) => {
       if (err.code === 11) {
-        // restartStream();
+        // reStartStream();
       } else {
         console.error('API request error ' + err);
       }
     })
-    .on('data', speechCallback);
+    .on('data', (stream) => speechCallback(stream, client));
 
-  // Restart stream when streamingLimit expires
+  // Restart stream when sttInstance.streamingLimit expires
   // 2-1번
-  setTimeout(restartStream, streamingLimit);
+  sttInstance.reStartTimerId = setTimeout(() => reStartStream(client), sttInstance.streamingLimit);
 }
 
+// 리레코딩 newSteram true되면 이전 미완성 문장 가져오는 로직
 const audioInputStreamTransform = new Writable({
     write(chunk, encoding, next) {
-      console.log('audioInputStreamTransform');
-      if (newStream && lastAudioInput.length !== 0) {
+      // console.log('audioInputStreamTransform write 안');
+      if (sttInstance.newStream && sttInstance.lastAudioInput.length !== 0) {
         // Approximate math to calculate time of chunks
-        const chunkTime = streamingLimit / lastAudioInput.length;
+        const chunkTime = sttInstance.streamingLimit / sttInstance.lastAudioInput.length;
         if (chunkTime !== 0) {
-          if (bridgingOffset < 0) {
-            bridgingOffset = 0;
+          if (sttInstance.bridgingOffset < 0) {
+            sttInstance.bridgingOffset = 0;
           }
-          if (bridgingOffset > finalRequestEndTime) {
-            bridgingOffset = finalRequestEndTime;
+          if (sttInstance.bridgingOffset > sttInstance.finalRequestEndTime) {
+            sttInstance.bridgingOffset = sttInstance.finalRequestEndTime;
           }
           const chunksFromMS = Math.floor(
-            (finalRequestEndTime - bridgingOffset) / chunkTime
+            (sttInstance.finalRequestEndTime - sttInstance.bridgingOffset) / chunkTime
           );
-          bridgingOffset = Math.floor(
-            (lastAudioInput.length - chunksFromMS) * chunkTime
+          sttInstance.bridgingOffset = Math.floor(
+            (sttInstance.lastAudioInput.length - chunksFromMS) * chunkTime
           );
 
-          for (let i = chunksFromMS; i < lastAudioInput.length; i++) {
-            recognizeStream.write(lastAudioInput[i]);
-          }
+          sttInstance.recognizeStream.write(sttInstance.lastAudioInput[sttInstance.lastAudioInput.length - 1]);
+
+          // for (let i = chunksFromMS; i < sttInstance.lastAudioInput.length; i++) {
+          //   sttInstance.recognizeStream.write(sttInstance.lastAudioInput[i]);
+          // }
         }
-        newStream = false;
+        sttInstance.newStream = false;
       }
 
-      audioInput.push(chunk);
+      sttInstance.audioInput.push(chunk);
 
-      if (recognizeStream) {
-        recognizeStream.write(chunk);
+      if (sttInstance.recognizeStream) {
+        // console.log('audioInputStreamTransform sttInstance.recognizeStream write');
+        sttInstance.recognizeStream.write(chunk);
       }
-
       next();
     },
 
     final() {
-      if (recognizeStream) {
-        recognizeStream.end();
+      console.log('audioInputStreamTransform final')
+      if (sttInstance.recognizeStream) {
+        sttInstance.recognizeStream.end();
       }
     },
   });
 
 function startRecoding() {
   console.log('startRecoding');
-  recorder
-    .record({
-      sampleRateHertz: sampleRateHertz,
-      threshold: 0, // Silence threshold
-      silence: 1000,
-      keepSilence: true,
-      recordProgram: 'rec', // Try also "arecord" or "sox"
-    })
+  sttInstance.recording = recorder.record({
+    sampleRateHertz: sampleRateHertz,
+    threshold: 0, // Silence threshold
+    silence: 1000,
+    keepSilence: true,
+    recordProgram: 'rec', // Try also "arecord" or "sox"
+  });
+
+  sttInstance.recording
     .stream()
     .on('error', (err) => {
-      console.error('Audio recording error ' + err);
+      console.error('Audio sttInstance.recording error ' + err);
     })
     .pipe(audioInputStreamTransform); // 0-1번
 }
 
-module.exports = {
-  startRecoding,
-  startStream
+function checkEmptySTTResult () {
+  if (!sttInstance.timeStamps[sttInstance.currentQuestionIndex]) {
+    sttInstance.timeStamps[sttInstance.currentQuestionIndex] = '';
+  }
 }
+
+function detectProcess () {
+  sttInstance.isDetectFirstSentence = true;
+  checkEmptySTTResult();
+  if (!sttInstance.isSentenceFinal) {
+    sttInstance.isDivideSentence = true;
+  }
+  sttInstance.currentQuestionIndex++;
+  console.log(sttInstance.timeStamps, sttInstance.currentQuestionIndex, 'detectFirstSentence timeStamps, index');
+}
+
+module.exports = {
+  startSTT: (client) => {
+    sttInstance = new SttProcess();
+    startRecoding();
+    startStream(client);
+  },
+  stopRecoding: () => stopRecoding(),
+  endGoogleCloudStream: () => endGoogleCloudStream(),
+  timeStamps: () => sttInstance.timeStamps,
+  detectProcess: () => detectProcess(),
+};

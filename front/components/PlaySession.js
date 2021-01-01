@@ -11,7 +11,7 @@ const PlaySession = ({
   saveTimeStamp,
   saveBlob,
 }) => {
-  const limitTime = 20;
+  const limitTime = 10;
   const [timer, setTimer] = useState(limitTime);
   const [questionIndex, setQuestionIndex] = useState(0);
   const [isRunning, setIsRunning] = useState(true);
@@ -53,7 +53,7 @@ const PlaySession = ({
       recorder.current = null;
     });
     setIsRunning(false);
-    socketEmits.endGoogleCloudStream();
+    socketEmits.endGoogleCloudStream('final');
     setIsEndSession(true);
     alert('세션 끝');
   });

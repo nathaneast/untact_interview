@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { END } from 'redux-saga';
 import axios from 'axios';
@@ -9,6 +9,7 @@ import { LOAD_MY_INFO_REQUEST } from '../../reducers/user';
 import { LOAD_POST_REQUEST } from '../../reducers/post';
 import PlaySession from '../../components/PlaySession';
 import Feedback from '../../components/Feedback';
+import { socketEmits } from '../../socket';
 
 // 다음 버튼 클릭시 timer 바꾸는것말고 일정하게 바뀌도록 고민
 // 레코딩 화면 나올때 문제,시간 같이 나오도록
@@ -25,6 +26,17 @@ const Post = () => {
     alert('로그인 후 이용 가능 합니다');
     return router.push('/');
   }
+
+  const oneMoreCheckEndSTT = useCallback((e) => {
+    socketEmits.endGoogleCloudStream();
+  });
+
+  useEffect(() => {
+    window.addEventListener('unload', oneMoreCheckEndSTT);
+    return () => {
+      window.removeEventListener('unload', oneMoreCheckEndSTT);
+    };
+  }, []);
 
   return (
     <>
