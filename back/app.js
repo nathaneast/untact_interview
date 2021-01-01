@@ -16,8 +16,7 @@ const userRouter = require('./routes/user');
 const postRouter = require('./routes/post');
 const postsRouter = require('./routes/posts');
 const passportConfig = require('./passport');
-// const socket = require('./socket');
-const socket1 = require('./socket1');
+const socket = require('./socket');
 
 const app = express();
 const server = require('http').createServer(app);
@@ -69,8 +68,7 @@ app.use('/user', userRouter);
 app.use('/post', postRouter);
 app.use('/posts', postsRouter);
 
-// socket(io);
-socket1(io);
+socket(io);
 
 server.listen(PORT, () => {
   console.log(`${PORT} 서버 실행중 !`);

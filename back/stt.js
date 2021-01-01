@@ -52,27 +52,12 @@ class MyAnswer {
   }
 }
 
-function stopRecoding() {
-  console.log('stopRecoding');
-  sttInstance.recording.stop();
-}
-
-function endGoogleCloudStream() {
-  console.log('endGoogleCloudStream 스트리밍 끝');
-  if (sttInstance.recognizeStream) {
-    sttInstance.recognizeStream.end();
-    sttInstance.recognizeStream = null;
-    clearTimeout(sttInstance.reStartTimerId);
-    checkEmptySTTResult();
-  }
-}
-
-function markingTimeStamp(time) {
+const markingTimeStamp = (time) => {
   const question = new MyAnswer(Math.floor(time / 1000));
   sttInstance.timeStamps[sttInstance.currentQuestionIndex] = question;
 }
 
-function reStartStream(client) {
+const reStartStream = (client) => {
   console.log('reStartStream');
   
   // STT 인식 끝내기
@@ -108,7 +93,7 @@ function reStartStream(client) {
 }
 
 // 2번 실행
-function speechCallback (stream, client) {
+const speechCallback = (stream, client) => {
 console.log('speechCallback');
 // Convert API result end time from seconds + nanoseconds to milliseconds
 sttInstance.resultEndTime =
@@ -185,7 +170,7 @@ if (stream.results[0].isFinal) {
   // }
 };
 
-function startStream(client) {
+const startStream = (client) => {
   console.log('startStream');
   // Clear current audioInput
   sttInstance.audioInput = [];
@@ -206,54 +191,53 @@ function startStream(client) {
   sttInstance.reStartTimerId = setTimeout(() => reStartStream(client), sttInstance.streamingLimit);
 }
 
-// 리레코딩 newSteram true되면 이전 미완성 문장 가져오는 로직
-const audioInputStreamTransform = new Writable({
-    write(chunk, encoding, next) {
-      // console.log('audioInputStreamTransform write 안');
-      if (sttInstance.newStream && sttInstance.lastAudioInput.length !== 0) {
-        // Approximate math to calculate time of chunks
-        const chunkTime = sttInstance.streamingLimit / sttInstance.lastAudioInput.length;
-        if (chunkTime !== 0) {
-          if (sttInstance.bridgingOffset < 0) {
-            sttInstance.bridgingOffset = 0;
-          }
-          if (sttInstance.bridgingOffset > sttInstance.finalRequestEndTime) {
-            sttInstance.bridgingOffset = sttInstance.finalRequestEndTime;
-          }
-          const chunksFromMS = Math.floor(
-            (sttInstance.finalRequestEndTime - sttInstance.bridgingOffset) / chunkTime
-          );
-          sttInstance.bridgingOffset = Math.floor(
-            (sttInstance.lastAudioInput.length - chunksFromMS) * chunkTime
-          );
-
-          sttInstance.recognizeStream.write(sttInstance.lastAudioInput[sttInstance.lastAudioInput.length - 1]);
-
-          // for (let i = chunksFromMS; i < sttInstance.lastAudioInput.length; i++) {
-          //   sttInstance.recognizeStream.write(sttInstance.lastAudioInput[i]);
-          // }
+const audioProcess = () => new Writable({
+  write(chunk, encoding, next) {
+    // console.log('audioInputStreamTransform write 안');
+    if (sttInstance.newStream && sttInstance.lastAudioInput.length !== 0) {
+      // Approximate math to calculate time of chunks
+      const chunkTime = sttInstance.streamingLimit / sttInstance.lastAudioInput.length;
+      if (chunkTime !== 0) {
+        if (sttInstance.bridgingOffset < 0) {
+          sttInstance.bridgingOffset = 0;
         }
-        sttInstance.newStream = false;
+        if (sttInstance.bridgingOffset > sttInstance.finalRequestEndTime) {
+          sttInstance.bridgingOffset = sttInstance.finalRequestEndTime;
+        }
+        const chunksFromMS = Math.floor(
+          (sttInstance.finalRequestEndTime - sttInstance.bridgingOffset) / chunkTime
+        );
+        sttInstance.bridgingOffset = Math.floor(
+          (sttInstance.lastAudioInput.length - chunksFromMS) * chunkTime
+        );
+
+        sttInstance.recognizeStream.write(sttInstance.lastAudioInput[sttInstance.lastAudioInput.length - 1]);
+
+        // for (let i = chunksFromMS; i < sttInstance.lastAudioInput.length; i++) {
+        //   sttInstance.recognizeStream.write(sttInstance.lastAudioInput[i]);
+        // }
       }
+      sttInstance.newStream = false;
+    }
 
-      sttInstance.audioInput.push(chunk);
+    sttInstance.audioInput.push(chunk);
 
-      if (sttInstance.recognizeStream) {
-        // console.log('audioInputStreamTransform sttInstance.recognizeStream write');
-        sttInstance.recognizeStream.write(chunk);
-      }
-      next();
-    },
+    if (sttInstance.recognizeStream) {
+      // console.log('audioInputStreamTransform sttInstance.recognizeStream write');
+      sttInstance.recognizeStream.write(chunk);
+    }
+    next();
+  },
 
-    final() {
-      console.log('audioInputStreamTransform final')
-      if (sttInstance.recognizeStream) {
-        sttInstance.recognizeStream.end();
-      }
-    },
-  });
+  final() {
+    console.log('audioInputStreamTransform final')
+    if (sttInstance.recognizeStream) {
+      sttInstance.recognizeStream.end();
+    }
+  },
+});
 
-function startRecoding() {
+const startRecoding = (audioInputStreamTransform) => {
   console.log('startRecoding');
   sttInstance.recording = recorder.record({
     sampleRateHertz: sampleRateHertz,
@@ -271,13 +255,13 @@ function startRecoding() {
     .pipe(audioInputStreamTransform); // 0-1번
 }
 
-function checkEmptySTTResult () {
+const checkEmptySTTResult = () => {
   if (!sttInstance.timeStamps[sttInstance.currentQuestionIndex]) {
     sttInstance.timeStamps[sttInstance.currentQuestionIndex] = '';
   }
 }
 
-function detectProcess () {
+const detectProcess = () => {
   sttInstance.isDetectFirstSentence = true;
   checkEmptySTTResult();
   if (!sttInstance.isSentenceFinal) {
@@ -287,10 +271,26 @@ function detectProcess () {
   console.log(sttInstance.timeStamps, sttInstance.currentQuestionIndex, 'detectFirstSentence timeStamps, index');
 }
 
+const stopRecoding = () => {
+  console.log('stopRecoding');
+  sttInstance.recording.stop();
+}
+
+const endGoogleCloudStream = () => {
+  console.log('endGoogleCloudStream 스트리밍 끝');
+  if (sttInstance.recognizeStream) {
+    sttInstance.recognizeStream.end();
+    sttInstance.recognizeStream = null;
+    clearTimeout(sttInstance.reStartTimerId);
+    checkEmptySTTResult();
+  }
+}
+
 module.exports = {
   startSTT: (client) => {
+    const audioInputStreamTransform = audioProcess();
     sttInstance = new SttProcess();
-    startRecoding();
+    startRecoding(audioInputStreamTransform);
     startStream(client);
   },
   stopRecoding: () => stopRecoding(),
