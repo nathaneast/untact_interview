@@ -53,7 +53,7 @@ class MyAnswer {
 }
 
 const markingTimeStamp = (time) => {
-  const question = new MyAnswer(Math.floor(time / 1000));
+  const question = new MyAnswe()r(Math.floor(time / 1000));
   sttInstance.timeStamps[sttInstance.currentQuestionIndex] = question;
 }
 
@@ -255,9 +255,11 @@ const startRecoding = (audioInputStreamTransform) => {
     .pipe(audioInputStreamTransform); // 0-1번
 }
 
+// end functions
 const checkEmptySTTResult = () => {
   if (!sttInstance.timeStamps[sttInstance.currentQuestionIndex]) {
-    sttInstance.timeStamps[sttInstance.currentQuestionIndex] = '';
+    sttInstance.timeStamps[sttInstance.currentQuestionIndex] = new MyAnswer();
+    // sttInstance.timeStamps[sttInstance.currentQuestionIndex] = '';
   }
 }
 

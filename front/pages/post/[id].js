@@ -44,6 +44,7 @@ const Post = () => {
         <Feedback
           blob={blob}
           timeStamps={timeStamps}
+          questions={singlePost.questions}
           title={singlePost.title}
           category={singlePost.category.name}
           email={singlePost.creator.email}

@@ -13,7 +13,7 @@ const PlaySession = ({
 }) => {
   const limitTime = 10;
   const [timer, setTimer] = useState(limitTime);
-  const [questionIndex, setQuestionIndex] = useState(0);
+  const [questionIndex, setQucestionIndex] = useState(0);
   const [isRunning, setIsRunning] = useState(true);
 
   const [saveSpeech, setSaveSpeech] = useState(null);
@@ -93,34 +93,40 @@ const PlaySession = ({
 
   // 로딩 추가
   return (
-    <div>
+    <>
       <Head>
         <meta charSet="utf-8" />
         <title>세션진행 | Untact_Interview </title>
         <script src="https://www.WebRTC-Experiment.com/RecordRTC.js" />
       </Head>
       {questions && (
-      <section>
-        <div>제한시간: {timer}</div>
-        <div>{questions[questionIndex]}</div>
-        <video ref={videoElement} autoPlay muted width="500px" height="500px" />
-        <div>{`${questionIndex + 1} / ${questions.length}`}</div>
         <article>
-          <div>
-            <h2>스피치 저장</h2>
-            <p>{saveSpeech}</p>
-          </div>
-          <div>
-            <h2>스피치 리얼타임</h2>
-            <p>{speech}</p>
-          </div>
+          <div>제한시간: {timer}</div>
+          <div>{questions[questionIndex]}</div>
+          <video
+            ref={videoElement}
+            autoPlay
+            muted
+            width="500px"
+            height="500px"
+          />
+          <div>{`${questionIndex + 1} / ${questions.length}`}</div>
+          <section>
+            <article>
+              <h2>스피치 저장</h2>
+              <p>{saveSpeech}</p>
+            </article>
+            <article>
+              <h2>스피치 리얼타임</h2>
+              <p>{speech}</p>
+            </article>
+          </section>
+          <button onClick={onClick} ref={nextQuestionButton}>
+            다음 문제
+          </button>
         </article>
-        <button onClick={onClick} ref={nextQuestionButton}>
-          다음 문제
-        </button>
-      </section>
       )}
-    </div>
+    </>
   );
 };
 

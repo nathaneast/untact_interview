@@ -1,7 +1,8 @@
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { Card } from 'antd';
 import Head from 'next/head';
+
+import FeedbackCard from './FeedbackCard';
 
 const Feedback = ({
   blob,
@@ -10,24 +11,53 @@ const Feedback = ({
   category,
   email,
   desc,
-  star }) => {
+  star,
+  questions,
+}) => {
+  const [form, setValues] = useState({});
 
-  console.log(title, category,email,desc,star, 'Feedback posts');
-  console.log(blob, 'Feedback blob');
-  console.log(timeStamps, 'Feedback timeStamps');
+  const onChange = (e) => {
+    setValues({
+      ...form,
+      [e.target.name]: e.target.value,
+    });
+  };
 
   return (
-    <div>
+    <>
       <Head>
         <title>피드백 작성 | Untact_Interview </title>
       </Head>
-      <video controls src={blob} autoPlay width="500px" height="500px" />
-      {/* <button>영상 다운</button> */}
-      <div>질문, 답</div>
-      <div>진행한 글 정보</div>
-      <div>질문, 피드백 작성 폼</div>
-      <button>작성</button>
-    </div>
+      <article>
+        <video controls src={blob} autoPlay width="500px" height="500px" />
+        <section>
+          <h2>타임스탬프</h2>
+          <div>맵 돌리기</div>
+        </section>
+        <article>
+          {/* 재사용 컴포넌트로 만들기 */}
+          <h2>진행한 글 정보</h2>
+          <div>title: {title}</div>
+          <div>category: {category}</div>
+          <div>email: {email}</div>
+          <div>desc: {desc}</div>
+          <div>star: {star}</div>
+        </article>
+        <section>
+          <h2>질문, 답변, 피드백 작성 폼</h2>
+          {questions.map((item, index) => (
+            <FeedbackCard
+              key={timeStamps[index].time}
+              question={item}
+              answer={timeStamps[index].text}
+              feedbackIndex={index}
+              onChange={onChange}
+            />
+          ))}
+        </section>
+        <button>작성</button>
+      </article>
+    </>
   );
 };
 
