@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const FeedbackCard = ({ question, answer, feedbackIndex, onChange }) => (
+const FeedbackCard = ({ question, answer, FeedbackNumber, onChange }) => (
   <article>
-    <h1>피드백 넘버 {feedbackIndex + 1}</h1>
+    <h1>피드백 넘버 {FeedbackNumber}</h1>
     <article>
       <h2>질문</h2>
       <p>{question}</p>
@@ -16,7 +16,7 @@ const FeedbackCard = ({ question, answer, feedbackIndex, onChange }) => (
       <h2>피드백</h2>
       <input
         type="text"
-        name={`feedback_${feedbackIndex}`}
+        name={`feedback_${FeedbackNumber}`}
         onChange={onChange}
       />
     </article>
@@ -26,7 +26,7 @@ const FeedbackCard = ({ question, answer, feedbackIndex, onChange }) => (
 // FeedbackCard.propTypes = {
 //   question: PropTypes.object.isRequired,
 //   answer: PropTypes.func.isRequired,
-//   feedbackNumber: PropTypes.func.isRequired,
+//   FeedbackNumber: PropTypes.func.isRequired,
 //   onChange: PropTypes.func.isRequired,
 // };
 

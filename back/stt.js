@@ -46,14 +46,14 @@ class SttProcess {
 }
 
 class MyAnswer {
-  constructor(time, text) {
+  constructor(time = '', text = '') {
     this.time = time;
     this.text = text;
   }
 }
 
 const markingTimeStamp = (time) => {
-  const question = new MyAnswe()r(Math.floor(time / 1000));
+  const question = new MyAnswer(Math.floor(time / 1000));
   sttInstance.timeStamps[sttInstance.currentQuestionIndex] = question;
 }
 
@@ -259,7 +259,6 @@ const startRecoding = (audioInputStreamTransform) => {
 const checkEmptySTTResult = () => {
   if (!sttInstance.timeStamps[sttInstance.currentQuestionIndex]) {
     sttInstance.timeStamps[sttInstance.currentQuestionIndex] = new MyAnswer();
-    // sttInstance.timeStamps[sttInstance.currentQuestionIndex] = '';
   }
 }
 

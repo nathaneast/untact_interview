@@ -19,7 +19,7 @@ const Post = () => {
   const router = useRouter();
 
   const [isEndSession, setIsEndSession] = useState(false);
-  const [timeStamps, setTimeStamps] = useState([]);
+  const [timeStamps, setTimeStamps] = useState(null);
   const [blob, setBlob] = useState(null);
 
   if (!me) {
@@ -50,6 +50,8 @@ const Post = () => {
           email={singlePost.creator.email}
           desc={singlePost.desc}
           star={singlePost.star}
+          sessionPostId={singlePost._id}
+          creatorId={me._id}
         />
       ) : (
         <PlaySession

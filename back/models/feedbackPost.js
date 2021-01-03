@@ -1,26 +1,33 @@
 const mongoose = require('mongoose');
 const dayjs = require('dayjs');
 
-const FeedbackPostSchema = new mongoose.Schema({
-  feedbacks: {
-    type: Array,
-    required: true,
-  },
-  createdAt: {
-    type: String,
-    default: dayjs().format('YYYY-MM-DD'),
-  },
-  creator: {
+const FeedbackPostSchema = new mongoose.Schema(
+  {
+    answers: {
+      type: Array,
+      required: true,
+    },
+    feedbacks: {
+      type: Array,
+      required: true,
+    },
+    createdAt: {
+      type: String,
+      default: dayjs().format('YYYY-MM-DD'),
+    },
+    creator: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'user',
-  },
-  postId: {
+    },
+    sessionPost: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'post',
     },
-}, {
-  versionKey: false 
-});
+  },
+  {
+    versionKey: false,
+  }
+);
 
 const FeedbackPost = mongoose.model('feedbackPost', FeedbackPostSchema);
 

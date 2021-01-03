@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import Head from 'next/head';
 
 import FeedbackCard from './FeedbackCard';
+import { UPLOAD_FEEDBACK_POST_REQUEST } from '../reducers/post';
 
 const Feedback = ({
   blob,
@@ -13,7 +15,10 @@ const Feedback = ({
   desc,
   star,
   questions,
+  sessionPostId,
+  creatorId,
 }) => {
+  const dispatch = useDispatch();
   const [form, setValues] = useState({});
 
   const onChange = (e) => {
@@ -22,6 +27,19 @@ const Feedback = ({
       [e.target.name]: e.target.value,
     });
   };
+
+  // 서브밋시 작성할껀지 모달 추가
+  const onSubmit = useCallback(() => {
+    dispatch({
+      type: UPLOAD_FEEDBACK_POST_REQUEST,
+      data: {
+        creatorId,
+        sessionPostId,
+        answers: timeStamps.map((item) => item.text),
+        feedbacks: Object.keys(form).map((key) => form[key]),
+      },
+    });
+  }, [form]);
 
   return (
     <>
@@ -41,21 +59,23 @@ const Feedback = ({
           <div>category: {category}</div>
           <div>email: {email}</div>
           <div>desc: {desc}</div>
-          <div>star: {star}</div>
+          <div>star: {star.length}</div>
         </article>
         <section>
           <h2>질문, 답변, 피드백 작성 폼</h2>
-          {questions.map((item, index) => (
-            <FeedbackCard
-              key={timeStamps[index].time}
-              question={item}
-              answer={timeStamps[index].text}
-              feedbackIndex={index}
-              onChange={onChange}
-            />
-          ))}
+          <form onSubmit={onSubmit}>
+            {timeStamps && questions.map((item, index) => (
+              <FeedbackCard
+                key={index}
+                question={item}
+                answer={timeStamps[index].text}
+                FeedbackNumber={index + 1}
+                onChange={onChange}
+              />
+            ))}
+            <input type='submit' value='작성' />
+          </form>
         </section>
-        <button>작성</button>
       </article>
     </>
   );

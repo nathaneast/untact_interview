@@ -11,9 +11,9 @@ const PlaySession = ({
   saveTimeStamp,
   saveBlob,
 }) => {
-  const limitTime = 10;
+  const limitTime = 20;
   const [timer, setTimer] = useState(limitTime);
-  const [questionIndex, setQucestionIndex] = useState(0);
+  const [questionIndex, setQuestionIndex] = useState(0);
   const [isRunning, setIsRunning] = useState(true);
 
   const [saveSpeech, setSaveSpeech] = useState(null);
@@ -92,6 +92,7 @@ const PlaySession = ({
   );
 
   // 로딩 추가
+  // 세션 끝 => 모달 추가
   return (
     <>
       <Head>

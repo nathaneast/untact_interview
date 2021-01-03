@@ -14,6 +14,7 @@ const { MONGO_URI, PORT, COOKIE_SECRET } = config;
 
 const userRouter = require('./routes/user');
 const postRouter = require('./routes/post');
+const feedbackPostRouter = require('./routes/feedbackPost');
 const postsRouter = require('./routes/posts');
 const passportConfig = require('./passport');
 const socket = require('./socket');
@@ -66,6 +67,7 @@ app.get('/', (req, res) => {
 });
 app.use('/user', userRouter);
 app.use('/post', postRouter);
+app.use('/feedbackPost', feedbackPostRouter);
 app.use('/posts', postsRouter);
 
 socket(io);
