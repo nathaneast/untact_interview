@@ -39,7 +39,9 @@ const Feedback = ({
         feedbacks: Object.keys(form).map((key) => form[key]),
       },
     });
-  }, [form]);
+  }, [form, timeStamps]);
+
+  console.log(timeStamps, 'Feedback timeStamps');
 
   return (
     <>
@@ -63,8 +65,8 @@ const Feedback = ({
         </article>
         <section>
           <h2>질문, 답변, 피드백 작성 폼</h2>
-          <form onSubmit={onSubmit}>
-            {timeStamps && questions.map((item, index) => (
+          {timeStamps &&
+            questions.map((item, index) => (
               <FeedbackCard
                 key={index}
                 question={item}
@@ -73,8 +75,7 @@ const Feedback = ({
                 onChange={onChange}
               />
             ))}
-            <input type='submit' value='작성' />
-          </form>
+          <input type="submit" value="작성" onClick={onSubmit} />
         </section>
       </article>
     </>
