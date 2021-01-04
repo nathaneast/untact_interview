@@ -9,7 +9,7 @@ const PlaySession = ({
   questions,
   setIsEndSession,
   saveTimeStamp,
-  // saveBlob,
+  saveBlob,
   sessionTitle,
 }) => {
   const limitTime = 30;
@@ -47,7 +47,7 @@ const PlaySession = ({
   const endSession = useCallback(() => {
     recorder.current.stopRecording(() => {
       // videoElement.current.srcObject = null;
-      // saveBlob(URL.createObjectURL(recorder.current.getBlob()));
+      saveBlob(URL.createObjectURL(recorder.current.getBlob()));
       const isConfirm = confirm('영상을 저장 하시겠습니까?');
       if (isConfirm) {
         invokeSaveAsDialog(recorder.current.getBlob(), `${sessionTitle}_${new Date().valueOf()}.webm`);
@@ -60,7 +60,7 @@ const PlaySession = ({
     socketEmits.endGoogleCloudStream('final');
     setIsEndSession(true);
     alert('세션 끝');
-  });
+  }, []);
 
   const onClick = useCallback(() => {
     console.log('버튼 클릭 다음문제');
@@ -140,7 +140,7 @@ PlaySession.propTypes = {
   questions: PropTypes.array.isRequired,
   setIsEndSession: PropTypes.func.isRequired,
   saveTimeStamp: PropTypes.func.isRequired,
-  // saveBlob: PropTypes.func.isRequired,
+  saveBlob: PropTypes.func.isRequired,
 };
 
 export default PlaySession;

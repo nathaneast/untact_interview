@@ -8,7 +8,7 @@ import TimeStampCard from './TimeStampCard';
 import { UPLOAD_FEEDBACK_POST_REQUEST } from '../reducers/post';
 
 const Feedback = ({
-  // blob,
+  blob,
   timeStamps,
   title,
   category,
@@ -21,10 +21,8 @@ const Feedback = ({
 }) => {
   const dispatch = useDispatch();
   const [form, setValues] = useState({});
-  const [videoSrc, setVideoSrc] = useState(null);
 
   const videoElement = useRef();
-  const videoUpload = useRef();
 
   const onChange = (e) => {
     setValues({
@@ -47,19 +45,12 @@ const Feedback = ({
     });
   }, [form, timeStamps]);
 
-  const moveVideoTime = useCallback((time) => {
-    videoElement.current.currentTime = time;
-  }, [videoElement.current]);
-
-  const onUpload = useCallback(() => {
-    videoUpload.current.click();
-  }, [videoUpload.current]);
-
-  const onChangeVideo = useCallback((e) => {
-    console.log(e.target.files, 'onChangeVideo target files');
-    console.log(e, 'onChangeVideo event');
-    setVideoSrc(e.target.files[0]);
-  }, [setVideoSrc]);
+  const moveVideoTime = useCallback(
+    (time) => {
+      videoElement.current.currentTime = time;
+    },
+    [videoElement.current]
+  );
 
   console.log(timeStamps, 'Feedback timeStamps');
 
@@ -69,39 +60,20 @@ const Feedback = ({
         <title>피드백 작성 | Untact_Interview </title>
       </Head>
       <article>
-          <article>
-            <input
-              type='file'
-              name='video'
-              hidden
-              ref={videoUpload}
-              onChange={onChangeVideo}
-            />
-            <button onClick={onUpload}>영상 업로드</button>
-            {videoSrc ? (
-              <video 
-                controls 
-                autoPlay 
-                ref={videoElement} 
-                src={URL.createObjectURL(videoSrc)}
-                width="500px" 
-                height="500px" 
-              />
-            ) : (
-              <div>영상을 올려 주세요</div>
-            )}
-          </article>
-        {/* <video
-          controls
-          autoPlay
-          ref={videoElement}
-          src={blob}
-          width="500px"
-          height="500px"
-        /> */}
+        <article>
+          <video
+            controls
+            autoPlay
+            ref={videoElement}
+            src={blob}
+            width="500px"
+            height="500px"
+          />
+        </article>
         <section>
           <h2>타임스탬프</h2>
-            {timeStamps && timeStamps.map((item, index) => (
+          {timeStamps &&
+            timeStamps.map((item, index) => (
               <TimeStampCard
                 key={index}
                 text={item.text}
