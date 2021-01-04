@@ -12,7 +12,7 @@ const TimeStampCard = ({ text, time, onClick, answerNumber }) => (
 
 TimeStampCard.propTypes = {
   text: PropTypes.string.isRequired,
-  time: PropTypes.number.isRequired,
+  // time: PropTypes.number.isRequired,
   onClick: PropTypes.func.isRequired,
   answerNumber: PropTypes.number.isRequired,
 };

@@ -3,7 +3,7 @@ const dayjs = require('dayjs');
 
 const FeedbackPostSchema = new mongoose.Schema(
   {
-    answers: {
+    timeStamps: {
       type: Array,
       required: true,
     },

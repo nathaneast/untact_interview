@@ -10,9 +10,9 @@ const router = express.Router();
 
 router.post('/', isLoggedIn, async (req, res, next) => {
   try {
-    const { creatorId, sessionPostId, answers, feedbacks } = req.body;
+    const { creatorId, sessionPostId, timeStamps, feedbacks } = req.body;
     const newFeedback = await FeedbackPost.create({
-      answers,
+      timeStamps,
       feedbacks,
       creator: creatorId,
       sessionPost: sessionPostId,

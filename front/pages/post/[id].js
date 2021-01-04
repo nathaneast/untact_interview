@@ -20,7 +20,7 @@ const Post = () => {
 
   const [isEndSession, setIsEndSession] = useState(false);
   const [timeStamps, setTimeStamps] = useState(null);
-  const [blob, setBlob] = useState(null);
+  // const [blob, setBlob] = useState(null);
 
   if (!me) {
     alert('로그인 후 이용 가능 합니다');
@@ -44,7 +44,7 @@ const Post = () => {
     <>
       {isEndSession ? (
         <Feedback
-          blob={blob}
+          // blob={blob}
           timeStamps={timeStamps}
           questions={singlePost.questions}
           title={singlePost.title}
@@ -60,7 +60,8 @@ const Post = () => {
           questions={singlePost.questions}
           setIsEndSession={setIsEndSession}
           saveTimeStamp={setTimeStamps}
-          saveBlob={setBlob}
+          // saveBlob={setBlob}
+          sessionTitle={singlePost.title}
         />
       )}
     </>

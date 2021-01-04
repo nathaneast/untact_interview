@@ -8,7 +8,7 @@ import TimeStampCard from './TimeStampCard';
 import { UPLOAD_FEEDBACK_POST_REQUEST } from '../reducers/post';
 
 const Feedback = ({
-  blob,
+  // blob,
   timeStamps,
   title,
   category,
@@ -21,7 +21,10 @@ const Feedback = ({
 }) => {
   const dispatch = useDispatch();
   const [form, setValues] = useState({});
+  const [videoSrc, setVideoSrc] = useState(null);
+
   const videoElement = useRef();
+  const videoUpload = useRef();
 
   const onChange = (e) => {
     setValues({
@@ -37,7 +40,8 @@ const Feedback = ({
       data: {
         creatorId,
         sessionPostId,
-        answers: timeStamps.map((item) => item.text),
+        timeStamps,
+        // answers: timeStamps.map((item) => item.text),
         feedbacks: Object.keys(form).map((key) => form[key]),
       },
     });
@@ -45,10 +49,19 @@ const Feedback = ({
 
   const moveVideoTime = useCallback((time) => {
     videoElement.current.currentTime = time;
-  }, [videoElement]);
+  }, [videoElement.current]);
+
+  const onUpload = useCallback(() => {
+    videoUpload.current.click();
+  }, [videoUpload.current]);
+
+  const onChangeVideo = useCallback((e) => {
+    console.log(e.target.files, 'onChangeVideo target files');
+    console.log(e, 'onChangeVideo event');
+    setVideoSrc(e.target.files[0]);
+  }, [setVideoSrc]);
 
   console.log(timeStamps, 'Feedback timeStamps');
-  console.log(blob, 'Feedback blob');
 
   return (
     <>
@@ -56,28 +69,49 @@ const Feedback = ({
         <title>피드백 작성 | Untact_Interview </title>
       </Head>
       <article>
-        <video 
-          controls 
+          <article>
+            <input
+              type='file'
+              name='video'
+              hidden
+              ref={videoUpload}
+              onChange={onChangeVideo}
+            />
+            <button onClick={onUpload}>영상 업로드</button>
+            {videoSrc ? (
+              <video 
+                controls 
+                autoPlay 
+                ref={videoElement} 
+                src={URL.createObjectURL(videoSrc)}
+                width="500px" 
+                height="500px" 
+              />
+            ) : (
+              <div>영상을 올려 주세요</div>
+            )}
+          </article>
+        {/* <video
+          controls
           autoPlay
-          ref={videoElement} 
+          ref={videoElement}
           src={blob}
-          width="500px" 
-          height="500px" 
-        />
+          width="500px"
+          height="500px"
+        /> */}
         <section>
           <h2>타임스탬프</h2>
             {timeStamps && timeStamps.map((item, index) => (
               <TimeStampCard
-                key={item.time}
+                key={index}
                 text={item.text}
                 time={item.time}
-                asnwerNumber={index + 1}
+                answerNumber={index + 1}
                 onClick={moveVideoTime}
               />
             ))}
         </section>
         <article>
-          {/* 재사용 컴포넌트로 만들기 */}
           <h2>진행한 글 정보</h2>
           <div>title: {title}</div>
           <div>category: {category}</div>
