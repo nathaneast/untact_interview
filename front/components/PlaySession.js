@@ -11,7 +11,7 @@ const PlaySession = ({
   saveTimeStamp,
   saveBlob,
 }) => {
-  const limitTime = 20;
+  const limitTime = 30;
   const [timer, setTimer] = useState(limitTime);
   const [questionIndex, setQuestionIndex] = useState(0);
   const [isRunning, setIsRunning] = useState(true);
@@ -44,10 +44,10 @@ const PlaySession = ({
   }, []);
 
   const endSession = useCallback(() => {
-    console.log('끝내기');
     recorder.current.stopRecording(() => {
       // videoElement.current.srcObject = null;
       saveBlob(URL.createObjectURL(recorder.current.getBlob()));
+      recorder.current.save('./video.webm');
       recorder.current.stream.stop();
       recorder.current.destroy();
       recorder.current = null;
@@ -133,7 +133,7 @@ const PlaySession = ({
 
 // question 비동기프랍 검사
 PlaySession.propTypes = {
-  // questions: PropTypes.array.isRequired,
+  questions: PropTypes.array.isRequired,
   setIsEndSession: PropTypes.func.isRequired,
   saveTimeStamp: PropTypes.func.isRequired,
   saveBlob: PropTypes.func.isRequired,

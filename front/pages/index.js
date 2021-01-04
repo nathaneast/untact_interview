@@ -14,7 +14,7 @@ const Home = () => {
   const dispatch = useDispatch();
   const { me } = useSelector((state) => state.user);
   const { mainPosts, hasMorePosts, loadPostsLoading } = useSelector(
-    (state) => state.post
+    (state) => state.post,
   );
   const [modal, setModal] = useState(false);
   const [selectedPostId, setSelectedPostId] = useState('');
@@ -74,7 +74,7 @@ const Home = () => {
   });
 
   // console.log(beforeCategory, selectCategory, '//// beforeCate, selectCate');
-
+  // console.log(mainPosts, 'Home');
   return (
     <>
       <AppLayout>
@@ -112,6 +112,7 @@ const Home = () => {
 
 export const getServerSideProps = wrapper.getServerSideProps(
   async (context) => {
+    // console.log('context Home', context);
     const cookie = context.req ? context.req.headers.cookie : '';
     axios.defaults.headers.Cookie = '';
     if (context.req && cookie) {

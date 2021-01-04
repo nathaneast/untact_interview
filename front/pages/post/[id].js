@@ -38,6 +38,8 @@ const Post = () => {
     };
   }, []);
 
+  // console.log(singlePost, 'Post singlePost');
+
   return (
     <>
       {isEndSession ? (
@@ -67,6 +69,8 @@ const Post = () => {
 
 export const getServerSideProps = wrapper.getServerSideProps(
   async (context) => {
+    console.log('Post context', context);
+    console.log('Post SSR 시작 ! ! !');
     const cookie = context.req ? context.req.headers.cookie : '';
     axios.defaults.headers.Cookie = '';
     if (context.req && cookie) {
@@ -81,6 +85,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
     });
     context.store.dispatch(END);
     await context.store.sagaTask.toPromise();
+    console.log('SSR 데이터 받아오기 끝 ! ! ! ');
   },
 );
 

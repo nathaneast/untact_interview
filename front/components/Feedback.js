@@ -1,9 +1,10 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import Head from 'next/head';
 
 import FeedbackCard from './FeedbackCard';
+import TimeStampCard from './TimeStampCard';
 import { UPLOAD_FEEDBACK_POST_REQUEST } from '../reducers/post';
 
 const Feedback = ({
@@ -20,6 +21,7 @@ const Feedback = ({
 }) => {
   const dispatch = useDispatch();
   const [form, setValues] = useState({});
+  const videoElement = useRef();
 
   const onChange = (e) => {
     setValues({
@@ -41,7 +43,12 @@ const Feedback = ({
     });
   }, [form, timeStamps]);
 
+  const moveVideoTime = useCallback((time) => {
+    videoElement.current.currentTime = time;
+  }, [videoElement]);
+
   console.log(timeStamps, 'Feedback timeStamps');
+  console.log(blob, 'Feedback blob');
 
   return (
     <>
@@ -49,10 +56,25 @@ const Feedback = ({
         <title>피드백 작성 | Untact_Interview </title>
       </Head>
       <article>
-        <video controls src={blob} autoPlay width="500px" height="500px" />
+        <video 
+          controls 
+          autoPlay
+          ref={videoElement} 
+          src={blob}
+          width="500px" 
+          height="500px" 
+        />
         <section>
           <h2>타임스탬프</h2>
-          <div>맵 돌리기</div>
+            {timeStamps && timeStamps.map((item, index) => (
+              <TimeStampCard
+                key={item.time}
+                text={item.text}
+                time={item.time}
+                asnwerNumber={index + 1}
+                onClick={moveVideoTime}
+              />
+            ))}
         </section>
         <article>
           {/* 재사용 컴포넌트로 만들기 */}

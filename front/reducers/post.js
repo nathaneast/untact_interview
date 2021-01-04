@@ -3,7 +3,7 @@ import produce from '../util/produce';
 export const initialState = {
   mainPosts: [],
   singlePost: '',
-  feedbackPost: '',
+  // feedbackPost: '',
   hasMorePosts: true,
   postLoading: false,
   postError: null,

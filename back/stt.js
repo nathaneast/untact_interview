@@ -26,7 +26,7 @@ class SttProcess {
   constructor() {
     this.timeStamps = [];
     this.currentQuestionIndex = 0;
-    this.streamingLimit = 20000;
+    this.streamingLimit = 180000;
     this.recognizeStream = null;
     this.restartCounter = 0;
     this.audioInput = [];
@@ -274,12 +274,14 @@ const detectProcess = () => {
 
 const stopRecoding = () => {
   console.log('stopRecoding');
-  sttInstance.recording.stop();
+  if (sttInstance && sttInstance.recording) {
+    sttInstance.recording.stop();
+  }
 }
 
 const endGoogleCloudStream = () => {
   console.log('endGoogleCloudStream 스트리밍 끝');
-  if (sttInstance.recognizeStream) {
+  if (sttInstance && sttInstance.recognizeStream) {
     sttInstance.recognizeStream.end();
     sttInstance.recognizeStream = null;
     clearTimeout(sttInstance.reStartTimerId);

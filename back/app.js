@@ -67,8 +67,8 @@ app.get('/', (req, res) => {
 });
 app.use('/user', userRouter);
 app.use('/post', postRouter);
-app.use('/feedbackPost', feedbackPostRouter);
 app.use('/posts', postsRouter);
+app.use('/feedbackPost', feedbackPostRouter);
 
 socket(io);
 
