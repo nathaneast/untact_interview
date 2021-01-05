@@ -13,7 +13,7 @@ const FeedbackPostSchema = new mongoose.Schema(
     },
     createdAt: {
       type: String,
-      default: dayjs().format('YYYY-MM-DD'),
+      default: dayjs().format('YYYY-MM-DD hh:mm:ss'),
     },
     creator: {
       type: mongoose.Schema.Types.ObjectId,

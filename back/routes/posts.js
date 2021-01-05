@@ -10,17 +10,48 @@ const router = express.Router();
 router.get('/', async (req, res, next) => {
   try {
     const { lastId, category } = req.query;
-    console.log(lastId, category, 'req.query');
+    console.log(lastId, category, 'GET posts / req.query');
     if (category === 'all') {
-      const posts = await Post.find(lastId ? { _id: { $lt: lastId } } : null)
+      const allPosts = await Post.find(lastId ? { _id: { $lt: lastId } } : null)
         .limit(5)
         .populate('star', 'email')
         .populate('creator', 'nickname email')
         .populate('category', 'name')
         .sort({ createdAt: -1 });
-      return res.status(200).send(posts);
+      return res.status(200).send(allPosts);
     } else {
       // 다른 카테고리일때
+      // const options = lastId
+      //   ? {
+      //       sort: { createdAt: -1 },
+      //       limit: 5,
+      //       // match: { _id: { $lt: lastId } },
+      //     }
+      //   : {
+      //       sort: { createdAt: -1 },
+      //       limit: 5,
+      //     };
+      
+      const categoryPosts = await Category.findOne({
+        name: category
+      })
+      .populate({
+        path : 'posts',
+        select: 'title desc createdAt star',
+        match: lastId ? { _id: { $lt: lastId } } : null,
+        options: { 
+          sort: { 'createdAt': -1 },
+          limit: 5,
+        },
+        populate : {
+          path : 'creator',
+          select: 'email nickname',
+        },
+      })
+
+      console.log('categoryPosts', categoryPosts);
+
+      return res.status(200).send(categoryPosts.posts);
     }
   } catch (error) {
     console.error(error);

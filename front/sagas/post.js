@@ -50,7 +50,7 @@ function loadPostsAPI(data) {
     params: {
       lastId: data.lastId,
       category: data.category.name,
-      isSame: data.category.isSame,
+      // isSame: data.category.isSame,
     },
   });
 }

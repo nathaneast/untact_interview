@@ -1,5 +1,4 @@
 const express = require('express');
-const dayjs = require('dayjs');
 
 const Post = require('../models/post');
 const Category = require('../models/category');

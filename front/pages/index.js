@@ -18,8 +18,9 @@ const Home = () => {
   );
   const [modal, setModal] = useState(false);
   const [selectedPostId, setSelectedPostId] = useState('');
-  const [beforeCategory, setBeforeCategory] = useState('all');
-  const [selectCategory, setSelectCategory] = useState('all');
+  // const [beforeCategory, setBeforeCategory] = useState('all');
+  // const [selectCategory, setSelectCategory] = useState('all');
+  const [selectedCategory, setSelectedCategory] = useState('all');
 
   useEffect(() => {
     function onScroll() {
@@ -27,31 +28,13 @@ const Home = () => {
         window.pageYOffset + document.documentElement.clientHeight >
         document.documentElement.scrollHeight - 100
       ) {
-        if (beforeCategory !== selectCategory) {
-          dispatch({
-            type: LOAD_POSTS_REQUEST,
-            data: {
-              category: {
-                name: selectCategory,
-                isSame: false,
-              },
-              lastId: null,
-            },
-          });
-          setBeforeCategory(selectCategory);
-          return;
-        }
-        if (
-          beforeCategory === selectCategory &&
-          hasMorePosts &&
-          !loadPostsLoading
-        ) {
+        if (hasMorePosts && !loadPostsLoading) {
           const lastId = mainPosts[mainPosts.length - 1]?._id;
           dispatch({
             type: LOAD_POSTS_REQUEST,
             data: {
               category: {
-                name: selectCategory,
+                name: selectedCategory,
                 isSame: true,
               },
               lastId,
@@ -64,15 +47,25 @@ const Home = () => {
     return () => {
       window.removeEventListener('scroll', onScroll);
     };
-  }, [mainPosts, hasMorePosts, loadPostsLoading]);
+  }, [mainPosts, hasMorePosts, loadPostsLoading, selectedCategory]);
 
   const onSelectCategory = useCallback((e) => {
-    if (e.target.tagName === 'LI' && beforeCategory !== e.target.dataset.name) {
-      setBeforeCategory(e.target.dataset.name);
+    if (e.target.tagName === 'LI' && selectedCategory !== e.target.dataset.name) {
+      dispatch({
+        type: LOAD_POSTS_REQUEST,
+        data: {
+          category: {
+            name: e.target.dataset.name,
+            isSame: false,
+          },
+          lastId: null,
+        },
+      });
+      setSelectedCategory(e.target.dataset.name);
     }
-  }, [beforeCategory]);
+  }, [selectedCategory]);
 
-  console.log(beforeCategory, selectCategory, '//// beforeCate, selectCate');
+  console.log(selectedCategory, 'selectedCategory');
   // console.log(mainPosts, 'Home');
   return (
     <>
@@ -86,7 +79,7 @@ const Home = () => {
             <li data-name="others">others</li>
           </ul>
         </nav>
-        <articl>
+        <article>
           {mainPosts.map((post) => (
             <PostCard
               key={post._id}
@@ -95,7 +88,7 @@ const Home = () => {
               startPost={setSelectedPostId}
             />
           ))}
-        </articl>
+        </article>
       </AppLayout>
       {modal && (
         <StartPostModal
