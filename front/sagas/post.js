@@ -24,6 +24,7 @@ function loadUserPostsAPI(data) {
   return axios.get(`/posts/${data.userId}`, {
     params: {
       lastId: data.lastId,
+      category: data.category,
     },
   });
 }
@@ -34,7 +35,10 @@ function* loadUserPosts(action) {
     console.log('loadUserPosts', result);
     yield put({
       type: LOAD_USER_POSTS_SUCCESS,
-      data: result.data,
+      data: {
+        result: result.data,
+        isSame: action.data.isSame,
+      },
     });
   } catch (err) {
     console.error(err);

@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import Head from 'next/head';
 
-import FeedbackCard from './FeedbackCard';
+import FeedbackFormCard from './FeedbackFormCard';
 import TimeStampCard from './TimeStampCard';
 import { UPLOAD_FEEDBACK_POST_REQUEST } from '../reducers/post';
 
@@ -95,12 +95,13 @@ const Feedback = ({
           <h2>질문, 답변, 피드백 작성 폼</h2>
           {timeStamps &&
             questions.map((item, index) => (
-              <FeedbackCard
+              <FeedbackFormCard
                 key={index}
                 question={item}
                 answer={timeStamps[index].text}
                 FeedbackNumber={index + 1}
                 onChange={onChange}
+                writeMode={true}
               />
             ))}
           <input type="submit" value="작성" onClick={onSubmit} />

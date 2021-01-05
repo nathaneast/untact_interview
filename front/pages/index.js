@@ -18,8 +18,6 @@ const Home = () => {
   );
   const [modal, setModal] = useState(false);
   const [selectedPostId, setSelectedPostId] = useState('');
-  // const [beforeCategory, setBeforeCategory] = useState('all');
-  // const [selectCategory, setSelectCategory] = useState('all');
   const [selectedCategory, setSelectedCategory] = useState('all');
 
   useEffect(() => {
@@ -79,7 +77,7 @@ const Home = () => {
             <li data-name="others">others</li>
           </ul>
         </nav>
-        <article>
+        <section>
           {mainPosts.map((post) => (
             <PostCard
               key={post._id}
@@ -88,7 +86,7 @@ const Home = () => {
               startPost={setSelectedPostId}
             />
           ))}
-        </article>
+        </section>
       </AppLayout>
       {modal && (
         <StartPostModal

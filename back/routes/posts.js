@@ -21,17 +21,6 @@ router.get('/', async (req, res, next) => {
       return res.status(200).send(allPosts);
     } else {
       // 다른 카테고리일때
-      // const options = lastId
-      //   ? {
-      //       sort: { createdAt: -1 },
-      //       limit: 5,
-      //       // match: { _id: { $lt: lastId } },
-      //     }
-      //   : {
-      //       sort: { createdAt: -1 },
-      //       limit: 5,
-      //     };
-      
       const categoryPosts = await Category.findOne({
         name: category
       })
@@ -61,15 +50,44 @@ router.get('/', async (req, res, next) => {
 
 router.get('/:userId', async (req, res, next) => {
   try {
-    const { lastId } = req.query;
     const { userId } = req.params.userId;
-    console.log(userId, lastId, 'posts: userId userId');
+    const { lastId, category } = req.query;
+    console.log(userId, lastId, category, 'posts/:userId - userId category');
+    let userPosts;
 
-    const userPosts = await User.findById(userId)
+  if (category === 'feedback') {
+      userPosts = await User.findById(userId)
       .populate({
-        path : 'posts',
+        path : 'feedbackPosts',
+        select: 'timeStamps feedbacks createdAt',
+        options: {
+          limit: 5,
+          sort: { createdAt: -1},
+          match: lastId ? { _id: { $lt: lastId } } : null,
+        },
+        populate : {
+          path : 'creator',
+          select: 'email nickname',
+        },
+        populate : {
+          path : 'sessionPost',
+          select: 'title questions desc createdAt star',
+          populate : {
+            path : 'creator',
+            select: 'email nickname',
+          },
+          populate : {
+            path : 'category',
+            select: 'name',
+          },
+        },
+      });
+    } else {
+      userPosts = await User.findById(userId)
+      .populate({
+        path : category === 'myPosts' ? 'posts' : 'starPosts',
         select: 'title desc createdAt star',
-        option: {
+        options: {
           limit: 5,
           sort: { createdAt: -1},
           match: lastId ? { _id: { $lt: lastId } } : null,
@@ -83,6 +101,26 @@ router.get('/:userId', async (req, res, next) => {
           select: 'name',
         },
       });
+    }
+
+    // const userPosts = await User.findById(userId)
+    //   .populate({
+    //     path : 'posts',
+    //     select: 'title desc createdAt star',
+    //     options: {
+    //       limit: 5,
+    //       sort: { createdAt: -1},
+    //       match: lastId ? { _id: { $lt: lastId } } : null,
+    //     },
+    //     populate : {
+    //       path : 'creator',
+    //       select: 'email nickname',
+    //     },
+    //     populate : {
+    //       path : 'category',
+    //       select: 'name',
+    //     },
+    //   });
 
     // if (category === 'all') {
     //   const posts = await Post.find(lastId ? { _id: { $lt: lastId } } : null)
@@ -97,8 +135,7 @@ router.get('/:userId', async (req, res, next) => {
     // }
 
     console.log(userPosts, 'userPosts');
-
-    // return res.send(userPosts);
+    // return res.status(200).send(userPosts.posts);
   } catch (error) {
     console.error(error);
     next(error);
