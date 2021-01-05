@@ -15,7 +15,35 @@ import {
   LOAD_POSTS_REQUEST,
   LOAD_POSTS_SUCCESS,
   LOAD_POSTS_FAILURE,
+  LOAD_USER_POSTS_REQUEST,
+  LOAD_USER_POSTS_SUCCESS,
+  LOAD_USER_POSTS_FAILURE,
 } from '../reducers/post';
+
+function loadUserPostsAPI(data) {
+  return axios.get(`/posts/${data.userId}`, {
+    params: {
+      lastId: data.lastId,
+    },
+  });
+}
+
+function* loadUserPosts(action) {
+  try {
+    const result = yield call(loadUserPostsAPI, action.data);
+    console.log('loadUserPosts', result);
+    yield put({
+      type: LOAD_USER_POSTS_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: LOAD_USER_POSTS_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
 
 function loadPostsAPI(data) {
   return axios.get('/posts', {
@@ -114,6 +142,10 @@ function* loadPost(action) {
   }
 }
 
+function* watchLoadUserPosts() {
+  yield takeLatest(LOAD_USER_POSTS_REQUEST, loadUserPosts);
+}
+
 function* watchLoadPosts() {
   yield takeLatest(LOAD_POSTS_REQUEST, loadPosts);
 }
@@ -136,5 +168,6 @@ export default function* userSaga() {
     fork(watchUploadPost),
     fork(watchLoadPost),
     fork(watchUploadFeedbackPost),
+    fork(watchLoadUserPosts),
   ]);
 }

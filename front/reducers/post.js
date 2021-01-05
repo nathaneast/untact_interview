@@ -3,7 +3,7 @@ import produce from '../util/produce';
 export const initialState = {
   mainPosts: [],
   singlePost: '',
-  // feedbackPost: '',
+  userPosts: [],
   hasMorePosts: true,
   postLoading: false,
   postError: null,
@@ -20,6 +20,9 @@ export const initialState = {
   uploadFeedbackPostLoading: false,
   uploadFeedbackPostError: null,
   uploadFeedbackPostDone: false,
+  loadUserPostsLoading: false,
+  loadUserPostsError: null,
+  loadUserPostsDone: false,
 };
 
 export const UPLOAD_FEEDBACK_POST_REQUEST = 'UPLOAD_FEEDBACK_POST_REQUEST';
@@ -45,6 +48,21 @@ export const LOAD_USER_POSTS_FAILURE = 'LOAD_USER_POSTS_FAILURE';
 const reducer = (state = initialState, action) => {
   return produce(state, (draft) => {
     switch (action.type) {
+      case LOAD_USER_POSTS_REQUEST:
+        draft.loadUserPostsLoading = true;
+        draft.loadUserPostsError = null;
+        draft.loadUserPostsDone = false;
+        break;
+      case LOAD_USER_POSTS_SUCCESS:
+        draft.loadUserPostsLoading = false;
+        draft.loadUserPostsDone = true;
+        draft.userPosts = draft.userPosts.concat(action.data);
+        draft.hasMorePosts = action.data.result.length === 5;
+        break;
+      case LOAD_USER_POSTS_FAILURE:
+        draft.loadUserPostsLoading = false;
+        draft.loadUserPostsError = action.error;
+        break;
       case LOAD_POSTS_REQUEST:
         draft.loadPostsLoading = true;
         draft.loadPostsError = null;

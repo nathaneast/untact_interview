@@ -49,7 +49,7 @@ const Feedback = ({
     (time) => {
       videoElement.current.currentTime = time;
     },
-    [videoElement.current]
+    [videoElement.current],
   );
 
   console.log(timeStamps, 'Feedback timeStamps');

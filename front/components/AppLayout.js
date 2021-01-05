@@ -35,7 +35,7 @@ const AppLayout = ({ children }) => {
                 </Link>
               </Menu.Item>
               <Menu.Item>
-                <Link href="/user">
+                <Link href={`/user/${me._id}`}>
                   <a>내정보</a>
                 </Link>
               </Menu.Item>

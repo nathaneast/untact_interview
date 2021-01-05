@@ -8,8 +8,9 @@ import wrapper from '../../store/configureStore';
 import { LOAD_MY_INFO_REQUEST } from '../../reducers/user';
 import { LOAD_USER_POSTS_REQUEST } from '../../reducers/post';
 
-const Profile = () => {
+const User = () => {
   const { me } = useSelector((state) => state.user);
+  const { userPosts } = useSelector((state) => state.post);
   // const router = useRouter();
 
   // const [isEndSession, setIsEndSession] = useState(false);
@@ -35,11 +36,14 @@ export const getServerSideProps = wrapper.getServerSideProps(
     });
     context.store.dispatch({
       type: LOAD_USER_POSTS_REQUEST,
-      data: context.params.id,
+      data: {
+        userId: context.params.id,
+        lastId: null,
+      },
     });
     context.store.dispatch(END);
     await context.store.sagaTask.toPromise();
   },
 );
 
-export default Profile;
+export default User;

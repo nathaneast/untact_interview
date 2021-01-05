@@ -1,11 +1,9 @@
 import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { Modal } from 'antd';
-import { useDispatch } from 'react-redux';
 import { useRouter } from 'next/router';
 
 const StartPostModal = ({ postId, resetPost, onModal, isLogin, modal }) => {
-  const dispatch = useDispatch();
   const router = useRouter();
 
   // not login 텍스트 에러로 처리하기

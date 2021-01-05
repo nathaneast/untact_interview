@@ -67,35 +67,35 @@ const Home = () => {
   }, [mainPosts, hasMorePosts, loadPostsLoading]);
 
   const onSelectCategory = useCallback((e) => {
-    if (e.target.tagName === 'UL') {
-      return;
+    if (e.target.tagName === 'LI' && beforeCategory !== e.target.dataset.name) {
+      setBeforeCategory(e.target.dataset.name);
     }
-    setSelectCategory(e.target.dataset.name);
-  });
+  }, [beforeCategory]);
 
-  // console.log(beforeCategory, selectCategory, '//// beforeCate, selectCate');
+  console.log(beforeCategory, selectCategory, '//// beforeCate, selectCate');
   // console.log(mainPosts, 'Home');
   return (
     <>
       <AppLayout>
-        <div>소개 헤더</div>
-        <div>
+        <nav>
           카테고리
           <ul onClick={onSelectCategory}>
-            <li data-name='all'>All</li>
-            <li data-name='frontEnd'>FrontEnd</li>
-            <li data-name='backEnd'>BackEnd</li>
-            <li data-name='others'>others</li>
+            <li data-name="all">All</li>
+            <li data-name="frontEnd">FrontEnd</li>
+            <li data-name="backEnd">BackEnd</li>
+            <li data-name="others">others</li>
           </ul>
-        </div>
-        {mainPosts.map((post) => (
-          <PostCard
-            key={post._id}
-            post={post}
-            onModal={() => setModal((prev) => !prev)}
-            startPost={setSelectedPostId}
-          />
-        ))}
+        </nav>
+        <articl>
+          {mainPosts.map((post) => (
+            <PostCard
+              key={post._id}
+              post={post}
+              onModal={() => setModal(true)}
+              startPost={setSelectedPostId}
+            />
+          ))}
+        </articl>
       </AppLayout>
       {modal && (
         <StartPostModal
@@ -103,7 +103,7 @@ const Home = () => {
           isLogin={Boolean(me)}
           resetPost={() => setSelectedPostId('')}
           modal={modal}
-          onModal={() => setModal((prev) => !prev)}
+          onModal={() => setModal(false)}
         />
       )}
     </>

@@ -28,6 +28,52 @@ router.get('/', async (req, res, next) => {
   }
 });
 
+router.get('/:userId', async (req, res, next) => {
+  try {
+    const { lastId } = req.query;
+    const { userId } = req.params.userId;
+    console.log(userId, lastId, 'posts: userId userId');
+
+    const userPosts = await User.findById(userId)
+      .populate({
+        path : 'posts',
+        select: 'title desc createdAt star',
+        option: {
+          limit: 5,
+          sort: { createdAt: -1},
+          match: lastId ? { _id: { $lt: lastId } } : null,
+        },
+        populate : {
+          path : 'creator',
+          select: 'email nickname',
+        },
+        populate : {
+          path : 'category',
+          select: 'name',
+        },
+      });
+
+    // if (category === 'all') {
+    //   const posts = await Post.find(lastId ? { _id: { $lt: lastId } } : null)
+    //     .limit(5)
+    //     .populate('star', 'email')
+    //     .populate('creator', 'nickname email')
+    //     .populate('category', 'name')
+    //     .sort({ createdAt: -1 });
+    //   return res.status(200).send(posts);
+    // } else {
+    //   // 다른 카테고리일때
+    // }
+
+    console.log(userPosts, 'userPosts');
+
+    // return res.send(userPosts);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
 // {
 //   "questions": "['ex1', 'ex2', 'ex3', 'ex4', 'ex5']",
 //   "createdAt": "2020-12-10",
