@@ -18,8 +18,8 @@ const PostSchema = new mongoose.Schema(
       type: String,
       default: dayjs().format("YYYY-MM-DD hh:mm:ss"),
     },
-    star: {
-      type: Object,
+    star: { 
+      type: mongoose.Schema.Types.Mixed, 
       default: {},
     },
     // star: [
@@ -39,6 +39,8 @@ const PostSchema = new mongoose.Schema(
   },
   {
     versionKey: false,
+    minimize: false,
+    // timestamps: true,
   }
 );
 

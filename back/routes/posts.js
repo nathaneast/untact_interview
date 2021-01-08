@@ -14,7 +14,6 @@ router.get('/', async (req, res, next) => {
     if (category === 'all') {
       const allPosts = await Post.find(lastId ? { _id: { $lt: lastId } } : null)
         .limit(5)
-        .populate('star', 'email')
         .populate('creator', 'nickname email')
         .populate('category', 'name')
         .sort({ createdAt: -1 });
@@ -50,92 +49,67 @@ router.get('/', async (req, res, next) => {
 
 router.get('/:userId', async (req, res, next) => {
   try {
-    const { userId } = req.params.userId;
+    const { userId } = req.params;
     const { lastId, category } = req.query;
-    console.log(userId, lastId, category, 'posts/:userId - userId category');
-    let userPosts;
+    console.log(userId, lastId, category, 'posts/:userId - userId, lastId, category');
 
   if (category === 'feedback') {
-      userPosts = await User.findById(userId)
+    const userPosts = await User.findById(userId)
+      .select('_id')
       .populate({
         path : 'feedbackPosts',
-        select: 'timeStamps feedbacks createdAt',
+        select: '_id',
+        match: lastId ? { _id: { $lt: lastId } } : null,
         options: {
-          limit: 5,
           sort: { createdAt: -1},
-          match: lastId ? { _id: { $lt: lastId } } : null,
+          limit: 5,
         },
-        populate : {
-          path : 'creator',
-          select: 'email nickname',
+        populate: [
+          { 
+            path : 'sessionPost',
+            select: 'title desc createdAt star',
+            populate: [
+              { 
+                path : 'creator',
+                select: 'email nickname',
+              },
+              { 
+                path : 'category',
+                select: 'name',
+              }
+          ],
+          }
+      ],
+      });
+      console.log(userPosts.feedbackPosts, 'feedback Post');
+      return res.status(200).send(userPosts.feedbackPosts);
+    } else {
+      const targetPost = category === 'myPost' ? 'posts' : 'starPosts';
+      const match = lastId ? { _id: { $lt: lastId } } : null;
+      const userPosts = await User.findById(userId)
+      .select('_id')
+      .populate({
+        path: targetPost,
+        select: '-questions',
+        match,
+        options: {
+          sort: { createdAt: -1},
+          limit: 5,
         },
-        populate : {
-          path : 'sessionPost',
-          select: 'title questions desc createdAt star',
-          populate : {
+        populate: [
+          { 
             path : 'creator',
             select: 'email nickname',
           },
-          populate : {
+          { 
             path : 'category',
             select: 'name',
-          },
-        },
+          }
+      ],
       });
-    } else {
-      userPosts = await User.findById(userId)
-      .populate({
-        path : category === 'myPosts' ? 'posts' : 'starPosts',
-        select: 'title desc createdAt star',
-        options: {
-          limit: 5,
-          sort: { createdAt: -1},
-          match: lastId ? { _id: { $lt: lastId } } : null,
-        },
-        populate : {
-          path : 'creator',
-          select: 'email nickname',
-        },
-        populate : {
-          path : 'category',
-          select: 'name',
-        },
-      });
+      console.log(userPosts[targetPost], 'userPosts Post');
+      return res.status(200).send(userPosts[targetPost]);
     }
-
-    // const userPosts = await User.findById(userId)
-    //   .populate({
-    //     path : 'posts',
-    //     select: 'title desc createdAt star',
-    //     options: {
-    //       limit: 5,
-    //       sort: { createdAt: -1},
-    //       match: lastId ? { _id: { $lt: lastId } } : null,
-    //     },
-    //     populate : {
-    //       path : 'creator',
-    //       select: 'email nickname',
-    //     },
-    //     populate : {
-    //       path : 'category',
-    //       select: 'name',
-    //     },
-    //   });
-
-    // if (category === 'all') {
-    //   const posts = await Post.find(lastId ? { _id: { $lt: lastId } } : null)
-    //     .limit(5)
-    //     .populate('star', 'email')
-    //     .populate('creator', 'nickname email')
-    //     .populate('category', 'name')
-    //     .sort({ createdAt: -1 });
-    //   return res.status(200).send(posts);
-    // } else {
-    //   // 다른 카테고리일때
-    // }
-
-    console.log(userPosts, 'userPosts');
-    // return res.status(200).send(userPosts.posts);
   } catch (error) {
     console.error(error);
     next(error);

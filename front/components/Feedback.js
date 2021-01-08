@@ -89,7 +89,7 @@ const Feedback = ({
           <div>category: {category}</div>
           <div>email: {email}</div>
           <div>desc: {desc}</div>
-          <div>star: {star.length}</div>
+          <div>star: {Object.keys(star).length}</div>
         </article>
         <section>
           <h2>질문, 답변, 피드백 작성 폼</h2>
@@ -101,7 +101,6 @@ const Feedback = ({
                 answer={timeStamps[index].text}
                 FeedbackNumber={index + 1}
                 onChange={onChange}
-                writeMode={true}
               />
             ))}
           <input type="submit" value="작성" onClick={onSubmit} />

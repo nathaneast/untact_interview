@@ -10,7 +10,6 @@ const router = express.Router();
 router.get('/', async (req, res, next) => {
   try {
     const allPosts = await Post.find()
-      .populate('star', 'email')
       .populate('creator', 'nickname email')
       .populate('category', 'name')
       .sort({ createdAt: -1 });
@@ -72,7 +71,6 @@ router.post('/', isLoggedIn, async (req, res, next) => {
 router.get('/:postId', isLoggedIn, async (req, res, next) => {
   try {
     const post = await Post.findById(req.params.postId)
-      .populate('star', 'email')
       .populate('creator', 'nickname email')
       .populate('category', 'name');
     return res.send(post);

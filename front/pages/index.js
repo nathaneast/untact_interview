@@ -20,6 +20,11 @@ const Home = () => {
   const [selectedPostId, setSelectedPostId] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
 
+  const onClickStartPost = useCallback((postId) => {
+    setModal(true);
+    setSelectedPostId(postId);
+  });
+
   useEffect(() => {
     function onScroll() {
       if (
@@ -81,9 +86,10 @@ const Home = () => {
           {mainPosts.map((post) => (
             <PostCard
               key={post._id}
+              postId={post._id}
               post={post}
-              onModal={() => setModal(true)}
-              startPost={setSelectedPostId}
+              onClick={onClickStartPost}
+              mode={'post'}
             />
           ))}
         </section>
@@ -117,7 +123,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
       data: {
         category: {
           name: 'all',
-          isSame: true,
+          isSame: false,
         },
         lastId: null,
       },

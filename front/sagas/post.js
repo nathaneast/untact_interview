@@ -21,6 +21,7 @@ import {
 } from '../reducers/post';
 
 function loadUserPostsAPI(data) {
+  console.log(data, 'loadUserPostsAPI data');
   return axios.get(`/posts/${data.userId}`, {
     params: {
       lastId: data.lastId,
@@ -38,6 +39,7 @@ function* loadUserPosts(action) {
       data: {
         result: result.data,
         isSame: action.data.isSame,
+        category: action.data.category,
       },
     });
   } catch (err) {

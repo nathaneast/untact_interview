@@ -2,8 +2,8 @@ import produce from '../util/produce';
 
 export const initialState = {
   mainPosts: [],
+  feedbackPosts: [],
   singlePost: '',
-  userPosts: [],
   hasMorePosts: true,
   postLoading: false,
   postError: null,
@@ -56,11 +56,19 @@ const reducer = (state = initialState, action) => {
       case LOAD_USER_POSTS_SUCCESS:
         draft.loadUserPostsLoading = false;
         draft.loadUserPostsDone = true;
-        draft.userPosts = action.data.isSame
-          ? draft.userPosts.concat(action.data.result)
-          : action.data.result;
-        draft.hasMorePosts = action.data.result.length === 5;
-        break;
+        if (action.data.category === 'feedback') {
+          draft.feedbackPosts = action.data.isSame
+            ? draft.feedbackPosts.concat(action.data.result)
+            : action.data.result;
+          draft.hasMorePosts = action.data.result.length === 5;
+          break;
+        } else {
+          draft.mainPosts = action.data.isSame
+            ? draft.mainPosts.concat(action.data.result)
+            : action.data.result;
+          draft.hasMorePosts = action.data.result.length === 5;
+          break;
+        }
       case LOAD_USER_POSTS_FAILURE:
         draft.loadUserPostsLoading = false;
         draft.loadUserPostsError = action.error;
