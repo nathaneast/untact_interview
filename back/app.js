@@ -24,7 +24,7 @@ const server = require('http').createServer(app);
 const io = require('socket.io')(server, {
   cors: {
     origin: '*',
-  }
+  },
 });
 
 mongoose
@@ -39,25 +39,29 @@ passportConfig();
 
 // production, dev 설정
 app.use(morgan('dev'));
-app.use(cors({
-  origin: true,
-  credentials: true,
-}));
+app.use(
+  cors({
+    origin: true,
+    credentials: true,
+  })
+);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser(COOKIE_SECRET));
 
-app.use(session({
-  saveUninitialized: false,
-  resave: false,
-  secret: COOKIE_SECRET,
-  // proxy: true,
-  // cookie: {
+app.use(
+  session({
+    saveUninitialized: false,
+    resave: false,
+    secret: COOKIE_SECRET,
+    // proxy: true,
+    // cookie: {
     // httpOnly: true,
-  //   secure: false,
-  // },
-}));
+    //   secure: false,
+    // },
+  })
+);
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -67,8 +71,8 @@ app.get('/', (req, res) => {
 });
 app.use('/user', userRouter);
 app.use('/post', postRouter);
-app.use('/posts', postsRouter);
 app.use('/feedbackPost', feedbackPostRouter);
+app.use('/posts', postsRouter);
 
 socket(io);
 

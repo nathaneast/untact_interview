@@ -17,6 +17,9 @@ export const initialState = {
   loadPostLoading: false,
   loadPostError: null,
   loadPostDone: false,
+  loadFeedbackPostLoading: false,
+  loadFeedbackPostError: null,
+  loadFeedbackPostDone: false,
   uploadFeedbackPostLoading: false,
   uploadFeedbackPostError: null,
   uploadFeedbackPostDone: false,
@@ -36,6 +39,10 @@ export const UPLOAD_POST_FAILURE = 'UPLOAD_POST_FAILURE';
 export const LOAD_POST_REQUEST = 'LOAD_POST_REQUEST';
 export const LOAD_POST_SUCCESS = 'LOAD_POST_SUCCESS';
 export const LOAD_POST_FAILURE = 'LOAD_POST_FAILURE';
+
+export const LOAD_FEEDBACK_POST_REQUEST = 'LOAD_FEEDBACK_POST_REQUEST';
+export const LOAD_FEEDBACK_POST_SUCCESS = 'LOAD_FEEDBACK_POST_SUCCESS';
+export const LOAD_FEEDBACK_POST_FAILURE = 'LOAD_FEEDBACK_POST_FAILURE';
 
 export const LOAD_POSTS_REQUEST = 'LOAD_POSTS_REQUEST';
 export const LOAD_POSTS_SUCCESS = 'LOAD_POSTS_SUCCESS';
@@ -90,19 +97,6 @@ const reducer = (state = initialState, action) => {
         draft.loadPostsLoading = false;
         draft.loadPostsError = action.error;
         break;
-      case UPLOAD_POST_REQUEST:
-        draft.uploadPostLoading = true;
-        draft.uploadPostError = null;
-        draft.uploadPostDone = false;
-        break;
-      case UPLOAD_POST_SUCCESS:
-        draft.uploadPostLoading = false;
-        draft.uploadPostDone = true;
-        break;
-      case UPLOAD_POST_FAILURE:
-        draft.uploadPostLoading = false;
-        draft.uploadPostError = action.error;
-        break;
       case LOAD_POST_REQUEST:
         draft.loadPostLoading = true;
         draft.loadPostError = null;
@@ -117,6 +111,20 @@ const reducer = (state = initialState, action) => {
         draft.loadPostLoading = false;
         draft.loadPostError = action.error;
         break;
+      case LOAD_FEEDBACK_POST_REQUEST:
+        draft.loadFeedbackPostLoading = true;
+        draft.loadFeedbackPostError = null;
+        draft.loadFeedbackPostDone = false;
+        break;
+      case LOAD_FEEDBACK_POST_SUCCESS:
+        draft.loadFeedbackPostLoading = false;
+        draft.loadFeedbackPostDone = true;
+        draft.singlePost = action.data;
+        break;
+      case LOAD_FEEDBACK_POST_FAILURE:
+        draft.loadFeedbackPostLoading = false;
+        draft.loadFeedbackPostError = action.error;
+        break;
       case UPLOAD_FEEDBACK_POST_REQUEST:
         draft.uploadFeedbackPostLoading = true;
         draft.uploadFeedbackPostError = null;
@@ -129,6 +137,19 @@ const reducer = (state = initialState, action) => {
       case UPLOAD_FEEDBACK_POST_FAILURE:
         draft.uploadFeedbackPostLoading = false;
         draft.uploadFeedbackPostError = action.error;
+        break;
+      case UPLOAD_POST_REQUEST:
+        draft.uploadPostLoading = true;
+        draft.uploadPostError = null;
+        draft.uploadPostDone = false;
+        break;
+      case UPLOAD_POST_SUCCESS:
+        draft.uploadPostLoading = false;
+        draft.uploadPostDone = true;
+        break;
+      case UPLOAD_POST_FAILURE:
+        draft.uploadPostLoading = false;
+        draft.uploadPostError = action.error;
         break;
       default:
         break;

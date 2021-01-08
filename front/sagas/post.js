@@ -12,6 +12,9 @@ import {
   LOAD_POST_REQUEST,
   LOAD_POST_SUCCESS,
   LOAD_POST_FAILURE,
+  LOAD_FEEDBACK_POST_SUCCESS,
+  LOAD_FEEDBACK_POST_REQUEST,
+  LOAD_FEEDBACK_POST_FAILURE,
   LOAD_POSTS_REQUEST,
   LOAD_POSTS_SUCCESS,
   LOAD_POSTS_FAILURE,
@@ -127,6 +130,27 @@ function* uploadPost(action) {
   }
 }
 
+function loadFeedbackPostAPI(data) {
+  return axios.get(`/feedbackPost/${data.feedbackPostId}`);
+}
+
+function* loadFeedbackPost(action) {
+  try {
+    const result = yield call(loadFeedbackPostAPI, action.data);
+    console.log('loadFeedbackPost', result);
+    yield put({
+      type: LOAD_FEEDBACK_POST_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: LOAD_FEEDBACK_POST_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
 function loadPostAPI(data) {
   return axios.get(`/post/${data}`);
 }
@@ -156,6 +180,10 @@ function* watchLoadPosts() {
   yield takeLatest(LOAD_POSTS_REQUEST, loadPosts);
 }
 
+function* watchLoadFeedbackPost() {
+  yield takeLatest(LOAD_FEEDBACK_POST_REQUEST, loadFeedbackPost);
+}
+
 function* watchLoadPost() {
   yield takeLatest(LOAD_POST_REQUEST, loadPost);
 }
@@ -172,6 +200,7 @@ export default function* userSaga() {
   yield all([
     fork(watchLoadPosts),
     fork(watchUploadPost),
+    fork(watchLoadFeedbackPost),
     fork(watchLoadPost),
     fork(watchUploadFeedbackPost),
     fork(watchLoadUserPosts),

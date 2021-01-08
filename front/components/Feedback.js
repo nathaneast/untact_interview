@@ -3,10 +3,13 @@ import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import Head from 'next/head';
 
-import FeedbackFormCard from './FeedbackFormCard';
+import FeedbackCard from './FeedbackCard';
 import TimeStampCard from './TimeStampCard';
 import { UPLOAD_FEEDBACK_POST_REQUEST } from '../reducers/post';
+import PlayedSessionPostCard from './PlayedSessionPostCard';
 
+// 모든 피드백 입력 되었는지 폼 검사 로직 추가
+// 서브밋시 작성할껀지 모달 추가
 const Feedback = ({
   blob,
   timeStamps,
@@ -31,7 +34,6 @@ const Feedback = ({
     });
   };
 
-  // 서브밋시 작성할껀지 모달 추가
   const onSubmit = useCallback(() => {
     dispatch({
       type: UPLOAD_FEEDBACK_POST_REQUEST,
@@ -83,24 +85,32 @@ const Feedback = ({
               />
             ))}
         </section>
-        <article>
+        <PlayedSessionPostCard
+          title={title}
+          category={category}
+          email={email}
+          desc={desc}
+          star={Object.keys(star).length}
+        />
+        {/* <article>
           <h2>진행한 글 정보</h2>
           <div>title: {title}</div>
           <div>category: {category}</div>
           <div>email: {email}</div>
           <div>desc: {desc}</div>
           <div>star: {Object.keys(star).length}</div>
-        </article>
+        </article> */}
         <section>
           <h2>질문, 답변, 피드백 작성 폼</h2>
           {timeStamps &&
             questions.map((item, index) => (
-              <FeedbackFormCard
+              <FeedbackCard
                 key={index}
                 question={item}
                 answer={timeStamps[index].text}
                 FeedbackNumber={index + 1}
                 onChange={onChange}
+                writeMode={true}
               />
             ))}
           <input type="submit" value="작성" onClick={onSubmit} />

@@ -16,7 +16,7 @@ const PostSchema = new mongoose.Schema(
     },
     createdAt: {
       type: String,
-      default: dayjs().format("YYYY-MM-DD hh:mm:ss"),
+      default: dayjs().format("YYYY-MM-DD"),
     },
     star: { 
       type: mongoose.Schema.Types.Mixed, 

@@ -1,7 +1,5 @@
 const express = require('express');
-const dayjs = require('dayjs');
 
-const Post = require('../models/post');
 const User = require('../models/user');
 const FeedbackPost = require('../models/feedbackPost');
 const { isLoggedIn, isNotLoggedIn } = require('./middlewares');
@@ -29,17 +27,30 @@ router.post('/', isLoggedIn, async (req, res, next) => {
   }
 });
 
-// router.get('/:postId', isLoggedIn, async (req, res, next) => {
-//   try {
-    // const post = await Post.findById(req.params.postId)
-    //   .populate('star', 'email')
-    //   .populate('creator', 'nickname email')
-    //   .populate('category', 'name');
-//     return res.send(post);
-//   } catch (error) {
-//     console.error(error);
-//     next(error);
-//   }
-// });
+router.get('/:feedbackPostId', isLoggedIn, async (req, res, next) => {
+  try {
+    const { feedbackPostId } = req.params;
+    const feedbackPost = await FeedbackPost.findById(feedbackPostId)
+      .populate('creator', 'nickname email')
+      .populate({
+        path: 'sessionPost',
+        populate: [
+          {
+            path: 'creator',
+            select: 'email nickname',
+          },
+          {
+            path: 'category',
+            select: 'name',
+          },
+        ],
+      });
+    console.log(feedbackPost, 'feedbackPost');
+    return res.status(200).send(feedbackPost);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
 
 module.exports = router;
