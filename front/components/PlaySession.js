@@ -5,6 +5,10 @@ import PropTypes from 'prop-types';
 import useInterval from '../hooks/useInterval';
 import socket, { socketEmits } from '../socket';
 
+// question 비동기프랍 검사
+// 로딩 추가
+// 세션 끝 => 모달 추가
+// 영상 저장을 버튼으로 하는 방법 연구
 const PlaySession = ({
   questions,
   setIsEndSession,
@@ -12,7 +16,7 @@ const PlaySession = ({
   saveBlob,
   sessionTitle,
 }) => {
-  const limitTime = 30;
+  const [limitTime, setLimitTime] = useState(30);
   const [timer, setTimer] = useState(limitTime);
   const [questionIndex, setQuestionIndex] = useState(0);
   const [isRunning, setIsRunning] = useState(true);
@@ -39,8 +43,8 @@ const PlaySession = ({
         recorder.current.stream = stream;
         recorder.current.startRecording();
 
-        socket(setSpeech, setSaveSpeech, saveTimeStamp);
-        socketEmits.startGoogleCloudStream();
+        // socket(setSpeech, setSaveSpeech, saveTimeStamp);
+        // socketEmits.startGoogleCloudStream();
       });
   }, []);
 
@@ -74,8 +78,8 @@ const PlaySession = ({
     // nextQuestionButton.current.disabled = true;
     // setTimeout(() => {
     //   nextQuestionButton.current.disabled = false;
-    // }, 3000);
-  });
+    // }, 4000);
+  }, [questions, questionIndex, limitTime]);
 
   useInterval(
     () => {
@@ -95,8 +99,8 @@ const PlaySession = ({
     isRunning ? 1000 : null,
   );
 
-  // 로딩 추가
-  // 세션 끝 => 모달 추가
+  console.log(questions, sessionTitle, 'PlaySession');
+
   return (
     <>
       <Head>
@@ -135,7 +139,6 @@ const PlaySession = ({
   );
 };
 
-// question 비동기프랍 검사
 PlaySession.propTypes = {
   questions: PropTypes.array.isRequired,
   setIsEndSession: PropTypes.func.isRequired,

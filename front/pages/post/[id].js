@@ -14,7 +14,7 @@ import { socketEmits } from '../../socket';
 // 다음 버튼 클릭시 timer 바꾸는것말고 일정하게 바뀌도록 고민
 // 레코딩 화면 나올때 문제,시간 같이 나오도록
 const Post = () => {
-  const { singlePost } = useSelector((state) => state.post);
+  const { singlePost, loadPostDone } = useSelector((state) => state.post);
   const { me } = useSelector((state) => state.user);
   const router = useRouter();
 
@@ -42,7 +42,7 @@ const Post = () => {
 
   return (
     <>
-      {isEndSession ? (
+      {loadPostDone && isEndSession ? (
         <Feedback
           blob={blob}
           timeStamps={timeStamps}

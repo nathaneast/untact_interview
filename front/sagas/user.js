@@ -50,6 +50,7 @@ function* logOut() {
       type: LOG_OUT_SUCCESS,
       data: result.data,
     });
+    yield call(Router.push, '/');
   } catch (err) {
     console.error(err);
     yield put({
@@ -57,6 +58,7 @@ function* logOut() {
       error: err.response.data,
     });
   }
+  yield call(Router.push, '/');
 }
 
 function signUpAPI(data) {

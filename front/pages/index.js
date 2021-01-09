@@ -3,12 +3,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { END } from 'redux-saga';
 import axios from 'axios';
 
-import AppLayout from '../components/AppLayout';
-import StartPostModal from '../components/modal/StartPostModal';
-import PostCard from '../components/PostCard';
 import { LOAD_POSTS_REQUEST } from '../reducers/post';
 import { LOAD_MY_INFO_REQUEST } from '../reducers/user';
+import AppLayout from '../components/AppLayout';
 import wrapper from '../store/configureStore';
+import PostCardList from '../components/PostCardList';
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -16,14 +15,7 @@ const Home = () => {
   const { mainPosts, hasMorePosts, loadPostsLoading } = useSelector(
     (state) => state.post,
   );
-  const [modal, setModal] = useState(false);
-  const [selectedPostId, setSelectedPostId] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
-
-  const onClickStartPost = useCallback((postId) => {
-    setModal(true);
-    setSelectedPostId(postId);
-  });
 
   useEffect(() => {
     function onScroll() {
@@ -33,6 +25,7 @@ const Home = () => {
       ) {
         if (hasMorePosts && !loadPostsLoading) {
           const lastId = mainPosts[mainPosts.length - 1]?._id;
+          console.log(lastId, 'lastId');
           dispatch({
             type: LOAD_POSTS_REQUEST,
             data: {
@@ -52,58 +45,48 @@ const Home = () => {
     };
   }, [mainPosts, hasMorePosts, loadPostsLoading, selectedCategory]);
 
-  const onSelectCategory = useCallback((e) => {
-    if (e.target.tagName === 'LI' && selectedCategory !== e.target.dataset.name) {
-      dispatch({
-        type: LOAD_POSTS_REQUEST,
-        data: {
-          category: {
-            name: e.target.dataset.name,
-            isSame: false,
+  const onSelectCategory = useCallback(
+    (e) => {
+      if (
+        e.target.tagName === 'LI' &&
+        selectedCategory !== e.target.dataset.name
+      ) {
+        dispatch({
+          type: LOAD_POSTS_REQUEST,
+          data: {
+            category: {
+              name: e.target.dataset.name,
+              isSame: false,
+            },
+            lastId: null,
           },
-          lastId: null,
-        },
-      });
-      setSelectedCategory(e.target.dataset.name);
-    }
-  }, [selectedCategory]);
+        });
+        setSelectedCategory(e.target.dataset.name);
+      }
+    },
+    [selectedCategory],
+  );
 
-  console.log(selectedCategory, 'selectedCategory');
+  // console.log(selectedCategory, 'selectedCategory');
   // console.log(mainPosts, 'Home');
+
   return (
-    <>
-      <AppLayout>
-        <nav>
-          카테고리
-          <ul onClick={onSelectCategory}>
-            <li data-name="all">All</li>
-            <li data-name="frontEnd">FrontEnd</li>
-            <li data-name="backEnd">BackEnd</li>
-            <li data-name="others">others</li>
-          </ul>
-        </nav>
-        <section>
-          {mainPosts.map((post) => (
-            <PostCard
-              key={post._id}
-              postId={post._id}
-              post={post}
-              onClick={onClickStartPost}
-              mode={'post'}
-            />
-          ))}
-        </section>
-      </AppLayout>
-      {modal && (
-        <StartPostModal
-          postId={selectedPostId}
-          isLogin={Boolean(me)}
-          resetPost={() => setSelectedPostId('')}
-          modal={modal}
-          onModal={() => setModal(false)}
-        />
-      )}
-    </>
+    <AppLayout>
+      <nav>
+        카테고리
+        <ul onClick={onSelectCategory}>
+          <li data-name="all">All</li>
+          <li data-name="frontEnd">FrontEnd</li>
+          <li data-name="backEnd">BackEnd</li>
+          <li data-name="others">others</li>
+        </ul>
+      </nav>
+      <PostCardList
+        posts={mainPosts}
+        me={me}
+        isFeedbackPost={false}
+      />
+    </AppLayout>
   );
 };
 

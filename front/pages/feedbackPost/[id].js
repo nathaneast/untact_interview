@@ -8,7 +8,7 @@ import { LOAD_MY_INFO_REQUEST } from '../../reducers/user';
 import { LOAD_FEEDBACK_POST_REQUEST } from '../../reducers/post';
 import TimeStampCard from '../../components/TimeStampCard';
 import AppLayout from '../../components/AppLayout';
-import FeedbackCard from '../../components/FeedbackCard';
+import FeedbackFormCard from '../../components/FeedbackFormCard';
 import PlayedSessionPostCard from '../../components/PlayedSessionPostCard';
 
 const feedbackPost = () => {
@@ -93,7 +93,7 @@ const feedbackPost = () => {
         <section>
           {singlePost && (
             singlePost.sessionPost.questions.map((item, index) => (
-              <FeedbackCard
+              <FeedbackFormCard
                 key={index}
                 question={item}
                 answer={singlePost.timeStamps[index].text}

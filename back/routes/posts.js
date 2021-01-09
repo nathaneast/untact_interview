@@ -81,6 +81,7 @@ router.get('/:userId', async (req, res, next) => {
           }
       ],
       });
+
       console.log(userPosts.feedbackPosts, 'feedback Post');
       return res.status(200).send(userPosts.feedbackPosts);
     } else {

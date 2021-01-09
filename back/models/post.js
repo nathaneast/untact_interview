@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const dayjs = require("dayjs");
+// const dayjs = require("dayjs");
 
 const PostSchema = new mongoose.Schema(
   {
@@ -14,20 +14,20 @@ const PostSchema = new mongoose.Schema(
     desc: {
       type: String,
     },
-    createdAt: {
-      type: String,
-      default: dayjs().format("YYYY-MM-DD"),
-    },
-    star: { 
-      type: mongoose.Schema.Types.Mixed, 
-      default: {},
-    },
-    // star: [
-    //   {
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     ref: "user",
-    //   },
-    // ],
+    // createdAt: {
+    //   type: String,
+    //   default: dayjs().format("YYYY-MM-DD"),
+    // },
+    // star: { 
+    //   type: mongoose.Schema.Types.Mixed, 
+    //   default: {},
+    // },
+    star: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "user",
+      },
+    ],
     creator: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "user",
@@ -40,7 +40,7 @@ const PostSchema = new mongoose.Schema(
   {
     versionKey: false,
     minimize: false,
-    // timestamps: true,
+    timestamps: true,
   }
 );
 

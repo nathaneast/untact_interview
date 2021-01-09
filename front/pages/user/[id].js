@@ -1,36 +1,29 @@
 import React, { useCallback, useEffect, useState, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useRouter } from 'next/router';
 import { END } from 'redux-saga';
 import axios from 'axios';
-import { useRouter } from 'next/router';
 
 import wrapper from '../../store/configureStore';
 import { LOAD_MY_INFO_REQUEST } from '../../reducers/user';
 import { LOAD_USER_POSTS_REQUEST } from '../../reducers/post';
-import StartPostModal from '../../components/modal/StartPostModal';
-import PostCard from '../../components/PostCard';
 import AppLayout from '../../components/AppLayout';
+import PostCardList from '../../components/PostCardList';
 
 const User = () => {
   const dispatch = useDispatch();
   const { me } = useSelector((state) => state.user);
-  const { mainPosts, feedbackPosts, hasMorePosts, loadUserPostsLoading } = useSelector((state) => state.post);
+  const {
+    mainPosts,
+    feedbackPosts,
+    hasMorePosts,
+    loadUserPostsLoading,
+    loadUserPostsDone,
+  } = useSelector((state) => state.post);
 
-  const [modal, setModal] = useState(false);
-  const [selectedPostId, setSelectedPostId] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('myPost');
-
-  const userId = useRef(window.location.pathname.split('/user/')[1]);
   const router = useRouter();
-
-  const onClickStartPost = useCallback((postId) => {
-    setModal(true);
-    setSelectedPostId(postId);
-  });
-
-  const onClickRedirectFeedback = useCallback((postId) => {
-    router.push(`/feedbackPost/${postId}`);
-  });
+  const userId = useRef(router.asPath.split('/user/')[1]);
 
   useEffect(() => {
     function onScroll() {
@@ -57,81 +50,61 @@ const User = () => {
     };
   }, [mainPosts, hasMorePosts, loadUserPostsLoading, selectedCategory]);
 
-  const onSelectCategory = useCallback((e) => {
-    if (e.target.tagName === 'LI' && selectedCategory !== e.target.dataset.name) {
-      dispatch({
-        type: LOAD_USER_POSTS_REQUEST,
-        data: {
-          userId: userId.current,
-          lastId: null,
-          category: e.target.dataset.name,
-          isSame: false,
-        },
-      });
-      setSelectedCategory(e.target.dataset.name);
-    }
-  }, [selectedCategory]);
+  const onSelectCategory = useCallback(
+    (e) => {
+      if (
+        e.target.tagName === 'LI' &&
+        selectedCategory !== e.target.dataset.name
+      ) {
+        dispatch({
+          type: LOAD_USER_POSTS_REQUEST,
+          data: {
+            userId: userId.current,
+            lastId: null,
+            category: e.target.dataset.name,
+            isSame: false,
+          },
+        });
+        setSelectedCategory(e.target.dataset.name);
+      }
+    },
+    [selectedCategory],
+  );
 
   // console.log(mainPosts, 'User mainPosts');
   // console.log(userId, 'User userId');
+  // console.log(router.asPath, 'router.pathname');
 
   return (
-    <>
-      <AppLayout>
-        <article>
-          <label>user Profile</label>
-          <div>
-            <span>userName: {me.nickname}</span>
-          </div>
-          <div>
-            <span>email: {me.email}</span>
-          </div>
-        </article>
-        <nav>
-          <ul onClick={onSelectCategory}>
-            <li data-name="myPost">myPost</li>
-            {me._id === userId.current ? (
-              <li data-name="feedback">feedback</li>
-            ) : (
-              ''
-            )}
-            <li data-name="star">star</li>
-          </ul>
-        </nav>
-        <section>
-          {selectedCategory === 'feedback' ? (
-            feedbackPosts.map((post) => (
-                <PostCard
-                  key={post._id}
-                  postId={post._id}
-                  post={post.sessionPost}
-                  onClick={onClickRedirectFeedback}
-                  mode={'feedback'}
-                />
-            ))
+    <AppLayout>
+      <article>
+        <label>user Profile</label>
+        <div>
+          <span>userName: {me.nickname}</span>
+        </div>
+        <div>
+          <span>email: {me.email}</span>
+        </div>
+      </article>
+      <nav>
+        <ul onClick={onSelectCategory}>
+          <li data-name="myPost">myPost</li>
+          {me._id === userId.current ? (
+            <li data-name="feedback">feedback</li>
           ) : (
-            mainPosts.map((post) => (
-                <PostCard
-                  key={post._id}
-                  postId={post._id}
-                  post={post}
-                  onClick={onClickStartPost}
-                  mode={'post'}
-                />
-            ))
+            ''
           )}
-        </section>
-      </AppLayout>
-      {modal && (
-        <StartPostModal
-          postId={selectedPostId}
-          isLogin={Boolean(me)}
-          resetPost={() => setSelectedPostId('')}
-          modal={modal}
-          onModal={() => setModal(false)}
-        />
-      )}
-    </>
+          <li data-name="star">star</li>
+        </ul>
+      </nav>
+      <section>
+          <PostCardList
+            posts={selectedCategory === 'feedback' ? feedbackPosts : mainPosts}
+            me={me}
+            isFeedbackPost={selectedCategory === 'feedback' ? true : false}
+          />
+      </section>
+    </AppLayout>
   );
 };
 

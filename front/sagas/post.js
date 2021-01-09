@@ -24,7 +24,6 @@ import {
 } from '../reducers/post';
 
 function loadUserPostsAPI(data) {
-  console.log(data, 'loadUserPostsAPI data');
   return axios.get(`/posts/${data.userId}`, {
     params: {
       lastId: data.lastId,
@@ -36,7 +35,7 @@ function loadUserPostsAPI(data) {
 function* loadUserPosts(action) {
   try {
     const result = yield call(loadUserPostsAPI, action.data);
-    console.log('loadUserPosts', result);
+    console.log(result, 'loadUserPosts');
     yield put({
       type: LOAD_USER_POSTS_SUCCESS,
       data: {
@@ -59,7 +58,6 @@ function loadPostsAPI(data) {
     params: {
       lastId: data.lastId,
       category: data.category.name,
-      // isSame: data.category.isSame,
     },
   });
 }
