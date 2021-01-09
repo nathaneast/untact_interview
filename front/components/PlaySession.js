@@ -60,7 +60,7 @@ const PlaySession = ({
     socketEmits.endGoogleCloudStream('final');
     setIsEndSession(true);
     alert('세션 끝');
-  }, []);
+  }, [sessionTitle]);
 
   const onClick = useCallback(() => {
     console.log('버튼 클릭 다음문제');
@@ -141,6 +141,7 @@ PlaySession.propTypes = {
   setIsEndSession: PropTypes.func.isRequired,
   saveTimeStamp: PropTypes.func.isRequired,
   saveBlob: PropTypes.func.isRequired,
+  sessionTitle: PropTypes.string.isRequired,
 };
 
 export default PlaySession;
