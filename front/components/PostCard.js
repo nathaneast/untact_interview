@@ -11,6 +11,9 @@ const PostCard = ({
   star,
   onClick,
   moveUserProfile,
+  isStarUser,
+  onStarHandler,
+  // isLogin,
 }) => (
   <Card
     title={title}
@@ -22,12 +25,11 @@ const PostCard = ({
     }
   >
     <p>{desc}</p>
+    <div onClick={() => onStarHandler(postId)}>
+      <span>{isStarUser(star) ? '까만별' : '하얀별'}</span>
+      <span>star: {star.length}</span>
+    </div>
     <Button onClick={() => onClick(postId)}>세션 시작</Button>
-    {/* {feedbackMode ? (
-      <Button onClick={() => onClick(postId)}>피드백 보기</Button>
-    ) : (
-      <Button onClick={() => onClick(postId)}>세션 시작</Button>
-    )} */}
   </Card>
 );
 
@@ -40,6 +42,9 @@ PostCard.propTypes = {
   star: PropTypes.array.isRequired,
   onClick: PropTypes.func.isRequired,
   moveUserProfile: PropTypes.func.isRequired,
+  isStarUser: PropTypes.func.isRequired,
+  onStarHandler: PropTypes.func.isRequired,
+  // isLogin: PropTypes.bool.isRequired,
 };
 
 export default PostCard;

@@ -80,4 +80,37 @@ router.get('/:postId', isLoggedIn, async (req, res, next) => {
   }
 });
 
+router.patch('/:postId/star', isLoggedIn, async (req, res, next) => {
+  try {
+    const { postId } = req.params;
+    const { userId } = req.body;
+    console.log(postId, userId, 'star server');
+
+    const post = await Post.findById(postId);
+
+    console.log(post, 'post')
+    // const isUser = post.star.some((user) => user === userId);
+
+    // if (isUser) {
+    //   const p = await pull.findByIdAndUpdate(postId, {
+    //     $push: {
+    //       star: userId,
+    //     },
+    //   }).save();
+    //   console.log(p);
+    // } else {
+    //   const p = await Post.findByIdAndUpdate(postId, {
+    //     $push: {
+    //       star: userId,
+    //     },
+    //   }).save();
+    //   console.log(p);
+    // }
+
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
 module.exports = router;

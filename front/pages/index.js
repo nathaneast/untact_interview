@@ -81,11 +81,7 @@ const Home = () => {
           <li data-name="others">others</li>
         </ul>
       </nav>
-      <PostCardList
-        posts={mainPosts}
-        me={me}
-        isFeedbackPost={false}
-      />
+      <PostCardList posts={mainPosts} me={me} isFeedbackPost={false} />
     </AppLayout>
   );
 };

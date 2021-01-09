@@ -26,6 +26,9 @@ export const initialState = {
   loadUserPostsLoading: false,
   loadUserPostsError: null,
   loadUserPostsDone: false,
+  onStarPostLoading: false,
+  onStarPostError: null,
+  onStarPostDone: false,
 };
 
 export const UPLOAD_FEEDBACK_POST_REQUEST = 'UPLOAD_FEEDBACK_POST_REQUEST';
@@ -51,6 +54,10 @@ export const LOAD_POSTS_FAILURE = 'LOAD_POSTS_FAILURE';
 export const LOAD_USER_POSTS_REQUEST = 'LOAD_USER_POSTS_REQUEST';
 export const LOAD_USER_POSTS_SUCCESS = 'LOAD_USER_POSTS_SUCCESS';
 export const LOAD_USER_POSTS_FAILURE = 'LOAD_USER_POSTS_FAILURE';
+
+export const ON_STAR_POST_REQUEST = 'ON_STAR_POST_REQUEST';
+export const ON_STAR_POST_SUCCESS = 'ON_STAR_POST_SUCCESS';
+export const ON_STAR_POST_FAILURE = 'ON_STAR_POST_FAILURE';
 
 const reducer = (state = initialState, action) => {
   return produce(state, (draft) => {
@@ -148,6 +155,19 @@ const reducer = (state = initialState, action) => {
       case UPLOAD_POST_FAILURE:
         draft.uploadPostLoading = false;
         draft.uploadPostError = action.error;
+        break;
+      case ON_STAR_POST_REQUEST:
+        draft.onStarPostLoading = true;
+        draft.onStarPostError = null;
+        draft.onStarPostDone = false;
+        break;
+      case ON_STAR_POST_SUCCESS:
+        draft.onStarPostLoading = false;
+        draft.onStarPostDone = true;
+        break;
+      case ON_STAR_POST_FAILURE:
+        draft.onStarPostLoading = false;
+        draft.onStarPostError = action.error;
         break;
       default:
         break;

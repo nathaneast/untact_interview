@@ -18,16 +18,16 @@ const PostSchema = new mongoose.Schema(
     //   type: String,
     //   default: dayjs().format("YYYY-MM-DD"),
     // },
-    // star: { 
-    //   type: mongoose.Schema.Types.Mixed, 
-    //   default: {},
-    // },
-    star: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "user",
-      },
-    ],
+    star: { 
+      type: mongoose.Schema.Types.Mixed, 
+      default: [],
+    },
+    // star: [
+    //   {
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: "user",
+    //   },
+    // ],
     creator: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "user",

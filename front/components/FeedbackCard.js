@@ -16,7 +16,7 @@ const FeedbackCard = ({ feedbackPostId, sessionPost, onClick }) => {
       category={sessionPost.category.name}
       email={sessionPost.email}
       desc={sessionPost.desc}
-      // star={Object.keys(sessionPost.star).length}
+      star={sessionPost.star.length}
     />
   </article>
   );

@@ -1,7 +1,9 @@
 import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useRouter } from 'next/router';
+import { useDispatch } from 'react-redux';
 
+import { ON_STAR_POST_REQUEST } from '../reducers/post';
 import StartPostModal from './modal/StartPostModal';
 import PostCard from './PostCard';
 import FeedbackCard from './FeedbackCard';
@@ -10,6 +12,7 @@ const PostCardList = ({ posts, me, isFeedbackPost }) => {
   const [modal, setModal] = useState(false);
   const [selectedPostId, setSelectedPostId] = useState('');
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const onClickStartPost = useCallback((postId) => {
     setModal(true);
@@ -24,6 +27,20 @@ const PostCardList = ({ posts, me, isFeedbackPost }) => {
     router.push(`/user/${userId}`);
   });
 
+  const onStarHandler = useCallback((postId) => {
+    dispatch({
+      type: ON_STAR_POST_REQUEST,
+      data: {
+        userId: me?._id,
+        postId,
+      },
+    });
+  }, [me]);
+
+  const isStarUser = useCallback((staredUsers) => {
+    return staredUsers.some((user) => user === me._id);
+  });
+
   // console.log(posts, me, isFeedbackPost, '포스트카드리스트 posts, me, isFeedbackPost')
 
   return (
@@ -31,27 +48,28 @@ const PostCardList = ({ posts, me, isFeedbackPost }) => {
       <section>
         {posts.map((post) => {
           // console.log(post, 'postCardList posts map');
-          return (
-            isFeedbackPost ? (
-              <FeedbackCard
-                key={post._id}
-                feedbackPostId={post._id}
-                sessionPost={post.sessionPost}
-                onClick={onClickRedirectFeedback}
-              />
-            ) : (
+          return isFeedbackPost ? (
+            <FeedbackCard
+              key={post._id}
+              feedbackPostId={post._id}
+              sessionPost={post.sessionPost}
+              onClick={onClickRedirectFeedback}
+            />
+          ) : (
               <PostCard
                 key={post._id}
                 postId={post._id}
                 userId={post.creator._id}
+                isLogin={me ? true : false}
                 title={post.title}
                 desc={post.desc}
                 email={post.creator.email}
                 star={post.star}
                 onClick={onClickStartPost}
                 moveUserProfile={onClickRedirectUser}
+                isStarUser={isStarUser}
+                onStarHandler={onStarHandler}
               />
-            )
           );
         })}
       </section>

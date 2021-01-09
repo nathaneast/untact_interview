@@ -21,7 +21,38 @@ import {
   LOAD_USER_POSTS_REQUEST,
   LOAD_USER_POSTS_SUCCESS,
   LOAD_USER_POSTS_FAILURE,
+  ON_STAR_POST_REQUEST,
+  ON_STAR_POST_SUCCESS,
+  ON_STAR_POST_FAILURE,
 } from '../reducers/post';
+
+function onStarPostAPI(data) {
+  console.log(data, 'onStarPostAPI')
+  return axios.patch(`/post/${data.postId}/star`, {
+    userId: data.userId,
+  });
+}
+
+function* onStarPost(action) {
+  try {
+    const result = yield call(onStarPostAPI, action.data);
+    console.log(result, 'onStarPost');
+    // yield put({
+    //   type: ON_STAR_POST_SUCCESS,
+    //   data: {
+    //     result: result.data,
+    //     isSame: action.data.isSame,
+    //     category: action.data.category,
+    //   },
+    // });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: ON_STAR_POST_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
 
 function loadUserPostsAPI(data) {
   return axios.get(`/posts/${data.userId}`, {
@@ -170,6 +201,10 @@ function* loadPost(action) {
   }
 }
 
+function* watchOnStarPost() {
+  yield takeLatest(ON_STAR_POST_REQUEST, onStarPost);
+}
+
 function* watchLoadUserPosts() {
   yield takeLatest(LOAD_USER_POSTS_REQUEST, loadUserPosts);
 }
@@ -196,6 +231,7 @@ function* watchUploadPost() {
 
 export default function* userSaga() {
   yield all([
+    fork(watchOnStarPost),
     fork(watchLoadPosts),
     fork(watchUploadPost),
     fork(watchLoadFeedbackPost),
