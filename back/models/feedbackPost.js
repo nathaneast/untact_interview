@@ -21,7 +21,7 @@ const FeedbackPostSchema = new mongoose.Schema(
     },
     sessionPost: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'post',
+      ref: 'sessionPost',
     },
   },
   {

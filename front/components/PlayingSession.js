@@ -43,8 +43,8 @@ const PlaySession = ({
         recorder.current.stream = stream;
         recorder.current.startRecording();
 
-        // socket(setSpeech, setSaveSpeech, saveTimeStamp);
-        // socketEmits.startGoogleCloudStream();
+        socket(setSpeech, setSaveSpeech, saveTimeStamp);
+        socketEmits.startGoogleCloudStream();
       });
   }, []);
 
@@ -99,7 +99,7 @@ const PlaySession = ({
     isRunning ? 1000 : null,
   );
 
-  console.log(questions, sessionTitle, 'PlaySession');
+  // console.log(questions, sessionTitle, 'PlaySession');
 
   return (
     <>

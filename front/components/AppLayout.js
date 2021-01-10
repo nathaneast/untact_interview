@@ -30,7 +30,7 @@ const AppLayout = ({ children }) => {
           {me ? (
             <>
               <Menu.Item>
-                <Link href="/postWrite">
+                <Link href="/writeSessionPost">
                   <a>글쓰기</a>
                 </Link>
               </Menu.Item>

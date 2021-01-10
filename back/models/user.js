@@ -20,10 +20,10 @@ const UserSchema = new mongoose.Schema(
     //   type: String,
     //   default: dayjs().format("YYYY-MM-DD"),
     // },
-    posts: [
+    sessionPosts: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "post",
+        ref: "sessionPost",
       },
     ],
     feedbackPosts: [
@@ -35,7 +35,7 @@ const UserSchema = new mongoose.Schema(
     starPosts: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "post",
+        ref: "sessionPost",
       },
     ],
   },

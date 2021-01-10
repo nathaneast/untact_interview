@@ -3,21 +3,21 @@ import axios from 'axios';
 import Router from 'next/router';
 
 import {
-  UPLOAD_POST_FAILURE,
-  UPLOAD_POST_REQUEST,
-  UPLOAD_POST_SUCCESS,
+  UPLOAD_SESSION_POST_FAILURE,
+  UPLOAD_SESSION_POST_REQUEST,
+  UPLOAD_SESSION_POST_SUCCESS,
   UPLOAD_FEEDBACK_POST_REQUEST,
   UPLOAD_FEEDBACK_POST_SUCCESS,
   UPLOAD_FEEDBACK_POST_FAILURE,
-  LOAD_POST_REQUEST,
-  LOAD_POST_SUCCESS,
-  LOAD_POST_FAILURE,
+  LOAD_SESSION_POST_REQUEST,
+  LOAD_SESSION_POST_SUCCESS,
+  LOAD_SESSION_POST_FAILURE,
   LOAD_FEEDBACK_POST_SUCCESS,
   LOAD_FEEDBACK_POST_REQUEST,
   LOAD_FEEDBACK_POST_FAILURE,
-  LOAD_POSTS_REQUEST,
-  LOAD_POSTS_SUCCESS,
-  LOAD_POSTS_FAILURE,
+  LOAD_SESSION_POSTS_REQUEST,
+  LOAD_SESSION_POSTS_SUCCESS,
+  LOAD_SESSION_POSTS_FAILURE,
   LOAD_USER_POSTS_REQUEST,
   LOAD_USER_POSTS_SUCCESS,
   LOAD_USER_POSTS_FAILURE,
@@ -28,7 +28,7 @@ import {
 
 function onStarPostAPI(data) {
   console.log(data, 'onStarPostAPI');
-  return axios.patch(`/post/${data.postId}/star`, {
+  return axios.patch(`/sessionPost/${data.postId}/star`, {
     userId: data.userId,
   });
 }
@@ -54,7 +54,7 @@ function loadUserPostsAPI(data) {
   return axios.get(`/posts/${data.userId}`, {
     params: {
       lastId: data.lastId,
-      category: data.category,
+      category: data.category.name,
     },
   });
 }
@@ -67,8 +67,8 @@ function* loadUserPosts(action) {
       type: LOAD_USER_POSTS_SUCCESS,
       data: {
         result: result.data,
-        isSame: action.data.isSame,
-        category: action.data.category,
+        isSame: action.data.category.isSame,
+        category: action.data.category.name,
       },
     });
   } catch (err) {
@@ -80,7 +80,7 @@ function* loadUserPosts(action) {
   }
 }
 
-function loadPostsAPI(data) {
+function loadSessionPostsAPI(data) {
   return axios.get('/posts', {
     params: {
       lastId: data.lastId,
@@ -89,12 +89,12 @@ function loadPostsAPI(data) {
   });
 }
 
-function* loadPosts(action) {
+function* loadSessionPosts(action) {
   try {
-    const result = yield call(loadPostsAPI, action.data);
-    console.log('loadPosts', result);
+    const result = yield call(loadSessionPostsAPI, action.data);
+    console.log('loadSessionPosts', result);
     yield put({
-      type: LOAD_POSTS_SUCCESS,
+      type: LOAD_SESSION_POSTS_SUCCESS,
       data: {
         result: result.data,
         isSame: action.data.category.isSame,
@@ -103,7 +103,7 @@ function* loadPosts(action) {
   } catch (err) {
     console.error(err);
     yield put({
-      type: LOAD_POSTS_FAILURE,
+      type: LOAD_SESSION_POSTS_FAILURE,
       error: err.response.data,
     });
   }
@@ -132,23 +132,23 @@ function* uploadFeedbackPost(action) {
   }
 }
 
-function uploadPostAPI(data) {
-  return axios.post('/post', data);
+function uploadSessionPostAPI(data) {
+  return axios.post('/sessionPost', data);
 }
 
-function* uploadPost(action) {
+function* uploadSessionPost(action) {
   try {
-    const result = yield call(uploadPostAPI, action.data);
+    const result = yield call(uploadSessionPostAPI, action.data);
     console.log('uploadPost', result);
     yield put({
-      type: UPLOAD_POST_SUCCESS,
+      type: UPLOAD_SESSION_POST_SUCCESS,
       data: result.data,
     });
     yield call(Router.push, '/');
   } catch (err) {
     console.error(err);
     yield put({
-      type: UPLOAD_POST_FAILURE,
+      type: UPLOAD_SESSION_POST_FAILURE,
       error: err.response.data,
     });
     yield call(Router.push, '/');
@@ -176,22 +176,22 @@ function* loadFeedbackPost(action) {
   }
 }
 
-function loadPostAPI(data) {
-  return axios.get(`/post/${data}`);
+function loadSessionPostAPI(data) {
+  return axios.get(`/sessionPost/${data}`);
 }
 
-function* loadPost(action) {
+function* loadSessionPost(action) {
   try {
-    const result = yield call(loadPostAPI, action.data);
+    const result = yield call(loadSessionPostAPI, action.data);
     console.log('loadPost', result);
     yield put({
-      type: LOAD_POST_SUCCESS,
+      type: LOAD_SESSION_POST_SUCCESS,
       data: result.data,
     });
   } catch (err) {
     console.error(err);
     yield put({
-      type: LOAD_POST_FAILURE,
+      type: LOAD_SESSION_POST_FAILURE,
       error: err.response.data,
     });
   }
@@ -205,34 +205,34 @@ function* watchLoadUserPosts() {
   yield takeLatest(LOAD_USER_POSTS_REQUEST, loadUserPosts);
 }
 
-function* watchLoadPosts() {
-  yield takeLatest(LOAD_POSTS_REQUEST, loadPosts);
+function* watchLoadSessionPosts() {
+  yield takeLatest(LOAD_SESSION_POSTS_REQUEST, loadSessionPosts);
 }
 
 function* watchLoadFeedbackPost() {
   yield takeLatest(LOAD_FEEDBACK_POST_REQUEST, loadFeedbackPost);
 }
 
-function* watchLoadPost() {
-  yield takeLatest(LOAD_POST_REQUEST, loadPost);
+function* watchLoadSessionPost() {
+  yield takeLatest(LOAD_SESSION_POST_REQUEST, loadSessionPost);
 }
 
 function* watchUploadFeedbackPost() {
   yield takeLatest(UPLOAD_FEEDBACK_POST_REQUEST, uploadFeedbackPost);
 }
 
-function* watchUploadPost() {
-  yield takeLatest(UPLOAD_POST_REQUEST, uploadPost);
+function* watchUploadSessionPost() {
+  yield takeLatest(UPLOAD_SESSION_POST_REQUEST, uploadSessionPost);
 }
 
 export default function* userSaga() {
   yield all([
     fork(watchOnStarPost),
-    fork(watchLoadPosts),
-    fork(watchUploadPost),
-    fork(watchLoadFeedbackPost),
-    fork(watchLoadPost),
-    fork(watchUploadFeedbackPost),
     fork(watchLoadUserPosts),
+    fork(watchLoadSessionPosts),
+    fork(watchUploadSessionPost),
+    fork(watchLoadFeedbackPost),
+    fork(watchUploadFeedbackPost),
+    fork(watchLoadSessionPost),
   ]);
 }

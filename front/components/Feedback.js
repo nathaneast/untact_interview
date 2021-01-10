@@ -6,7 +6,7 @@ import Head from 'next/head';
 import FeedbackFormCard from './FeedbackFormCard';
 import TimeStampCard from './TimeStampCard';
 import { UPLOAD_FEEDBACK_POST_REQUEST } from '../reducers/post';
-import PlayedSessionPostCard from './PlayedSessionPostCard';
+import PlayedSessionCard from './PlayedSessionCard';
 
 // 모든 피드백 입력 되었는지 폼 검사 로직 추가
 // 서브밋시 작성할껀지 모달 추가
@@ -85,7 +85,7 @@ const Feedback = ({
               />
             ))}
         </section>
-        <PlayedSessionPostCard
+        <PlayedSessionCard
           title={title}
           category={category}
           email={email}

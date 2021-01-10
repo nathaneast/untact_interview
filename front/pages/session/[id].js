@@ -6,15 +6,15 @@ import { useRouter } from 'next/router';
 
 import wrapper from '../../store/configureStore';
 import { LOAD_MY_INFO_REQUEST } from '../../reducers/user';
-import { LOAD_POST_REQUEST } from '../../reducers/post';
-import PlaySession from '../../components/PlaySession';
+import { LOAD_SESSION_POST_REQUEST } from '../../reducers/post';
+import PlayingSession from '../../components/PlayingSession';
 import Feedback from '../../components/Feedback';
 import { socketEmits } from '../../socket';
 
 // 다음 버튼 클릭시 timer 바꾸는것말고 일정하게 바뀌도록 고민
 // 레코딩 화면 나올때 문제,시간 같이 나오도록
-const Post = () => {
-  const { singlePost, loadPostDone } = useSelector((state) => state.post);
+const SessionPost = () => {
+  const { singlePost } = useSelector((state) => state.post);
   const { me } = useSelector((state) => state.user);
   const router = useRouter();
 
@@ -38,11 +38,11 @@ const Post = () => {
     };
   }, []);
 
-  // console.log(singlePost, 'Post singlePost');
+  console.log(singlePost, 'Post singlePost');
 
   return (
     <>
-      {loadPostDone && isEndSession ? (
+      {singlePost && (isEndSession ? (
         <Feedback
           blob={blob}
           timeStamps={timeStamps}
@@ -56,14 +56,14 @@ const Post = () => {
           creatorId={me._id}
         />
       ) : (
-        <PlaySession
+        <PlayingSession
           questions={singlePost.questions}
           setIsEndSession={setIsEndSession}
           saveBlob={setBlob}
           saveTimeStamp={setTimeStamps}
           sessionTitle={singlePost.title}
         />
-      )}
+      ))}
     </>
   );
 };
@@ -81,7 +81,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
       type: LOAD_MY_INFO_REQUEST,
     });
     context.store.dispatch({
-      type: LOAD_POST_REQUEST,
+      type: LOAD_SESSION_POST_REQUEST,
       data: context.params.id,
     });
     context.store.dispatch(END);
@@ -90,4 +90,4 @@ export const getServerSideProps = wrapper.getServerSideProps(
   },
 );
 
-export default Post;
+export default SessionPost;

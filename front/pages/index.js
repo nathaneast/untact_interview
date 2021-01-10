@@ -3,16 +3,16 @@ import { useDispatch, useSelector } from 'react-redux';
 import { END } from 'redux-saga';
 import axios from 'axios';
 
-import { LOAD_POSTS_REQUEST } from '../reducers/post';
+import { LOAD_SESSION_POSTS_REQUEST } from '../reducers/post';
 import { LOAD_MY_INFO_REQUEST } from '../reducers/user';
 import AppLayout from '../components/AppLayout';
 import wrapper from '../store/configureStore';
-import PostCardList from '../components/PostCardList';
+import SessionCardList from '../components/SessionCardList';
 
 const Home = () => {
   const dispatch = useDispatch();
   const { me } = useSelector((state) => state.user);
-  const { mainPosts, hasMorePosts, loadPostsLoading } = useSelector(
+  const { sessionPosts, hasMorePosts, loadPostsLoading } = useSelector(
     (state) => state.post,
   );
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -24,10 +24,10 @@ const Home = () => {
         document.documentElement.scrollHeight - 100
       ) {
         if (hasMorePosts && !loadPostsLoading) {
-          const lastId = mainPosts[mainPosts.length - 1]?._id;
+          const lastId = sessionPosts[sessionPosts.length - 1]?._id;
           console.log(lastId, 'lastId');
           dispatch({
-            type: LOAD_POSTS_REQUEST,
+            type: LOAD_SESSION_POSTS_REQUEST,
             data: {
               category: {
                 name: selectedCategory,
@@ -43,7 +43,7 @@ const Home = () => {
     return () => {
       window.removeEventListener('scroll', onScroll);
     };
-  }, [mainPosts, hasMorePosts, loadPostsLoading, selectedCategory]);
+  }, [sessionPosts, hasMorePosts, loadPostsLoading, selectedCategory]);
 
   const onSelectCategory = useCallback(
     (e) => {
@@ -52,7 +52,7 @@ const Home = () => {
         selectedCategory !== e.target.dataset.name
       ) {
         dispatch({
-          type: LOAD_POSTS_REQUEST,
+          type: LOAD_SESSION_POSTS_REQUEST,
           data: {
             category: {
               name: e.target.dataset.name,
@@ -67,8 +67,8 @@ const Home = () => {
     [selectedCategory],
   );
 
-  // console.log(selectedCategory, 'selectedCategory');
-  // console.log(mainPosts, 'Home');
+  // console.log(me, 'home me');
+  // console.log(sessionPosts, 'Home, sessionPosts ');
 
   return (
     <AppLayout>
@@ -81,7 +81,7 @@ const Home = () => {
           <li data-name="others">others</li>
         </ul>
       </nav>
-      <PostCardList posts={mainPosts} me={me} isFeedbackPost={false} />
+      <SessionCardList posts={sessionPosts} meId={me?._id} />
     </AppLayout>
   );
 };
@@ -98,7 +98,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
       type: LOAD_MY_INFO_REQUEST,
     });
     context.store.dispatch({
-      type: LOAD_POSTS_REQUEST,
+      type: LOAD_SESSION_POSTS_REQUEST,
       data: {
         category: {
           name: 'all',

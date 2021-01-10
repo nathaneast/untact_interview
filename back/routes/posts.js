@@ -1,9 +1,9 @@
 const express = require('express');
 
-const Post = require('../models/post');
+const SessionPost = require('../models/sessionPost');
 const Category = require('../models/category');
 const User = require('../models/user');
-const { isLoggedIn, isNotLoggedIn } = require('./middlewares');
+// const { isLoggedIn, isNotLoggedIn } = require('./middlewares');
 
 const router = express.Router();
 
@@ -12,7 +12,7 @@ router.get('/', async (req, res, next) => {
     const { lastId, category } = req.query;
     console.log(lastId, category, 'GET posts / req.query');
     if (category === 'all') {
-      const allPosts = await Post.find(lastId ? { _id: { $lt: lastId } } : null)
+      const allPosts = await SessionPost.find(lastId ? { _id: { $lt: lastId } } : null)
         .limit(5)
         .populate('creator', 'nickname email')
         .populate('category', 'name')
@@ -39,7 +39,7 @@ router.get('/', async (req, res, next) => {
 
       console.log('categoryPosts', categoryPosts);
 
-      return res.status(200).send(categoryPosts.posts);
+      return res.status(200).send(categoryPosts ? categoryPosts.posts : []);
     }
   } catch (error) {
     console.error(error);
@@ -83,9 +83,9 @@ router.get('/:userId', async (req, res, next) => {
       });
 
       console.log(userPosts.feedbackPosts, 'feedback Post');
-      return res.status(200).send(userPosts.feedbackPosts);
+      return res.status(200).send(userPosts.feedbackPosts ? userPosts.feedbackPosts : []);
     } else {
-      const targetPost = category === 'myPost' ? 'posts' : 'starPosts';
+      const targetPost = category === 'writePosts' ? 'sessionPosts' : 'starPosts';
       const match = lastId ? { _id: { $lt: lastId } } : null;
       const userPosts = await User.findById(userId)
       .select('_id')
@@ -109,7 +109,7 @@ router.get('/:userId', async (req, res, next) => {
       ],
       });
       console.log(userPosts[targetPost], 'userPosts Post');
-      return res.status(200).send(userPosts[targetPost]);
+      return res.status(200).send(userPosts[targetPost] ? userPosts[targetPost] : []);
     }
   } catch (error) {
     console.error(error);

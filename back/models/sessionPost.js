@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 // const dayjs = require("dayjs");
 
-const PostSchema = new mongoose.Schema(
+const SessionPostSchema = new mongoose.Schema(
   {
     title: {
       type: String,
@@ -44,6 +44,6 @@ const PostSchema = new mongoose.Schema(
   }
 );
 
-const Post = mongoose.model("post", PostSchema);
+const SessionPost = mongoose.model("sessionPost", SessionPostSchema);
 
-module.exports = Post;
+module.exports = SessionPost;

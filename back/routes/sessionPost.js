@@ -1,6 +1,6 @@
 const express = require('express');
 
-const Post = require('../models/post');
+const SessionPost = require('../models/sessionPost');
 const Category = require('../models/category');
 const User = require('../models/user');
 const { isLoggedIn, isNotLoggedIn } = require('./middlewares');
@@ -9,7 +9,7 @@ const router = express.Router();
 
 router.get('/', async (req, res, next) => {
   try {
-    const allPosts = await Post.find()
+    const allPosts = await SessionPost.find()
       .populate('creator', 'nickname email')
       .populate('category', 'name')
       .sort({ createdAt: -1 });
@@ -25,7 +25,7 @@ router.get('/', async (req, res, next) => {
 router.post('/', isLoggedIn, async (req, res, next) => {
   try {
     const { creator, questions, title, desc, category } = req.body;
-    const newPost = await Post.create({
+    const newPost = await SessionPost.create({
       creator,
       questions,
       title,
@@ -35,7 +35,7 @@ router.post('/', isLoggedIn, async (req, res, next) => {
       name: category,
     });
     if (findCategory) {
-      await Post.findByIdAndUpdate(newPost._id, {
+      await SessionPost.findByIdAndUpdate(newPost._id, {
         category: findCategory._id,
       });
       await Category.findByIdAndUpdate(findCategory._id, {
@@ -47,7 +47,7 @@ router.post('/', isLoggedIn, async (req, res, next) => {
       const newCategory = await Category.create({
         name: category,
       });
-      await Post.findByIdAndUpdate(newPost._id, {
+      await SessionPost.findByIdAndUpdate(newPost._id, {
         category: newCategory._id,
       });
       await Category.findByIdAndUpdate(newCategory._id, {
@@ -58,7 +58,7 @@ router.post('/', isLoggedIn, async (req, res, next) => {
     }
     await User.findByIdAndUpdate(creator, {
       $push: {
-        posts: newPost._id,
+        sessionPosts: newPost._id,
       },
     });
     return res.status(201).send('ok');
@@ -70,7 +70,7 @@ router.post('/', isLoggedIn, async (req, res, next) => {
 
 router.get('/:postId', isLoggedIn, async (req, res, next) => {
   try {
-    const post = await Post.findById(req.params.postId)
+    const post = await SessionPost.findById(req.params.postId)
       .populate('creator', 'nickname email')
       .populate('category', 'name');
     return res.send(post);
@@ -85,20 +85,38 @@ router.patch('/:postId/star', isLoggedIn, async (req, res, next) => {
     const { postId } = req.params;
     const { userId } = req.body;
 
-    const post = await Post.findById(postId);
+    const post = await SessionPost.findById(postId);
     const isStaredUser = post.star.some((user) => user === userId);
-    const update = isStaredUser
-      ? {
-          $pull: {
-            star: userId,
-          },
-        }
-      : {
-          $push: {
-            star: userId,
-          },
-        };
-    const updatePost = await Post.findByIdAndUpdate(postId, update, { new: true });
+    
+    console.log(isStaredUser, 'isStaredUser');
+    
+    const update = (field, id) =>
+      isStaredUser
+        ? {
+            $pull: {
+              [field]: id,
+            },
+          }
+        : {
+            $push: {
+              [field]: id,
+            },
+          };
+
+    const updatePost = await SessionPost.findByIdAndUpdate(
+      postId,
+      update('star', userId),
+      { new: true }
+    );
+    
+    const updateUser = await User.findByIdAndUpdate(
+      userId,
+      update('starPosts', postId),
+      { new: true }
+    );
+
+    console.log(updatePost, 'updatePost');
+    console.log(updateUser, 'updateUser');
 
     return res.status(200).send({
       postId: updatePost._id,

@@ -10,7 +10,8 @@ const router = express.Router();
 router.get('/', async (req, res, next) => {
   try {
     if (req.user) {
-      const user = await User.findById(req.user.id).select('-password');
+      const user = await User.findById(req.user.id)
+        .select('email nickname');
       res.status(200).json(user);
     } else {
       res.status(200).json(null);
@@ -55,9 +56,9 @@ router.post('/login', isNotLoggedIn, (req, res, next) => {
         console.error(loginErr);
         return next(loginErr);
       }
-      const fullUserWithoutPassword = await User.findById(user._id).select(
-        '-password'
-      );
+      const fullUserWithoutPassword = await User.findById(user._id)
+        .select('email nickname');
+
       return res.status(200).json(fullUserWithoutPassword);
     });
   })(req, res, next);

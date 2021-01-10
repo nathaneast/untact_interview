@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Button, Card } from 'antd';
 
-const PostCard = ({
+const SessionCard = ({
   postId,
   userId,
   title,
@@ -26,14 +26,14 @@ const PostCard = ({
   >
     <p>{desc}</p>
     <div onClick={() => onStarHandler(postId)}>
-      <span>{isStarUser(star) ? '까만별' : '하얀별'}</span>
-      <span>star: {star.length}</span>
+      <span>{isStarUser(star) ? '★' : '☆'}</span>
+      <span>{ star.length}</span>
     </div>
     <Button onClick={() => onClick(postId)}>세션 시작</Button>
   </Card>
 );
 
-PostCard.propTypes = {
+SessionCard.propTypes = {
   postId: PropTypes.string.isRequired,
   userId: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
@@ -47,4 +47,4 @@ PostCard.propTypes = {
   // isLogin: PropTypes.bool.isRequired,
 };
 
-export default PostCard;
+export default SessionCard;

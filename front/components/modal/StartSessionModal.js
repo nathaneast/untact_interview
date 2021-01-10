@@ -3,13 +3,13 @@ import PropTypes from 'prop-types';
 import { Modal } from 'antd';
 import { useRouter } from 'next/router';
 
-const StartPostModal = ({ postId, resetPost, onModal, isLogin, modal }) => {
+const StartSessionModal = ({ postId, resetPost, onModal, isLogin, modal }) => {
   const router = useRouter();
 
   // not login 텍스트 에러로 처리하기
   const onStart = useCallback(() => {
     if (isLogin) {
-      router.push(`/post/${postId}`);
+      router.push(`/session/${postId}`);
     } else {
       alert('로그인 후에 이용 가능 합니다.');
     }
@@ -29,7 +29,7 @@ const StartPostModal = ({ postId, resetPost, onModal, isLogin, modal }) => {
   );
 };
 
-StartPostModal.propTypes = {
+StartSessionModal.propTypes = {
   postId: PropTypes.string.isRequired,
   resetPost: PropTypes.func.isRequired,
   onModal: PropTypes.func.isRequired,
@@ -37,4 +37,4 @@ StartPostModal.propTypes = {
   modal: PropTypes.bool.isRequired,
 };
 
-export default StartPostModal;
+export default StartSessionModal;

@@ -13,7 +13,7 @@ const config = require('./config');
 const { MONGO_URI, PORT, COOKIE_SECRET } = config;
 
 const userRouter = require('./routes/user');
-const postRouter = require('./routes/post');
+const sessionPostRouter = require('./routes/sessionPost');
 const feedbackPostRouter = require('./routes/feedbackPost');
 const postsRouter = require('./routes/posts');
 const passportConfig = require('./passport');
@@ -70,7 +70,7 @@ app.get('/', (req, res) => {
   res.send('untect_interview_backend_server !');
 });
 app.use('/user', userRouter);
-app.use('/post', postRouter);
+app.use('/sessionPost', sessionPostRouter);
 app.use('/feedbackPost', feedbackPostRouter);
 app.use('/posts', postsRouter);
 

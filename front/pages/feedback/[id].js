@@ -9,11 +9,11 @@ import { LOAD_FEEDBACK_POST_REQUEST } from '../../reducers/post';
 import TimeStampCard from '../../components/TimeStampCard';
 import AppLayout from '../../components/AppLayout';
 import FeedbackFormCard from '../../components/FeedbackFormCard';
-import PlayedSessionPostCard from '../../components/PlayedSessionPostCard';
+import PlayedSessionCard from '../../components/PlayedSessionCard';
 
 const feedbackPost = () => {
   // const dispatch = useDispatch();
-  const { me } = useSelector((state) => state.user);
+  // const { me } = useSelector((state) => state.user);
   const { singlePost } = useSelector((state) => state.post);
 
   const [videoBlob, setVideoBlob] = useState(null);
@@ -25,10 +25,13 @@ const feedbackPost = () => {
     videoUpload.current.click();
   }, [videoUpload.current]);
 
-  const onChangeVideo = useCallback((e) => {
-    console.log(e.target.files, 'onChangeVideo target files');
-    setVideoBlob(e.target.files[0]);
-  }, [setVideoBlob]);
+  const onChangeVideo = useCallback(
+    (e) => {
+      console.log(e.target.files, 'onChangeVideo target files');
+      setVideoBlob(e.target.files[0]);
+    },
+    [setVideoBlob],
+  );
 
   const moveVideoTime = useCallback(
     (time) => {
@@ -68,7 +71,7 @@ const feedbackPost = () => {
         </article>
         <section>
           <h2>타임 스탬프</h2>
-          {singlePost && (
+          {singlePost &&
             singlePost.timeStamps.map((item, index) => (
               <TimeStampCard
                 key={index}
@@ -77,29 +80,28 @@ const feedbackPost = () => {
                 answerNumber={index + 1}
                 onClick={moveVideoTime}
               />
-            )))}
+            ))}
         </section>
-         <h2>세션 포스트 카드</h2>
+        <h2>세션 포스트 카드</h2>
         {singlePost && (
-          <PlayedSessionPostCard
+          <PlayedSessionCard
             title={singlePost.sessionPost.title}
             category={singlePost.sessionPost.category.name}
-            email={singlePost.sessionPost.email}
+            email={singlePost.sessionPost.creator.email}
             desc={singlePost.sessionPost.desc}
-            star={Object.keys(singlePost.sessionPost.star).length}
+            star={singlePost.sessionPost.star.length}
           />
         )}
-
         <section>
           {singlePost && (
             singlePost.sessionPost.questions.map((item, index) => (
               <FeedbackFormCard
                 key={index}
-                question={item}
                 answer={singlePost.timeStamps[index].text}
+                feedback={singlePost.feedbacks[index]}
                 FeedbackNumber={index + 1}
+                question={item}
                 writeMode={false}
-                feedback={singlePost.feedback}
               />
             )))}
         </section>

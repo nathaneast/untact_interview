@@ -8,20 +8,20 @@ import wrapper from '../../store/configureStore';
 import { LOAD_MY_INFO_REQUEST } from '../../reducers/user';
 import { LOAD_USER_POSTS_REQUEST } from '../../reducers/post';
 import AppLayout from '../../components/AppLayout';
-import PostCardList from '../../components/PostCardList';
+import SessionCardList from '../../components/SessionCardList';
+import FeedbackCardList from '../../components/FeedbackCardList';
 
 const User = () => {
   const dispatch = useDispatch();
   const { me } = useSelector((state) => state.user);
   const {
-    mainPosts,
+    sessionPosts,
     feedbackPosts,
     hasMorePosts,
     loadUserPostsLoading,
-    loadUserPostsDone,
   } = useSelector((state) => state.post);
 
-  const [selectedCategory, setSelectedCategory] = useState('myPost');
+  const [selectedCategory, setSelectedCategory] = useState('writePosts');
   const router = useRouter();
   const userId = useRef(router.asPath.split('/user/')[1]);
 
@@ -35,10 +35,12 @@ const User = () => {
           dispatch({
             type: LOAD_USER_POSTS_REQUEST,
             data: {
+              category: {
+                name: selectedCategory,
+                isSame: true,
+              },
               userId: userId.current,
-              lastId: mainPosts[mainPosts.length - 1]?._id,
-              category: selectedCategory,
-              isSame: true,
+              lastId: sessionPosts[sessionPosts.length - 1]?._id,
             },
           });
         }
@@ -48,7 +50,7 @@ const User = () => {
     return () => {
       window.removeEventListener('scroll', onScroll);
     };
-  }, [mainPosts, hasMorePosts, loadUserPostsLoading, selectedCategory]);
+  }, [sessionPosts, hasMorePosts, loadUserPostsLoading, selectedCategory]);
 
   const onSelectCategory = useCallback(
     (e) => {
@@ -59,10 +61,12 @@ const User = () => {
         dispatch({
           type: LOAD_USER_POSTS_REQUEST,
           data: {
+            category: {
+              name: e.target.dataset.name,
+              isSame: false,
+            },
             userId: userId.current,
             lastId: null,
-            category: e.target.dataset.name,
-            isSame: false,
           },
         });
         setSelectedCategory(e.target.dataset.name);
@@ -71,25 +75,27 @@ const User = () => {
     [selectedCategory],
   );
 
-  // console.log(mainPosts, 'User mainPosts');
-  // console.log(userId, 'User userId');
+  // console.log(me, 'User me');
+  console.log(sessionPosts, 'UserPage sessionPosts');
+  console.log(feedbackPosts, 'UserPage feedbackPosts');
+  // console.log(loadUserPostsDone, 'User loadUserPostsDone');
   // console.log(router.asPath, 'router.pathname');
 
   return (
     <AppLayout>
       <article>
         <label>user Profile</label>
-        <div>
+        {/* <div>
           <span>userName: {me.nickname}</span>
         </div>
         <div>
           <span>email: {me.email}</span>
-        </div>
+        </div> */}
       </article>
       <nav>
         <ul onClick={onSelectCategory}>
-          <li data-name="myPost">myPost</li>
-          {me._id === userId.current ? (
+          <li data-name="writePosts">writePosts</li>
+          {me && me._id === userId.current ? (
             <li data-name="feedback">feedback</li>
           ) : (
             ''
@@ -98,11 +104,11 @@ const User = () => {
         </ul>
       </nav>
       <section>
-          <PostCardList
-            posts={selectedCategory === 'feedback' ? feedbackPosts : mainPosts}
-            me={me}
-            isFeedbackPost={selectedCategory === 'feedback' ? true : false}
-          />
+        {selectedCategory === 'feedback' ? (
+          <FeedbackCardList posts={feedbackPosts} />
+        ) : (
+          <SessionCardList posts={sessionPosts} meId={me?._id} />
+        )}
       </section>
     </AppLayout>
   );
@@ -121,10 +127,12 @@ export const getServerSideProps = wrapper.getServerSideProps(
     context.store.dispatch({
       type: LOAD_USER_POSTS_REQUEST,
       data: {
+        category: {
+          name: 'writePosts',
+          isSame: false,
+        },
         userId: context.params.id,
         lastId: null,
-        category: 'myPost',
-        isSame: false,
       },
     });
     context.store.dispatch(END);

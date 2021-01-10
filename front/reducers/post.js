@@ -1,28 +1,25 @@
 import produce from '../util/produce';
 
 export const initialState = {
-  mainPosts: [],
+  sessionPosts: [],
   feedbackPosts: [],
   singlePost: '',
   hasMorePosts: true,
-  postLoading: false,
-  postError: null,
-  postDone: false,
-  loadPostsLoading: false,
-  loadPostsError: null,
-  loadPostsDone: false,
-  uploadPostLoading: false,
-  uploadPostError: null,
-  uploadPostDone: false,
-  loadPostLoading: false,
-  loadPostError: null,
-  loadPostDone: false,
-  loadFeedbackPostLoading: false,
-  loadFeedbackPostError: null,
-  loadFeedbackPostDone: false,
+  uploadSessionPostLoading: false,
+  uploadSessionPostError: null,
+  uploadSessionPostDone: false,
+  loadSessionPostLoading: false,
+  loadSessionPostError: null,
+  loadSessionPostDone: false,
   uploadFeedbackPostLoading: false,
   uploadFeedbackPostError: null,
   uploadFeedbackPostDone: false,
+  loadFeedbackPostLoading: false,
+  loadFeedbackPostError: null,
+  loadFeedbackPostDone: false,
+  loadSessionPostsLoading: false,
+  loadSessionPostsError: null,
+  loadSessionPostsDone: false,
   loadUserPostsLoading: false,
   loadUserPostsError: null,
   loadUserPostsDone: false,
@@ -35,21 +32,21 @@ export const UPLOAD_FEEDBACK_POST_REQUEST = 'UPLOAD_FEEDBACK_POST_REQUEST';
 export const UPLOAD_FEEDBACK_POST_SUCCESS = 'UPLOAD_FEEDBACK_POST_SUCCESS';
 export const UPLOAD_FEEDBACK_POST_FAILURE = 'UPLOAD_FEEDBACK_POST_FAILURE';
 
-export const UPLOAD_POST_REQUEST = 'UPLOAD_POST_REQUEST';
-export const UPLOAD_POST_SUCCESS = 'UPLOAD_POST_SUCCESS';
-export const UPLOAD_POST_FAILURE = 'UPLOAD_POST_FAILURE';
+export const UPLOAD_SESSION_POST_REQUEST = 'UPLOAD_SESSION_POST_REQUEST';
+export const UPLOAD_SESSION_POST_SUCCESS = 'UPLOAD_SESSION_POST_SUCCESS';
+export const UPLOAD_SESSION_POST_FAILURE = 'UPLOAD_SESSION_POST_FAILURE';
 
-export const LOAD_POST_REQUEST = 'LOAD_POST_REQUEST';
-export const LOAD_POST_SUCCESS = 'LOAD_POST_SUCCESS';
-export const LOAD_POST_FAILURE = 'LOAD_POST_FAILURE';
+export const LOAD_SESSION_POST_REQUEST = 'LOAD_SESSION_POST_REQUEST';
+export const LOAD_SESSION_POST_SUCCESS = 'LOAD_SESSION_POST_SUCCESS';
+export const LOAD_SESSION_POST_FAILURE = 'LOAD_SESSION_POST_FAILURE';
 
 export const LOAD_FEEDBACK_POST_REQUEST = 'LOAD_FEEDBACK_POST_REQUEST';
 export const LOAD_FEEDBACK_POST_SUCCESS = 'LOAD_FEEDBACK_POST_SUCCESS';
 export const LOAD_FEEDBACK_POST_FAILURE = 'LOAD_FEEDBACK_POST_FAILURE';
 
-export const LOAD_POSTS_REQUEST = 'LOAD_POSTS_REQUEST';
-export const LOAD_POSTS_SUCCESS = 'LOAD_POSTS_SUCCESS';
-export const LOAD_POSTS_FAILURE = 'LOAD_POSTS_FAILURE';
+export const LOAD_SESSION_POSTS_REQUEST = 'LOAD_SESSION_POSTS_REQUEST';
+export const LOAD_SESSION_POSTS_SUCCESS = 'LOAD_SESSION_POSTS_SUCCESS';
+export const LOAD_SESSION_POSTS_FAILURE = 'LOAD_SESSION_POSTS_FAILURE';
 
 export const LOAD_USER_POSTS_REQUEST = 'LOAD_USER_POSTS_REQUEST';
 export const LOAD_USER_POSTS_SUCCESS = 'LOAD_USER_POSTS_SUCCESS';
@@ -76,8 +73,8 @@ const reducer = (state = initialState, action) => {
             ? draft.feedbackPosts.concat(action.data.result)
             : action.data.result;
         } else {
-          draft.mainPosts = action.data.isSame
-            ? draft.mainPosts.concat(action.data.result)
+          draft.sessionPosts = action.data.isSame
+            ? draft.sessionPosts.concat(action.data.result)
             : action.data.result;
         }
         break;
@@ -85,36 +82,36 @@ const reducer = (state = initialState, action) => {
         draft.loadUserPostsLoading = false;
         draft.loadUserPostsError = action.error;
         break;
-      case LOAD_POSTS_REQUEST:
-        draft.loadPostsLoading = true;
-        draft.loadPostsError = null;
-        draft.loadPostsDone = false;
+      case LOAD_SESSION_POSTS_REQUEST:
+        draft.loadSessionPostsLoading = true;
+        draft.loadSessionPostsError = null;
+        draft.loadSessionPostsDone = false;
         break;
-      case LOAD_POSTS_SUCCESS:
-        draft.loadPostsLoading = false;
-        draft.loadPostsDone = true;
-        draft.mainPosts = action.data.isSame
-          ? draft.mainPosts.concat(action.data.result)
+      case LOAD_SESSION_POSTS_SUCCESS:
+        draft.loadSessionPostsLoading = false;
+        draft.loadSessionPostsDone = true;
+        draft.sessionPosts = action.data.isSame
+          ? draft.sessionPosts.concat(action.data.result)
           : action.data.result;
         draft.hasMorePosts = action.data.result.length === 5;
         break;
-      case LOAD_POSTS_FAILURE:
-        draft.loadPostsLoading = false;
-        draft.loadPostsError = action.error;
+      case LOAD_SESSION_POSTS_FAILURE:
+        draft.loadSessionPostsLoading = false;
+        draft.loadSessionPostsError = action.error;
         break;
-      case LOAD_POST_REQUEST:
-        draft.loadPostLoading = true;
-        draft.loadPostError = null;
-        draft.loadPostDone = false;
+      case LOAD_SESSION_POST_REQUEST:
+        draft.loadSessionPostLoading = true;
+        draft.loadSessionPostError = null;
+        draft.loadSessionPostDone = false;
         break;
-      case LOAD_POST_SUCCESS:
-        draft.loadPostLoading = false;
-        draft.loadPostDone = true;
+      case LOAD_SESSION_POST_SUCCESS:
+        draft.loadSessionPostLoading = false;
+        draft.loadSessionPostDone = true;
         draft.singlePost = action.data;
         break;
-      case LOAD_POST_FAILURE:
-        draft.loadPostLoading = false;
-        draft.loadPostError = action.error;
+      case LOAD_SESSION_POST_FAILURE:
+        draft.loadSessionPostLoading = false;
+        draft.loadSessionPostError = action.error;
         break;
       case LOAD_FEEDBACK_POST_REQUEST:
         draft.loadFeedbackPostLoading = true;
@@ -143,18 +140,18 @@ const reducer = (state = initialState, action) => {
         draft.uploadFeedbackPostLoading = false;
         draft.uploadFeedbackPostError = action.error;
         break;
-      case UPLOAD_POST_REQUEST:
-        draft.uploadPostLoading = true;
-        draft.uploadPostError = null;
-        draft.uploadPostDone = false;
+      case UPLOAD_SESSION_POST_REQUEST:
+        draft.uploadSessionPostLoading = true;
+        draft.uploadSessionPostError = null;
+        draft.uploadSessionPostDone = false;
         break;
-      case UPLOAD_POST_SUCCESS:
-        draft.uploadPostLoading = false;
-        draft.uploadPostDone = true;
+      case UPLOAD_SESSION_POST_SUCCESS:
+        draft.uploadSessionPostLoading = false;
+        draft.uploadSessionPostDone = true;
         break;
-      case UPLOAD_POST_FAILURE:
-        draft.uploadPostLoading = false;
-        draft.uploadPostError = action.error;
+      case UPLOAD_SESSION_POST_FAILURE:
+        draft.uploadSessionPostLoading = false;
+        draft.uploadSessionPostError = action.error;
         break;
       case ON_STAR_POST_REQUEST:
         draft.onStarPostLoading = true;
@@ -164,7 +161,7 @@ const reducer = (state = initialState, action) => {
       case ON_STAR_POST_SUCCESS:
         draft.onStarPostLoading = false;
         draft.onStarPostDone = true;
-        const post = draft.mainPosts.find((v) => v._id === action.data.postId);
+        const post = draft.sessionPosts.find((v) => v._id === action.data.postId);
         post.star = action.data.star;
         break;
       case ON_STAR_POST_FAILURE:

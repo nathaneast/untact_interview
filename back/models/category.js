@@ -9,7 +9,7 @@ const CategorySchema = new mongoose.Schema(
     posts: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "post",
+        ref: "sessionPost",
       },
     ],
   },

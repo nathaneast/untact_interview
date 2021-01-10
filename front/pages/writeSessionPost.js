@@ -7,7 +7,7 @@ import { END } from 'redux-saga';
 import axios from 'axios';
 
 import AppLayout from '../components/AppLayout';
-import { UPLOAD_POST_REQUEST } from '../reducers/post';
+import { UPLOAD_SESSION_POST_REQUEST } from '../reducers/post';
 import { LOAD_MY_INFO_REQUEST } from '../reducers/user';
 import useInput from '../hooks/useInput';
 import wrapper from '../store/configureStore';
@@ -47,7 +47,7 @@ const formItemLayoutWithOutLabel = {
   },
 };
 
-const postWrite = () => {
+const writeSessionPost = () => {
   const dispatch = useDispatch();
   const { me } = useSelector((state) => state.user);
   // const { postDone } = useSelector((state) => state.post);
@@ -60,7 +60,7 @@ const postWrite = () => {
       return alert('제목을 입력 해주세요');
     }
     dispatch({
-      type: UPLOAD_POST_REQUEST,
+      type: UPLOAD_SESSION_POST_REQUEST,
       data: {
         creator: me._id,
         questions: values.questions,
@@ -198,4 +198,4 @@ export const getServerSideProps = wrapper.getServerSideProps(
   }
 );
 
-export default postWrite;
+export default writeSessionPost;
