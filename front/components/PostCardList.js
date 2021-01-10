@@ -38,6 +38,9 @@ const PostCardList = ({ posts, me, isFeedbackPost }) => {
   }, [me]);
 
   const isStarUser = useCallback((staredUsers) => {
+    if (!me) {
+      return false;
+    }
     return staredUsers.some((user) => user === me._id);
   });
 
@@ -87,12 +90,18 @@ const PostCardList = ({ posts, me, isFeedbackPost }) => {
 };
 
 PostCardList.propTypes = {
-  me: PropTypes.oneOfType([
-    PropTypes.object.isRequired,
-    PropTypes.oneOf([null]).isRequired,
-  ]).isRequired,
+  // me: PropTypes.oneOfType([
+  //   PropTypes.object.isRequired,
+  //   PropTypes.instanceOf(null),
+  //   // PropTypes.oneOf([null]).isRequired,
+  // ]).isRequired,
+  me: PropTypes.object,
   posts: PropTypes.array.isRequired,
   isFeedbackPost: PropTypes.bool.isRequired,
+};
+
+PostCardList.defaultProps = {
+  me: null,
 };
 
 export default PostCardList;

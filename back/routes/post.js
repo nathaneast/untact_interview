@@ -84,29 +84,26 @@ router.patch('/:postId/star', isLoggedIn, async (req, res, next) => {
   try {
     const { postId } = req.params;
     const { userId } = req.body;
-    console.log(postId, userId, 'star server');
 
     const post = await Post.findById(postId);
+    const isStaredUser = post.star.some((user) => user === userId);
+    const update = isStaredUser
+      ? {
+          $pull: {
+            star: userId,
+          },
+        }
+      : {
+          $push: {
+            star: userId,
+          },
+        };
+    const updatePost = await Post.findByIdAndUpdate(postId, update, { new: true });
 
-    console.log(post, 'post')
-    // const isUser = post.star.some((user) => user === userId);
-
-    // if (isUser) {
-    //   const p = await pull.findByIdAndUpdate(postId, {
-    //     $push: {
-    //       star: userId,
-    //     },
-    //   }).save();
-    //   console.log(p);
-    // } else {
-    //   const p = await Post.findByIdAndUpdate(postId, {
-    //     $push: {
-    //       star: userId,
-    //     },
-    //   }).save();
-    //   console.log(p);
-    // }
-
+    return res.status(200).send({
+      postId: updatePost._id,
+      star: updatePost.star,
+    });
   } catch (error) {
     console.error(error);
     next(error);
