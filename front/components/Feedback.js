@@ -3,14 +3,18 @@ import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import Head from 'next/head';
 
+import { UPLOAD_FEEDBACK_POST_REQUEST } from '../reducers/post';
+import useInput from '../hooks/useInput';
 import FeedbackFormCard from './FeedbackFormCard';
 import TimeStampCard from './TimeStampCard';
-import { UPLOAD_FEEDBACK_POST_REQUEST } from '../reducers/post';
 import PlayedSessionCard from './PlayedSessionCard';
 
 // 모든 피드백 입력 되었는지 폼 검사 로직 추가
 // 서브밋시 작성할껀지 모달 추가
 const Feedback = ({
+  sessionPostId,
+  creatorId,
+  questions,
   blob,
   timeStamps,
   title,
@@ -18,34 +22,41 @@ const Feedback = ({
   email,
   desc,
   star,
-  questions,
-  sessionPostId,
-  creatorId,
 }) => {
   const dispatch = useDispatch();
-  const [form, setValues] = useState({});
+  const [feedbackform, setFeedbackValues] = useState({});
+  const [feedbackDesc, onChangeFeedbackDesc, setFeedbackDesc] = useInput('');
 
   const videoElement = useRef();
 
   const onChange = (e) => {
-    setValues({
-      ...form,
+    setFeedbackValues({
+      ...feedbackform,
       [e.target.name]: e.target.value,
     });
   };
 
   const onSubmit = useCallback(() => {
-    dispatch({
-      type: UPLOAD_FEEDBACK_POST_REQUEST,
-      data: {
-        creatorId,
-        sessionPostId,
-        timeStamps,
-        // answers: timeStamps.map((item) => item.text),
-        feedbacks: Object.keys(form).map((key) => form[key]),
-      },
-    });
-  }, [form, timeStamps]);
+    const FeedbackformKeys = Object.keys(feedbackform);
+    const isFeedbacksEmptyCheck = FeedbackformKeys.every((key, index) => (
+      key === `feedback_${index + 1}` && feedbackform[key]
+    ));
+    console.log(feedbackDesc, 'Feedback feedbackDesc onSubmit');
+    if (isFeedbacksEmptyCheck && feedbackDesc) {
+      dispatch({
+        type: UPLOAD_FEEDBACK_POST_REQUEST,
+        data: {
+          creatorId,
+          sessionPostId,
+          timeStamps,
+          feedbacks: FeedbackformKeys.map((key) => feedbackform[key]),
+          feedbackDesc,
+        },
+      });
+    } else {
+      alert('피드백 설명과 각 피드백을 모두 입력 해주세요');
+    }
+  }, [feedbackform, feedbackDesc, timeStamps]);
 
   const moveVideoTime = useCallback(
     (time) => {
@@ -54,7 +65,8 @@ const Feedback = ({
     [videoElement.current],
   );
 
-  console.log(timeStamps, 'Feedback timeStamps');
+  // console.log(feedbackform, 'Feedback feedbackform');
+  console.log(feedbackDesc, 'Feedback feedbackDesc');
 
   return (
     <>
@@ -73,17 +85,16 @@ const Feedback = ({
           />
         </article>
         <section>
-          <h2>타임스탬프</h2>
-          {timeStamps &&
-            timeStamps.map((item, index) => (
-              <TimeStampCard
-                key={index}
-                text={item.text}
-                time={item.time}
-                answerNumber={index + 1}
-                onClick={moveVideoTime}
-              />
-            ))}
+          타임스탬프
+          {timeStamps.map((item, index) => (
+            <TimeStampCard
+              key={index}
+              text={item.text}
+              time={item.time}
+              answerNumber={index + 1}
+              onClick={moveVideoTime}
+            />
+          ))}
         </section>
         <PlayedSessionCard
           title={title}
@@ -92,34 +103,40 @@ const Feedback = ({
           desc={desc}
           star={star.length}
         />
+        <article>
+          <label>피드백 설명</label>
+          <input type='text' onChange={onChangeFeedbackDesc} />
+        </article>
         <section>
-          <h2>질문, 답변, 피드백 작성 폼</h2>
-          {timeStamps &&
-            questions.map((item, index) => (
-              <FeedbackFormCard
-                key={index}
-                question={item}
-                answer={timeStamps[index].text}
-                FeedbackNumber={index + 1}
-                onChange={onChange}
-                writeMode={true}
-              />
-            ))}
-          <input type="submit" value="작성" onClick={onSubmit} />
+          질문, 답변, 피드백 작성 폼
+          {questions.map((item, index) => (
+            <FeedbackFormCard
+              key={index}
+              question={item}
+              answer={timeStamps[index].text}
+              FeedbackNumber={index + 1}
+              onChange={onChange}
+              writeMode={true}
+            />
+          ))}
+          <button onClick={onSubmit}>작성하기</button>
         </section>
       </article>
     </>
   );
 };
 
-// Feedback.propTypes = {
-//   blob: PropTypes.string.isRequired,
-//   timeStamps: PropTypes.array.isRequired,
-//   title: PropTypes.string.isRequired,
-//   category: PropTypes.string.isRequired,
-//   email: PropTypes.string.isRequired,
-//   desc: PropTypes.string.isRequired,
-//   star: PropTypes.array.isRequired,
-// };
+Feedback.propTypes = {
+  sessionPostId: PropTypes.string.isRequired,
+  creatorId: PropTypes.string.isRequired,
+  questions: PropTypes.array.isRequired,
+  blob: PropTypes.string.isRequired,
+  timeStamps: PropTypes.array.isRequired,
+  title: PropTypes.string.isRequired,
+  category: PropTypes.string.isRequired,
+  email: PropTypes.string.isRequired,
+  desc: PropTypes.string.isRequired,
+  star: PropTypes.array.isRequired,
+};
 
 export default Feedback;

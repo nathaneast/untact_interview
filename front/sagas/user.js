@@ -15,7 +15,31 @@ import {
   LOAD_MY_INFO_REQUEST,
   LOAD_MY_INFO_SUCCESS,
   LOAD_MY_INFO_FAILURE,
+  LOAD_USER_INFO_REQUEST,
+  LOAD_USER_INFO_SUCCESS,
+  LOAD_USER_INFO_FAILURE,
 } from '../reducers/user';
+
+function loadUserInfoAPI(data) {
+  return axios.get(`/user/${data.userId}`);
+}
+
+function* loadUserInfo(action) {
+  try {
+    const result = yield call(loadUserInfoAPI, action.data);
+    console.log('saga loadUserInfo', result);
+    yield put({
+      type: LOAD_USER_INFO_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: LOAD_USER_INFO_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
 
 function loadMyInfoAPI() {
   return axios.get('/user');
@@ -104,6 +128,10 @@ function* logIn(action) {
   }
 }
 
+function* watchLoadUserInfo() {
+  yield takeLatest(LOAD_USER_INFO_REQUEST, loadUserInfo);
+}
+
 function* watchLoadMyInfo() {
   yield takeLatest(LOAD_MY_INFO_REQUEST, loadMyInfo);
 }
@@ -122,6 +150,7 @@ function* watchLogIn() {
 
 export default function* userSaga() {
   yield all([
+    fork(watchLoadUserInfo),
     fork(watchLoadMyInfo),
     fork(watchLogOut),
     fork(watchSignUp),

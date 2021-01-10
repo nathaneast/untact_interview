@@ -3,13 +3,13 @@ import PropTypes from 'prop-types';
 
 import PlayedSessionCard from './PlayedSessionCard';
 
-const FeedbackCard = ({ feedbackPostId, sessionPost, onClick }) => {
+const FeedbackCard = ({ feedbackPostId, sessionPost, onClick, desc }) => {
   console.log(feedbackPostId, sessionPost, 'FeedbackCard');
 
   return (
     <article>
-      <h2>피드백</h2>
-      <p>desc</p>
+      피드백
+      <p>desc: {desc}</p>
       <PlayedSessionCard
         title={sessionPost.title}
         category={sessionPost.category.name}
@@ -24,6 +24,7 @@ const FeedbackCard = ({ feedbackPostId, sessionPost, onClick }) => {
 
 FeedbackCard.propTypes = {
   feedbackPostId: PropTypes.string.isRequired,
+  desc: PropTypes.string.isRequired,
   sessionPost: PropTypes.object.isRequired,
   onClick: PropTypes.func.isRequired,
 };

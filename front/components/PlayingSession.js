@@ -11,10 +11,10 @@ import socket, { socketEmits } from '../socket';
 // 영상 저장을 버튼으로 하는 방법 연구
 const PlaySession = ({
   questions,
-  setIsEndSession,
   saveTimeStamp,
   saveBlob,
   sessionTitle,
+  moveFeedback,
 }) => {
   const [limitTime, setLimitTime] = useState(30);
   const [timer, setTimer] = useState(limitTime);
@@ -62,7 +62,7 @@ const PlaySession = ({
     });
     setIsRunning(false);
     socketEmits.endGoogleCloudStream('final');
-    setIsEndSession(true);
+    moveFeedback();
     alert('세션 끝');
   }, [sessionTitle]);
 
@@ -141,7 +141,7 @@ const PlaySession = ({
 
 PlaySession.propTypes = {
   questions: PropTypes.array.isRequired,
-  setIsEndSession: PropTypes.func.isRequired,
+  moveFeedback: PropTypes.func.isRequired,
   saveTimeStamp: PropTypes.func.isRequired,
   saveBlob: PropTypes.func.isRequired,
   sessionTitle: PropTypes.string.isRequired,

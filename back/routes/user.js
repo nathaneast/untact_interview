@@ -22,6 +22,16 @@ router.get('/', async (req, res, next) => {
   }
 });
 
+router.get('/:userId', async (req, res, next) => {
+  try {
+    const user = await User.findById(req.params.userId).select('email nickname');
+    res.status(200).json(user);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
 router.post('/', isNotLoggedIn, async (req, res, next) => {
   try {
     const exUser = await User.findOne({ email: req.body.email });

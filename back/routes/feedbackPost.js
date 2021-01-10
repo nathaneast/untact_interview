@@ -8,12 +8,13 @@ const router = express.Router();
 
 router.post('/', isLoggedIn, async (req, res, next) => {
   try {
-    const { creatorId, sessionPostId, timeStamps, feedbacks } = req.body;
+    const { creatorId, sessionPostId, timeStamps, feedbacks, feedbackDesc } = req.body;
     const newFeedback = await FeedbackPost.create({
       timeStamps,
       feedbacks,
       creator: creatorId,
       sessionPost: sessionPostId,
+      desc: feedbackDesc,
     });
     await User.findByIdAndUpdate(creatorId, {
       $push: {

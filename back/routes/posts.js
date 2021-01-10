@@ -58,7 +58,7 @@ router.get('/:userId', async (req, res, next) => {
       .select('_id')
       .populate({
         path : 'feedbackPosts',
-        select: '_id',
+        select: '_id desc',
         match: lastId ? { _id: { $lt: lastId } } : null,
         options: {
           sort: { createdAt: -1},

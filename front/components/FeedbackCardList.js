@@ -19,6 +19,7 @@ const FeedbackCardList = ({ posts }) => {
           key={post._id}
           feedbackPostId={post._id}
           sessionPost={post.sessionPost}
+          desc={post.desc}
           onClick={onClickRedirectFeedback}
         />
       ))}

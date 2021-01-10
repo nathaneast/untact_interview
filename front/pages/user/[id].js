@@ -5,7 +5,7 @@ import { END } from 'redux-saga';
 import axios from 'axios';
 
 import wrapper from '../../store/configureStore';
-import { LOAD_MY_INFO_REQUEST } from '../../reducers/user';
+import { LOAD_MY_INFO_REQUEST, LOAD_USER_INFO_REQUEST } from '../../reducers/user';
 import { LOAD_USER_POSTS_REQUEST } from '../../reducers/post';
 import AppLayout from '../../components/AppLayout';
 import SessionCardList from '../../components/SessionCardList';
@@ -20,6 +20,9 @@ const User = () => {
     hasMorePosts,
     loadUserPostsLoading,
   } = useSelector((state) => state.post);
+  const {
+    userInfo,
+  } = useSelector((state) => state.user);
 
   const [selectedCategory, setSelectedCategory] = useState('writePosts');
   const router = useRouter();
@@ -75,22 +78,23 @@ const User = () => {
     [selectedCategory],
   );
 
-  // console.log(me, 'User me');
   console.log(sessionPosts, 'UserPage sessionPosts');
   console.log(feedbackPosts, 'UserPage feedbackPosts');
-  // console.log(loadUserPostsDone, 'User loadUserPostsDone');
-  // console.log(router.asPath, 'router.pathname');
 
   return (
     <AppLayout>
       <article>
         <label>user Profile</label>
-        {/* <div>
-          <span>userName: {me.nickname}</span>
-        </div>
-        <div>
-          <span>email: {me.email}</span>
-        </div> */}
+        {userInfo && (
+          <>
+            <div>
+              <span>name: {userInfo.nickname}</span>
+            </div>
+            <div>
+              <span>email: {userInfo.email}</span>
+            </div>
+          </>
+        )}
       </article>
       <nav>
         <ul onClick={onSelectCategory}>
@@ -123,6 +127,12 @@ export const getServerSideProps = wrapper.getServerSideProps(
     }
     context.store.dispatch({
       type: LOAD_MY_INFO_REQUEST,
+    });
+    context.store.dispatch({
+      type: LOAD_USER_INFO_REQUEST,
+      data: {
+        userId: context.params.id,
+      },
     });
     context.store.dispatch({
       type: LOAD_USER_POSTS_REQUEST,

@@ -43,22 +43,24 @@ const SessionPost = () => {
   return (
     <>
       {singlePost && (isEndSession ? (
-        <Feedback
-          blob={blob}
-          timeStamps={timeStamps}
-          questions={singlePost.questions}
-          title={singlePost.title}
-          category={singlePost.category.name}
-          email={singlePost.creator.email}
-          desc={singlePost.desc}
-          star={singlePost.star}
-          sessionPostId={singlePost._id}
-          creatorId={me._id}
-        />
+        timeStamps && blob && (
+          <Feedback
+            blob={blob}
+            timeStamps={timeStamps}
+            questions={singlePost.questions}
+            title={singlePost.title}
+            category={singlePost.category.name}
+            email={singlePost.creator.email}
+            desc={singlePost.desc}
+            star={singlePost.star}
+            sessionPostId={singlePost._id}
+            creatorId={me._id}
+          />
+        )
       ) : (
         <PlayingSession
           questions={singlePost.questions}
-          setIsEndSession={setIsEndSession}
+          moveFeedback={() => setIsEndSession(true)}
           saveBlob={setBlob}
           saveTimeStamp={setTimeStamps}
           sessionTitle={singlePost.title}
