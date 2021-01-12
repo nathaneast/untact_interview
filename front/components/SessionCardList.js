@@ -30,7 +30,7 @@ const SessionCardList = ({ posts, meId }) => {
   });
 
   const onStarHandler = useCallback((postId) => {
-    if (meId) {
+    if (!meId) {
       alert('로그인 후 star를 누르실 수 있습니다.');
       return;
     }
