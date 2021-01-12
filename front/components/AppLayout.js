@@ -1,11 +1,59 @@
 import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
-import Link from 'next/link';
 import { useDispatch, useSelector } from 'react-redux';
-import { Col, Menu, Row } from 'antd';
+import styled from 'styled-components';
 
 import LoginModal from './modal/LoginModal';
 import { LOG_OUT_REQUEST } from '../reducers/user';
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #FFFFF6;
+`;
+
+const Header = styled.div`
+  width: 100%;
+  height: 50px;
+  justify-content: space-between;
+  background-color: #34495e;
+  display: flex;
+  align-items: center;
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 2px 2px;
+`;
+
+const Logo = styled.div`
+  margin-left: 40px;
+  cursor: pointer;
+`;
+
+const NavBar = styled.ul`
+  display: flex;
+  list-style-type: none;
+  margin: 0px;
+  & > li {
+     margin-right: 40px;
+  }
+`;
+
+const NavItem = styled.li`
+  font-size: 15px;
+  font-weight: bolder;
+  color: #FFFFF6;
+  cursor: pointer;
+`;
+
+const Link = styled.a`
+  color: #FFFFF6;
+`;
+
+const Contents = styled.a`
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+`;
 
 const AppLayout = ({ children }) => {
   const [tryLogin, setTryLogin] = useState(false);
@@ -19,58 +67,65 @@ const AppLayout = ({ children }) => {
   });
 
   return (
-    <>
-      <nav>
-        <Menu mode="horizontal">
-          <Menu.Item>
-            <Link href="/">
-              <a>홈</a>
-            </Link>
-          </Menu.Item>
-          {me ? (
-            <>
-              <Menu.Item>
-                <Link href="/writeSessionPost">
-                  <a>글쓰기</a>
-                </Link>
-              </Menu.Item>
-              <Menu.Item>
-                <Link href={`/user/${me._id}`}>
-                  <a>내정보</a>
-                </Link>
-              </Menu.Item>
-              <Menu.Item>
-                <span onClick={onLogOut}>로그아웃</span>
-              </Menu.Item>
-              <Menu.Item>
-                <span>{me.nickname}</span>
-              </Menu.Item>
-            </>
-          ) : (
-            <>
-              <Menu.Item>
-                <span onClick={() => setTryLogin((prev) => !prev)}>로그인</span>
-              </Menu.Item>
-              <Menu.Item>
-                <Link href="/signup">
-                  <a>회원가입</a>
-                </Link>
-              </Menu.Item>
-            </>
-          )}
-        </Menu>
-        <Row>
-          <Col>{children}</Col>
-        </Row>
-        <footer>푸터</footer>
-      </nav>
+    <Container>
+      <Header>
+        <Logo>
+          <Link href="/">
+            <span>Untact Interview</span>
+          </Link>
+        </Logo>
+        <nav>
+          <NavBar>
+            <NavItem>
+              <Link href="/interviews">
+                <span>시작하기</span>
+              </Link>
+            </NavItem>
+            {me ? (
+              <>
+                <NavItem>
+                  <Link href="/writeSessionPost">
+                    <span>글쓰기</span>
+                  </Link>
+                </NavItem>
+                <NavItem>
+                  <Link href={`/user/${me._id}`}>
+                    <span>내정보</span>
+                  </Link>
+                </NavItem>
+                <NavItem>
+                  <span onClick={onLogOut}>로그아웃</span>
+                </NavItem>
+                <NavItem>
+                  <span>{me.nickname}</span>
+                </NavItem>
+              </>
+            ) : (
+              <>
+                <NavItem>
+                  <span onClick={() => setTryLogin((prev) => !prev)}>
+                    로그인
+                  </span>
+                </NavItem>
+                <NavItem>
+                  <Link href="/signup">
+                    <span>회원가입</span>
+                  </Link>
+                </NavItem>
+              </>
+            )}
+          </NavBar>
+        </nav>
+      </Header>
+      <Contents>{children}</Contents>
+      <footer>푸터</footer>
       {tryLogin && (
         <LoginModal
           visible={tryLogin}
           onCancel={() => setTryLogin((prev) => !prev)}
         />
       )}
-    </>
+    </Container>
   );
 };
 

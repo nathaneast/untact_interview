@@ -121,14 +121,14 @@ function* uploadFeedbackPost(action) {
       type: UPLOAD_FEEDBACK_POST_SUCCESS,
       data: result.data,
     });
-    yield call(Router.push, '/');
+    yield call(Router.push, '/interviews');
   } catch (err) {
     console.error(err);
     yield put({
       type: UPLOAD_FEEDBACK_POST_FAILURE,
       error: err.response.data,
     });
-    yield call(Router.push, '/');
+    yield call(Router.push, '/interviews');
   }
 }
 
@@ -144,14 +144,14 @@ function* uploadSessionPost(action) {
       type: UPLOAD_SESSION_POST_SUCCESS,
       data: result.data,
     });
-    yield call(Router.push, '/');
+    yield call(Router.push, '/interviews');
   } catch (err) {
     console.error(err);
     yield put({
       type: UPLOAD_SESSION_POST_FAILURE,
       error: err.response.data,
     });
-    yield call(Router.push, '/');
+    yield call(Router.push, '/interviews');
   }
 }
 

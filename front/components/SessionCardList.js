@@ -2,10 +2,17 @@ import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useRouter } from 'next/router';
 import { useDispatch } from 'react-redux';
+import styled from 'styled-components';
 
 import { ON_STAR_POST_REQUEST } from '../reducers/post';
 import StartSessionModal from './modal/StartSessionModal';
 import SessionCard from './SessionCard';
+
+const Container = styled.section`
+  display: grid;
+  grid-gap: 15px;
+  grid-template-columns: repeat(2, 1fr);
+`;
 
 const SessionCardList = ({ posts, meId }) => {
   const [modal, setModal] = useState(false);
@@ -47,7 +54,7 @@ const SessionCardList = ({ posts, meId }) => {
 
   return (
     <>
-      <section>
+      <Container>
         {posts.map((post) => (
           <SessionCard
             key={post._id}
@@ -64,7 +71,7 @@ const SessionCardList = ({ posts, meId }) => {
             onStarHandler={onStarHandler}
           />
         ))}
-      </section>
+      </Container>
       {modal && (
         <StartSessionModal
           postId={selectedPostId}

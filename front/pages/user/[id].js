@@ -28,6 +28,24 @@ const User = () => {
   const router = useRouter();
   const userId = useRef(router.asPath.split('/user/')[1]);
 
+  const loadSameCategoryPosts = useCallback(() => {
+    const anyPostLastId =
+      selectedCategory === 'feedback'
+        ? feedbackPosts[feedbackPosts.length - 1]?._id
+        : sessionPosts[sessionPosts.length - 1]?._id;
+    return dispatch({
+      type: LOAD_USER_POSTS_REQUEST,
+      data: {
+        category: {
+          name: selectedCategory,
+          isSame: true,
+        },
+        userId: userId.current,
+        lastId: anyPostLastId,
+      },
+    });
+  }, [selectedCategory, sessionPosts, feedbackPosts]);
+
   useEffect(() => {
     function onScroll() {
       if (
@@ -35,17 +53,7 @@ const User = () => {
         document.documentElement.scrollHeight - 100
       ) {
         if (hasMorePosts && !loadUserPostsLoading) {
-          dispatch({
-            type: LOAD_USER_POSTS_REQUEST,
-            data: {
-              category: {
-                name: selectedCategory,
-                isSame: true,
-              },
-              userId: userId.current,
-              lastId: sessionPosts[sessionPosts.length - 1]?._id,
-            },
-          });
+          loadSameCategoryPosts();
         }
       }
     }
@@ -53,7 +61,7 @@ const User = () => {
     return () => {
       window.removeEventListener('scroll', onScroll);
     };
-  }, [sessionPosts, hasMorePosts, loadUserPostsLoading, selectedCategory]);
+  }, [sessionPosts, feedbackPosts, hasMorePosts, loadUserPostsLoading, selectedCategory]);
 
   const onSelectCategory = useCallback(
     (e) => {

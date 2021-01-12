@@ -1,6 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Button, Card } from 'antd';
+import styled from 'styled-components';
+
+const MenuItem = styled.li`
+  font-size: 17px;
+  font-weight: bolder;
+  color: #34495e;
+  cursor: pointer;
+`;
 
 const SessionCard = ({
   postId,
@@ -13,7 +20,6 @@ const SessionCard = ({
   moveUserProfile,
   isStarUser,
   onStarHandler,
-  // isLogin,
 }) => (
   <Card
     title={title}
@@ -44,7 +50,6 @@ SessionCard.propTypes = {
   moveUserProfile: PropTypes.func.isRequired,
   isStarUser: PropTypes.func.isRequired,
   onStarHandler: PropTypes.func.isRequired,
-  // isLogin: PropTypes.bool.isRequired,
 };
 
 export default SessionCard;
