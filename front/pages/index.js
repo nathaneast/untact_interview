@@ -7,19 +7,11 @@ import { LOAD_MY_INFO_REQUEST } from '../reducers/user';
 import AppLayout from '../components/AppLayout';
 import wrapper from '../store/configureStore';
 
-// const IntroContents = styled.div`
-//   background-color: #34495e;
-//   width: 800px;
-//   height: 300px;
-//   margin: 15px 0px 30px;
-//   border-radius: 15px;
-// `;
-
 const Home = () => (
-    <AppLayout>
-      <h1>홈</h1>
-      <button>시작하기</button>
-    </AppLayout>
+  <AppLayout>
+    <h1>홈</h1>
+    <button>시작하기</button>
+  </AppLayout>
 );
 
 export const getServerSideProps = wrapper.getServerSideProps(

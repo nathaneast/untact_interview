@@ -10,6 +10,11 @@ import AppLayout from '../components/AppLayout';
 import wrapper from '../store/configureStore';
 import SessionCardList from '../components/SessionCardList';
 
+const Container = styled.div`
+  height: 100%;
+  background-color: blue;
+`;
+
 const Menu = styled.ul`
   display: flex;
   list-style-type: none;
@@ -86,6 +91,7 @@ const Interviews = () => {
   // console.log(sessionPosts, 'Interviews, sessionPosts ');
 
   return (
+    <Container>
     <AppLayout>
       <Menu onClick={onSelectCategory}>
         <MenuItem id="all" data-name="all">
@@ -99,6 +105,7 @@ const Interviews = () => {
       </Menu>
       <SessionCardList posts={sessionPosts} meId={me?._id} />
     </AppLayout>
+    </Container>
   );
 };
 
