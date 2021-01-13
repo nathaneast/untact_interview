@@ -1,9 +1,11 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import Head from 'next/head';
 import PropTypes from 'prop-types';
+import styles from '../styles/playingSession.module.scss';
 
 import useInterval from '../hooks/useInterval';
 import socket, { socketEmits } from '../socket';
+// import styled from 'styled-components';
 
 // question 비동기프랍 검사
 // 로딩 추가
@@ -28,25 +30,25 @@ const PlaySession = ({
   const recorder = useRef();
   const nextQuestionButton = useRef();
 
-  useEffect(() => {
-    navigator.mediaDevices
-      .getUserMedia({
-        video: true,
-        audio: true,
-      })
-      .then(async (stream) => {
-        recorder.current = RecordRTC(await stream, {
-          type: 'video',
-          timeSlice: 1000,
-        });
-        videoElement.current.srcObject = stream;
-        recorder.current.stream = stream;
-        recorder.current.startRecording();
+  // useEffect(() => {
+  //   navigator.mediaDevices
+  //     .getUserMedia({
+  //       video: true,
+  //       audio: true,
+  //     })
+  //     .then(async (stream) => {
+  //       recorder.current = RecordRTC(await stream, {
+  //         type: 'video',
+  //         timeSlice: 1000,
+  //       });
+  //       videoElement.current.srcObject = stream;
+  //       recorder.current.stream = stream;
+  //       recorder.current.startRecording();
 
-        // socket(setSpeech, setSaveSpeech, saveTimeStamp);
-        // socketEmits.startGoogleCloudStream();
-      });
-  }, []);
+  //       // socket(setSpeech, setSaveSpeech, saveTimeStamp);
+  //       // socketEmits.startGoogleCloudStream();
+  //     });
+  // }, []);
 
   const endSession = useCallback(() => {
     recorder.current.stopRecording(() => {
@@ -109,43 +111,49 @@ const PlaySession = ({
         <script src="https://www.WebRTC-Experiment.com/RecordRTC.js" />
       </Head>
       {questions && (
-        <article>
-          <header>
-            헤더
+        <article className={styles.container}>
+          <header className={styles.header}>
             <div>
-              <h1>{sessionTitle}</h1>
+              <ul className={styles.navbar}>
+                <li>
+                  <span>진행중인 인터뷰: {sessionTitle}</span>
+                </li>
+                <li>
+                  <span>{`${questionIndex + 1} / ${questions.length}`}</span>
+                </li>
+              </ul>
             </div>
-            <div>
-              <h3>{`${questionIndex + 1} / ${questions.length}`}</h3>
+            <div className={styles.exit}>
+              <span>나가기</span>
             </div>
           </header>
 
-          <div>
-            <span>제한시간: {timer}</span>
+          <div className={styles.timer}>
+            <span>🕑 {timer}</span>
           </div>
 
-          <div>
+          <div className={styles.question}>
             <p>{questions[questionIndex]}</p>
           </div>
 
-          <main>
-            <div>
+          <main className={styles.mainContents}>
+            <div className={styles.video}>비디오
               <video
                 ref={videoElement}
                 autoPlay
                 muted
-                width="500px"
-                height="500px"
+                width="700px"
+                height="450px"
               />
             </div>
-            <article>
+            <article className={styles.speechNote}>
               <label>스피치 저장</label>
               <p>{saveSpeech}</p>
               <p>{speech}</p>
             </article>
           </main>
 
-          <div>
+          <div className={styles.buttonWrapper}>
             <button onClick={onClick} ref={nextQuestionButton}>
               다음 문제
             </button>

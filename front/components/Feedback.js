@@ -104,7 +104,7 @@ const Feedback = ({
           star={star.length}
         />
         <article>
-          <label>피드백 설명</label>
+          <label className='korea'>피드백 설명</label>
           <input type='text' onChange={onChangeFeedbackDesc} />
         </article>
         <section>

@@ -1,0 +1,94 @@
+// @import './_variables';
+
+$color-navy:#34495e;
+$color-cream:#FFFFF6;
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.header {
+  color: $color-cream;
+  font-weight: bolder;
+  font-size: 15px;
+  background-color: $color-navy;
+  display: flex;
+  justify-content: space-between;
+  height: 45px;
+  width: 100%;
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 2px 2px;
+  & div {
+    margin: 10px 30px;
+  }
+  .exit {
+    cursor: pointer;
+  }
+}
+
+.navbar {
+  list-style: none;
+  display: flex;
+  padding: 0;
+  margin: 0;
+  & li {
+    margin: 0px 30px;
+  }
+}
+
+.timer {
+  font-size: 25px;
+  margin: 12px 0px;
+  font-weight: bolder;
+}
+
+.question {
+  font-weight: bolder;
+  font-size: 50px;
+}
+
+.mainContents {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+  .video {
+    background-color: green;
+    width: 700px;
+    height: 450px;
+    margin: 0px 10px;
+  }
+  .speechNote {
+    background-color: orange;
+    width: 380px;
+    height: 500px;
+    margin: 0px 10px;
+  }
+}
+
+.buttonWrapper {
+  margin: 17px 0px;
+  & button {
+    color: $color-cream;
+    background-color: $color-navy;
+    font-weight: bolder;
+    color: $color-cream;
+    padding: 10px 62px;
+    font-size: 17px;
+    border-radius: 20px;
+    // transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    &:hover:before {
+      box-shadow: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      // box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+    }
+    &:hover:after {
+      box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+    }
+    cursor: pointer;
+  }
+}
+
+
+
+
+
