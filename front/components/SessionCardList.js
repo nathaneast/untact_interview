@@ -5,8 +5,10 @@ import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 
 import { ON_STAR_POST_REQUEST } from '../reducers/post';
-import StartSessionModal from './modal/StartSessionModal';
 import SessionCard from './SessionCard';
+import Modal from './modal/Modal';
+import GuideMessage from './modal/GuideMessage';
+import ConfirmMessage from './modal/ConfirmMessage';
 
 const Container = styled.section`
   display: grid;
@@ -15,18 +17,27 @@ const Container = styled.section`
 `;
 
 const SessionCardList = ({ posts, meId }) => {
-  const [modal, setModal] = useState(false);
+  const [isModal, setIsModal] = useState(false);
   const [selectedPostId, setSelectedPostId] = useState('');
   const router = useRouter();
   const dispatch = useDispatch();
 
+  const onStartSession = useCallback(() => {
+    router.push(`/session/${selectedPostId}`);
+  });
+
   const onClickStartPost = useCallback((postId) => {
-    setModal(true);
+    setIsModal(true);
     setSelectedPostId(postId);
   });
 
   const onClickRedirectUser = useCallback((userId) => {
     router.push(`/user/${userId}`);
+  });
+
+  const onCancelModal = useCallback(() => {
+    setSelectedPostId('');
+    setIsModal(false);
   });
 
   const onStarHandler = useCallback((postId) => {
@@ -72,15 +83,22 @@ const SessionCardList = ({ posts, meId }) => {
           />
         ))}
       </Container>
-      {modal && (
-        <StartSessionModal
-          postId={selectedPostId}
-          isLogin={meId ? true : false}
-          resetPost={() => setSelectedPostId('')}
-          modal={modal}
-          onModal={() => setModal(false)}
-        />
-      )}
+      {isModal && (meId ? (
+        <Modal onCancelModal={onCancelModal}>
+          <ConfirmMessage
+            onCancel={onCancelModal}
+            onOk={onStartSession}
+            message={'인터뷰를 진행 하시겠습니까?'}
+          />
+        </Modal>
+      ) : (
+        <Modal onCancelModal={onCancelModal}>
+          <GuideMessage
+            onOk={onCancelModal}
+            message={'로그인 후에 이용 가능 합니다.'}
+          />
+        </Modal>
+      ))}
     </>
   );
 };

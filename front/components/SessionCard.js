@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import { ButtonNavy } from '../styles/reStyled';
 
 const PostCard = styled.article`
   width: 360px;
@@ -19,7 +20,7 @@ const PostInfo = styled.article`
 `;
 
 const PostTitleWrapper = styled.article`
-  padding: 8px 7px;
+  margin: 10px;
 `;
 
 const PostTitle = styled.div`
@@ -41,7 +42,7 @@ const PostDesc = styled.div`
 `;
 
 const PostDetail = styled.div`
-  padding: 9px;
+  margin: 10px;
   color: #34495e;
 `;
 
@@ -71,19 +72,7 @@ const Star = styled.div`
   }
 `;
 
-const Button = styled.button`
-  border-radius: 4px;
-  padding: 6px 50px;
-  color: #fffff6;
-  background-color: #34495e;
-  font-size: 15px;
-  font-weight: bolder;
-  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-  & :hover {
-    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
-  }
-  cursor: pointer;
-`;
+const Button = styled(ButtonNavy)``;
 
 const SessionCard = ({
   postId,

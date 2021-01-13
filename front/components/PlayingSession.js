@@ -43,8 +43,8 @@ const PlaySession = ({
         recorder.current.stream = stream;
         recorder.current.startRecording();
 
-        socket(setSpeech, setSaveSpeech, saveTimeStamp);
-        socketEmits.startGoogleCloudStream();
+        // socket(setSpeech, setSaveSpeech, saveTimeStamp);
+        // socketEmits.startGoogleCloudStream();
       });
   }, []);
 
@@ -81,23 +81,23 @@ const PlaySession = ({
     // }, 4000);
   }, [questions, questionIndex, limitTime]);
 
-  useInterval(
-    () => {
-      if (timer - 1 === 0 && questions.length - 1 === questionIndex) {
-        endSession();
-        return;
-      }
-      if (timer - 1 === 0) {
-        console.log('다음문제');
-        setQuestionIndex(questionIndex + 1);
-        setTimer(limitTime); // 타이머 취소하고 변경
-        socketEmits.detectFirstSentence();
-      } else {
-        setTimer(timer - 1);
-      }
-    },
-    isRunning ? 1000 : null,
-  );
+  // useInterval(
+  //   () => {
+  //     if (timer - 1 === 0 && questions.length - 1 === questionIndex) {
+  //       endSession();
+  //       return;
+  //     }
+  //     if (timer - 1 === 0) {
+  //       console.log('다음문제');
+  //       setQuestionIndex(questionIndex + 1);
+  //       setTimer(limitTime); // 타이머 취소하고 변경
+  //       socketEmits.detectFirstSentence();
+  //     } else {
+  //       setTimer(timer - 1);
+  //     }
+  //   },
+  //   isRunning ? 1000 : null,
+  // );
 
   // console.log(questions, sessionTitle, 'PlaySession');
 
@@ -110,29 +110,46 @@ const PlaySession = ({
       </Head>
       {questions && (
         <article>
-          <div>제한시간: {timer}</div>
-          <div>{questions[questionIndex]}</div>
-          <video
-            ref={videoElement}
-            autoPlay
-            muted
-            width="500px"
-            height="500px"
-          />
-          <div>{`${questionIndex + 1} / ${questions.length}`}</div>
-          <section>
+          <header>
+            헤더
+            <div>
+              <h1>{sessionTitle}</h1>
+            </div>
+            <div>
+              <h3>{`${questionIndex + 1} / ${questions.length}`}</h3>
+            </div>
+          </header>
+
+          <div>
+            <span>제한시간: {timer}</span>
+          </div>
+
+          <div>
+            <p>{questions[questionIndex]}</p>
+          </div>
+
+          <main>
+            <div>
+              <video
+                ref={videoElement}
+                autoPlay
+                muted
+                width="500px"
+                height="500px"
+              />
+            </div>
             <article>
-              <h2>스피치 저장</h2>
+              <label>스피치 저장</label>
               <p>{saveSpeech}</p>
-            </article>
-            <article>
-              <h2>스피치 리얼타임</h2>
               <p>{speech}</p>
             </article>
-          </section>
-          <button onClick={onClick} ref={nextQuestionButton}>
-            다음 문제
-          </button>
+          </main>
+
+          <div>
+            <button onClick={onClick} ref={nextQuestionButton}>
+              다음 문제
+            </button>
+          </div>
         </article>
       )}
     </>

@@ -137,7 +137,6 @@ const AppLayout = ({ children }) => {
         {tryLogin && (
           <Modal onCancelModal={() => setTryLogin(false)}>
             <LoginForm
-              // logInError={logInError}
               onCancelModal={() => setTryLogin(false)}
             />
           </Modal>
