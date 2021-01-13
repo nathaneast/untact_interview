@@ -3,8 +3,9 @@ import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 
-import LoginModal from './modal/LoginModal';
-import { LOG_OUT_REQUEST } from '../reducers/user';
+import Modal from './modal/Modal';
+import LoginForm from './modal/LoginForm';
+import { LOG_OUT_REQUEST, CLEAR_LOGIN_ERROR_REQUEST } from '../reducers/user';
 
 const AppWrapper = styled.div`
   background-color: green;
@@ -66,6 +67,13 @@ const AppLayout = ({ children }) => {
   const { me } = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
+  const onLogIn = useCallback(() => {
+    dispatch({
+      type: CLEAR_LOGIN_ERROR_REQUEST,
+    });
+    setTryLogin(true);
+  });
+
   const onLogOut = useCallback(() => {
     dispatch({
       type: LOG_OUT_REQUEST,
@@ -110,7 +118,7 @@ const AppLayout = ({ children }) => {
               ) : (
                 <>
                   <NavItem>
-                    <span onClick={() => setTryLogin((prev) => !prev)}>
+                    <span onClick={onLogIn} >
                       로그인
                     </span>
                   </NavItem>
@@ -127,10 +135,12 @@ const AppLayout = ({ children }) => {
         <Contents>{children}</Contents>
         <footer>푸터</footer>
         {tryLogin && (
-          <LoginModal
-            visible={tryLogin}
-            onCancel={() => setTryLogin((prev) => !prev)}
-          />
+          <Modal onCancelModal={() => setTryLogin(false)}>
+            <LoginForm
+              // logInError={logInError}
+              onCancelModal={() => setTryLogin(false)}
+            />
+          </Modal>
         )}
       </Container>
     </AppWrapper>

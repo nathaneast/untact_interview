@@ -9,6 +9,9 @@ export const initialState = {
   logInLoading: false,
   logInError: null,
   logInDone: false,
+  clearLogInErrorLoading: false,
+  clearLogInErrorError: null,
+  clearLogInErrorDone: false,
   logOutLoading: false,
   logOutError: null,
   logOutDone: false,
@@ -35,6 +38,10 @@ export const LOG_OUT_FAILURE = 'LOG_OUT_FAILURE';
 export const LOG_IN_REQUEST = 'LOG_IN_REQUEST';
 export const LOG_IN_SUCCESS = 'LOG_IN_SUCCESS';
 export const LOG_IN_FAILURE = 'LOG_IN_FAILURE';
+
+export const CLEAR_LOGIN_ERROR_REQUEST = 'CLEAR_LOGIN_ERROR_REQUEST';
+export const CLEAR_LOGIN_ERROR_SUCCESS = 'CLEAR_LOGIN_ERROR_SUCCESS';
+export const CLEAR_LOGIN_ERROR_FAILURE = 'CLEAR_LOGIN_ERROR_FAILURE';
 
 export const SIGN_UP_REQUEST = 'SIGN_UP_REQUEST';
 export const SIGN_UP_SUCCESS = 'SIGN_UP_SUCCESS';
@@ -98,6 +105,20 @@ const reducer = (state = initialState, action) => {
       case LOG_IN_FAILURE:
         draft.logInLoading = false;
         draft.logInError = action.error;
+        break;
+      case CLEAR_LOGIN_ERROR_REQUEST:
+        draft.clearLogInErrorLoading = true;
+        draft.clearLogInErrorError = null;
+        draft.clearLogInErrorDone = false;
+        break;
+      case CLEAR_LOGIN_ERROR_SUCCESS:
+        draft.clearLogInErrorLoading = false;
+        draft.clearLogInErrorDone = true;
+        draft.logInError = null;
+        break;
+      case CLEAR_LOGIN_ERROR_FAILURE:
+        draft.clearLogInErrorLoading = false;
+        draft.clearLogInErrorError = action.error;
         break;
       case SIGN_UP_REQUEST:
         draft.signUpLoading = true;

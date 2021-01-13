@@ -6,6 +6,9 @@ import {
   LOG_IN_FAILURE,
   LOG_IN_REQUEST,
   LOG_IN_SUCCESS,
+  CLEAR_LOGIN_ERROR_FAILURE,
+  CLEAR_LOGIN_ERROR_REQUEST,
+  CLEAR_LOGIN_ERROR_SUCCESS,
   SIGN_UP_REQUEST,
   SIGN_UP_SUCCESS,
   SIGN_UP_FAILURE,
@@ -107,6 +110,21 @@ function* signUp(action) {
   }
 }
 
+function* clearLoginError() {
+  try {
+    console.log('clearLoginError');
+    yield put({
+      type: CLEAR_LOGIN_ERROR_SUCCESS,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: CLEAR_LOGIN_ERROR_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
 function logInAPI(data) {
   return axios.post('/user/login', data);
 }
@@ -144,6 +162,10 @@ function* watchSignUp() {
   yield takeLatest(SIGN_UP_REQUEST, signUp);
 }
 
+function* watchClearLogInError() {
+  yield takeLatest(CLEAR_LOGIN_ERROR_REQUEST, clearLoginError);
+}
+
 function* watchLogIn() {
   yield takeLatest(LOG_IN_REQUEST, logIn);
 }
@@ -154,6 +176,7 @@ export default function* userSaga() {
     fork(watchLoadMyInfo),
     fork(watchLogOut),
     fork(watchSignUp),
+    fork(watchClearLogInError),
     fork(watchLogIn),
   ]);
 }

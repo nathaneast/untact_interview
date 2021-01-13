@@ -8,12 +8,8 @@ const PostCard = styled.article`
   border: 2px solid #34495e;
   border-radius: 30px;
   background-color: white;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-  & :hover {
-    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
-    cursor: default;
-  }
+  box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+  cursor: default;
 `;
 
 const PostInfo = styled.article`
@@ -82,6 +78,10 @@ const Button = styled.button`
   background-color: #34495e;
   font-size: 15px;
   font-weight: bolder;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  & :hover {
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+  }
   cursor: pointer;
 `;
 
