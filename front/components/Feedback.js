@@ -2,12 +2,74 @@ import React, { useCallback, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import Head from 'next/head';
+import styled from 'styled-components';
 
 import { UPLOAD_FEEDBACK_POST_REQUEST } from '../reducers/post';
 import useInput from '../hooks/useInput';
+import { ButtonNavy } from '../styles/reStyled';
 import FeedbackFormCard from './FeedbackFormCard';
 import TimeStampCard from './TimeStampCard';
-import PlayedSessionCard from './PlayedSessionCard';
+// import PlayedSessionCard from './PlayedSessionCard';
+import Modal from './modal/Modal';
+import GuideMessage from './modal/GuideMessage';
+import AppLayout from './AppLayout';
+
+const MainContents = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 10px 0px;
+`;
+
+const ViedoWrapper = styled.div`
+  margin: 15px;
+`;
+
+const TimeStampBoard = styled.section`
+  margin: 15px;
+  padding: 7px;
+  width: 380px;
+  height: 500px;
+  background-color: #dcdde1;
+  border-radius: 30px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+`;
+
+const FeedbackDesc = styled.div`
+  padding: 20px;
+  margin: 10px;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+  display: flex;
+  flex-direction: column;
+  width: 600px;
+  & span {
+    display:block;
+    color: black;
+    font-size: 15px;
+    font-weight: bolder;
+    padding: 5px;
+  }
+  & textarea {
+    color: #2f3640;
+    border-radius: 10px;
+    margin-top: 5px;
+  }
+`;
+
+const FeedbackFormBoard = styled.section`
+  margin-bottom: 15px;
+`;
+
+const ButtonWrapper = styled.div`
+  margin-bottom: 20px;
+`;
+
+const Button = styled(ButtonNavy)`
+  padding: 8px 80px;
+  border-radius: 20px;
+`;
 
 // 모든 피드백 입력 되었는지 폼 검사 로직 추가
 // 서브밋시 작성할껀지 모달 추가
@@ -26,6 +88,8 @@ const Feedback = ({
   const dispatch = useDispatch();
   const [feedbackform, setFeedbackValues] = useState({});
   const [feedbackDesc, onChangeFeedbackDesc, setFeedbackDesc] = useInput('');
+
+  const [isModal, setIsModal] = useState(true);
 
   const videoElement = useRef();
 
@@ -58,12 +122,13 @@ const Feedback = ({
     }
   }, [feedbackform, feedbackDesc, timeStamps]);
 
-  const moveVideoTime = useCallback(
-    (time) => {
-      videoElement.current.currentTime = time;
-    },
-    [videoElement.current],
-  );
+  const moveVideoTime = useCallback((time) => {
+    if (!time) {
+      alert('답변한 질문이 아닙니다.');
+      return;
+    }
+    videoElement.current.currentTime = time;
+  }, [videoElement.current]);
 
   // console.log(feedbackform, 'Feedback feedbackform');
   console.log(feedbackDesc, 'Feedback feedbackDesc');
@@ -73,42 +138,37 @@ const Feedback = ({
       <Head>
         <title>피드백 작성 | Untact_Interview </title>
       </Head>
-      <article>
-        <article>
-          <video
-            controls
-            autoPlay
-            ref={videoElement}
-            src={blob}
-            width="500px"
-            height="500px"
-          />
-        </article>
-        <section>
-          타임스탬프
-          {timeStamps.map((item, index) => (
-            <TimeStampCard
-              key={index}
-              text={item.text}
-              time={item.time}
-              answerNumber={index + 1}
-              onClick={moveVideoTime}
+      <AppLayout>
+        <MainContents>
+          <ViedoWrapper>
+            <video
+              controls
+              autoPlay
+              ref={videoElement}
+              src={blob}
+              width="600px"
+              height="450px"
             />
-          ))}
-        </section>
-        <PlayedSessionCard
-          title={title}
-          category={category}
-          email={email}
-          desc={desc}
-          star={star.length}
-        />
-        <article>
-          <label className='korea'>피드백 설명</label>
-          <input type='text' onChange={onChangeFeedbackDesc} />
-        </article>
-        <section>
-          질문, 답변, 피드백 작성 폼
+          </ViedoWrapper>
+          <TimeStampBoard>
+            {timeStamps.map((item, index) => (
+              <TimeStampCard
+                key={index}
+                text={item.text}
+                time={item.time}
+                answerNumber={index + 1}
+                onClick={moveVideoTime}
+              />
+            ))}
+          </TimeStampBoard>
+        </MainContents>
+
+        <FeedbackDesc>
+          <span>피드백 설명: </span>
+          <textarea rows="2" cols="70" onChange={onChangeFeedbackDesc} />
+        </FeedbackDesc>
+
+        <FeedbackFormBoard>
           {questions.map((item, index) => (
             <FeedbackFormCard
               key={index}
@@ -119,9 +179,21 @@ const Feedback = ({
               writeMode={true}
             />
           ))}
-          <button onClick={onSubmit}>작성하기</button>
-        </section>
-      </article>
+        </FeedbackFormBoard>
+        <ButtonWrapper>
+          <Button onClick={onSubmit}>작성하기</Button>
+        </ButtonWrapper>
+      </AppLayout>
+      {isModal && (
+        <Modal onCancelModal={() => setIsModal(false)}>
+          <GuideMessage
+            message={
+              '수고하셨습니다! 영상과 내 답변을 참고해서 피드백을 작성해 보세요 :)'
+            }
+            onOk={() => setIsModal(false)}
+          />
+        </Modal>
+      )}
     </>
   );
 };

@@ -7,6 +7,7 @@ $color-cream:#FFFFF6;
   display: flex;
   flex-direction: column;
   align-items: center;
+  background-color: #2f3640;
 }
 
 .header {
@@ -38,6 +39,7 @@ $color-cream:#FFFFF6;
 }
 
 .timer {
+  color: $color-cream;
   font-size: 25px;
   margin: 12px 0px;
   font-weight: bolder;
@@ -45,43 +47,41 @@ $color-cream:#FFFFF6;
 
 .question {
   font-weight: bolder;
-  font-size: 50px;
+  font-size: 40px;
+  color: $color-cream;
 }
 
 .mainContents {
   display: flex;
   align-items: center;
   margin-bottom: 12px;
-  .video {
-    background-color: green;
-    width: 700px;
-    height: 450px;
+  .videoWrapper {
     margin: 0px 10px;
+    // background-color: green;
+    // width: 600px;
+    // height: 450px;
   }
   .speechNote {
-    background-color: orange;
     width: 380px;
     height: 500px;
     margin: 0px 10px;
+    background-color: #d1d8e0;
+    border-radius: 30px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
   }
 }
 
 .buttonWrapper {
   margin: 17px 0px;
   & button {
-    color: $color-cream;
-    background-color: $color-navy;
+    background-color: #e84118;
     font-weight: bolder;
     color: $color-cream;
     padding: 10px 62px;
     font-size: 17px;
     border-radius: 20px;
-    // transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-    &:hover:before {
-      box-shadow: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-      // box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
-    }
-    &:hover:after {
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    &:hover {
       box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
     }
     cursor: pointer;

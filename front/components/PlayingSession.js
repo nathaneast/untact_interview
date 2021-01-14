@@ -1,13 +1,15 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import Head from 'next/head';
 import PropTypes from 'prop-types';
+import { useRouter } from 'next/router';
 import styles from '../styles/playingSession.module.scss';
 
+import Modal from './modal/Modal';
+import ConfirmMessage from './modal/ConfirmMessage';
 import useInterval from '../hooks/useInterval';
 import socket, { socketEmits } from '../socket';
 // import styled from 'styled-components';
 
-// question 비동기프랍 검사
 // 로딩 추가
 // 세션 끝 => 모달 추가
 // 영상 저장을 버튼으로 하는 방법 연구
@@ -26,29 +28,32 @@ const PlaySession = ({
   const [saveSpeech, setSaveSpeech] = useState(null);
   const [speech, setSpeech] = useState(null);
 
+  const [isModal, setIsModal] = useState(false);
+
   const videoElement = useRef();
   const recorder = useRef();
   const nextQuestionButton = useRef();
+  const router = useRouter();
 
-  // useEffect(() => {
-  //   navigator.mediaDevices
-  //     .getUserMedia({
-  //       video: true,
-  //       audio: true,
-  //     })
-  //     .then(async (stream) => {
-  //       recorder.current = RecordRTC(await stream, {
-  //         type: 'video',
-  //         timeSlice: 1000,
-  //       });
-  //       videoElement.current.srcObject = stream;
-  //       recorder.current.stream = stream;
-  //       recorder.current.startRecording();
+  useEffect(() => {
+    navigator.mediaDevices
+      .getUserMedia({
+        video: true,
+        audio: true,
+      })
+      .then(async (stream) => {
+        recorder.current = RecordRTC(await stream, {
+          type: 'video',
+          timeSlice: 1000,
+        });
+        videoElement.current.srcObject = stream;
+        recorder.current.stream = stream;
+        recorder.current.startRecording();
 
-  //       // socket(setSpeech, setSaveSpeech, saveTimeStamp);
-  //       // socketEmits.startGoogleCloudStream();
-  //     });
-  // }, []);
+        socket(setSpeech, setSaveSpeech, saveTimeStamp);
+        socketEmits.startGoogleCloudStream();
+      });
+  }, []);
 
   const endSession = useCallback(() => {
     recorder.current.stopRecording(() => {
@@ -65,8 +70,26 @@ const PlaySession = ({
     setIsRunning(false);
     socketEmits.endGoogleCloudStream('final');
     moveFeedback();
-    alert('세션 끝');
+    // alert('세션 끝');
   }, [sessionTitle]);
+
+  useInterval(
+    () => {
+      if (timer - 1 === 0 && questions.length - 1 === questionIndex) {
+        endSession();
+        return;
+      }
+      if (timer - 1 === 0) {
+        console.log('다음문제');
+        setQuestionIndex(questionIndex + 1);
+        setTimer(limitTime); // 타이머 취소하고 변경
+        socketEmits.detectFirstSentence();
+      } else {
+        setTimer(timer - 1);
+      }
+    },
+    isRunning ? 1000 : null,
+  );
 
   const onClick = useCallback(() => {
     console.log('버튼 클릭 다음문제');
@@ -83,23 +106,9 @@ const PlaySession = ({
     // }, 4000);
   }, [questions, questionIndex, limitTime]);
 
-  // useInterval(
-  //   () => {
-  //     if (timer - 1 === 0 && questions.length - 1 === questionIndex) {
-  //       endSession();
-  //       return;
-  //     }
-  //     if (timer - 1 === 0) {
-  //       console.log('다음문제');
-  //       setQuestionIndex(questionIndex + 1);
-  //       setTimer(limitTime); // 타이머 취소하고 변경
-  //       socketEmits.detectFirstSentence();
-  //     } else {
-  //       setTimer(timer - 1);
-  //     }
-  //   },
-  //   isRunning ? 1000 : null,
-  // );
+  const onRedirectInterviews = useCallback(() => {
+    router.push('/interviews');
+  });
 
   // console.log(questions, sessionTitle, 'PlaySession');
 
@@ -123,7 +132,7 @@ const PlaySession = ({
                 </li>
               </ul>
             </div>
-            <div className={styles.exit}>
+            <div className={styles.exit} onClick={() => setIsExitModal(true)}>
               <span>나가기</span>
             </div>
           </header>
@@ -133,19 +142,20 @@ const PlaySession = ({
           </div>
 
           <div className={styles.question}>
-            <p>{questions[questionIndex]}</p>
+            <p>Q: {questions[questionIndex]}</p>
           </div>
 
           <main className={styles.mainContents}>
-            <div className={styles.video}>비디오
+            <article className={styles.videoWrapper}>
+              비디오
               <video
                 ref={videoElement}
                 autoPlay
                 muted
-                width="700px"
+                width="600px"
                 height="450px"
               />
-            </div>
+            </article>
             <article className={styles.speechNote}>
               <label>스피치 저장</label>
               <p>{saveSpeech}</p>
@@ -153,12 +163,19 @@ const PlaySession = ({
             </article>
           </main>
 
-          <div className={styles.buttonWrapper}>
-            <button onClick={onClick} ref={nextQuestionButton}>
-              다음 문제
-            </button>
+          <div className={styles.buttonWrapper} onClick={onClick}>
+            <button ref={nextQuestionButton}>다음 문제</button>
           </div>
         </article>
+      )}
+      {isModal && (
+        <Modal onCancelModal={() => setIsModal(false)}>
+          <ConfirmMessage
+            message={'나가시겠습니까?'}
+            onOk={onRedirectInterviews}
+            onCancel={() => setIsModal(false)}
+          />
+        </Modal>
       )}
     </>
   );

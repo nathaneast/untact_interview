@@ -133,7 +133,7 @@ const AppLayout = ({ children }) => {
           </nav>
         </Header>
         <Contents>{children}</Contents>
-        <footer>푸터</footer>
+        {/* <footer>푸터</footer> */}
         {tryLogin && (
           <Modal onCancelModal={() => setTryLogin(false)}>
             <LoginForm

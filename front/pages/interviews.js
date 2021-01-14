@@ -94,11 +94,7 @@ const Interviews = () => {
     <Container>
     <AppLayout>
       <Menu onClick={onSelectCategory}>
-        <MenuItem id="all" data-name="all">
-          <div>
-            <span>All</span>
-          </div>
-        </MenuItem>
+        <MenuItem id="all" data-name="all">All</MenuItem>
         <MenuItem data-name="frontEnd">FrontEnd</MenuItem>
         <MenuItem data-name="backEnd">BackEnd</MenuItem>
         <MenuItem data-name="others">others</MenuItem>

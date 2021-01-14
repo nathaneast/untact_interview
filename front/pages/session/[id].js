@@ -22,16 +22,15 @@ const SessionPost = () => {
   const [timeStamps, setTimeStamps] = useState(null);
   const [blob, setBlob] = useState(null);
 
-  if (!me) {
-    alert('로그인 후 이용 가능 합니다');
-    return router.push('/');
-  }
-
   const oneMoreCheckEndSTT = useCallback((e) => {
     socketEmits.endGoogleCloudStream();
   });
 
   useEffect(() => {
+    if (!me) {
+      alert('로그인 후 이용 가능 합니다');
+      return router.push('/');
+    }
     window.addEventListener('unload', oneMoreCheckEndSTT);
     return () => {
       window.removeEventListener('unload', oneMoreCheckEndSTT);
