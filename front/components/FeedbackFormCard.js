@@ -11,25 +11,27 @@ const Container = styled.div`
   padding: 15px;
   margin: 10px 0px;
   box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+  background-color: white;
 `;
 
 const Item = styled.div`
   margin: 5px 10px;
   & span {
     display: block;
-    font-size: 15px;
+    font-size: 18px;
     font-weight: bolder;
     color: black;
   }
   & p {
     padding-left: 20px;
-    margin: 2px 0px;
+    margin: 8px 0px;
     color: #353b48;
   }
   & textarea {
     color: #2f3640;
     border-radius: 10px;
     margin-top: 10px;
+    font-size: 16;
   }
 `;
 
@@ -55,7 +57,7 @@ const FeedbackFormCard = ({
       {writeMode ? (
         <textarea
           rows="3"
-          cols="80"
+          cols="82"
           name={`feedback_${FeedbackNumber}`}
           onChange={onChange}
         />

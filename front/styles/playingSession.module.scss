@@ -52,6 +52,10 @@ $color-cream:#FFFFF6;
   font-weight: bolder;
   font-size: 40px;
   color: $color-cream;
+  margin-bottom: 7px;
+  & p {
+    margin: 0px;
+  }
 }
 
 .mainContents {
@@ -59,7 +63,7 @@ $color-cream:#FFFFF6;
   align-items: center;
   margin-bottom: 12px;
   .videoWrapper {
-    margin: 0px 10px;
+    margin: 0px 12px;
     // background-color: green;
     // width: 600px;
     // height: 450px;
@@ -67,7 +71,7 @@ $color-cream:#FFFFF6;
   .speechBoard {
     width: 380px;
     height: 500px;
-    margin: 0px 10px;
+    margin: 0px 12px;
     padding: 15px;
     background-color: #d1d8e0;
     border-radius: 30px;
@@ -80,12 +84,12 @@ $color-cream:#FFFFF6;
 }
 
 .buttonWrapper {
-  margin: 17px 0px;
+    margin-bottom: 15px;
   & button {
     background-color: #e84118;
     font-weight: bolder;
     color: $color-cream;
-    padding: 10px 62px;
+    padding: 7px 100px;
     font-size: 17px;
     border-radius: 20px;
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);

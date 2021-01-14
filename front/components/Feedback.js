@@ -1,5 +1,6 @@
 import React, { useCallback, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
 import Head from 'next/head';
 import styled from 'styled-components';
@@ -28,22 +29,19 @@ const ViedoBoard = styled.div`
 const VideoDownload = styled.div`
   display: flex;
   justify-content: center;
-  margin-top: 10px;
 `;
 
 const VideoDownloadButton = styled(ButtonNavy)`
-  border-radius: 8px;
-  padding: 8px 25px;
-  background-color: #e84118;
+  padding: 8px 250px;
   border: 1px solid gray;
   & a {
-    color: #FFFFF6
+    color: #FFFFF6;
   }
 `;
 
 const TimeStampBoard = styled.section`
   margin: 15px;
-  padding: 7px;
+  padding: 15px 5px;
   width: 380px;
   height: 500px;
   background-color: #dcdde1;
@@ -57,7 +55,6 @@ const TimeStampBoard = styled.section`
 
 const FeedbackDesc = styled.div`
   padding: 20px;
-  margin: 10px;
   background-color: white;
   border-radius: 12px;
   box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
@@ -67,7 +64,7 @@ const FeedbackDesc = styled.div`
   & span {
     display:block;
     color: black;
-    font-size: 15px;
+    font-size: 18px;
     font-weight: bolder;
     padding: 5px;
   }
@@ -75,6 +72,7 @@ const FeedbackDesc = styled.div`
     color: #2f3640;
     border-radius: 10px;
     margin-top: 5px;
+    font-size: 16;
   }
 `;
 
@@ -92,7 +90,6 @@ const SubmitButton = styled(ButtonNavy)`
 `;
 
 // 모든 피드백 입력 되었는지 폼 검사 로직 추가
-// 서브밋시 작성할껀지 모달 추가
 const Feedback = ({
   sessionPostId,
   creatorId,
@@ -110,8 +107,9 @@ const Feedback = ({
   const [feedbackDesc, onChangeFeedbackDesc, setFeedbackDesc] = useInput('');
 
   const [isModal, setIsModal] = useState(true);
-
+  const [isFinishedFeedback, setIsFinishedFeedback] = useState(false);
   const videoElement = useRef();
+  const router = useRouter();
 
   const onChange = (e) => {
     setFeedbackValues({
@@ -122,10 +120,9 @@ const Feedback = ({
 
   const onSubmit = useCallback(() => {
     const FeedbackformKeys = Object.keys(feedbackform);
-    const isFeedbacksEmptyCheck = FeedbackformKeys.every((key, index) => (
-      key === `feedback_${index + 1}` && feedbackform[key]
-    ));
-    console.log(feedbackDesc, 'Feedback feedbackDesc onSubmit');
+    const isFeedbacksEmptyCheck = FeedbackformKeys.every(
+      (key, index) => key === `feedback_${index + 1}` && feedbackform[key]
+    );
     if (isFeedbacksEmptyCheck && feedbackDesc) {
       dispatch({
         type: UPLOAD_FEEDBACK_POST_REQUEST,
@@ -137,20 +134,28 @@ const Feedback = ({
           feedbackDesc,
         },
       });
+      setIsModal(true);
+      setIsFinishedFeedback(true);
     } else {
       alert('피드백 설명과 각 피드백을 모두 입력 해주세요');
     }
   }, [feedbackform, feedbackDesc, timeStamps]);
 
-  const moveVideoTime = useCallback((time) => {
-    if (!time) {
-      alert('답변한 질문이 아닙니다.');
-      return;
-    }
-    videoElement.current.currentTime = time;
-  }, [videoElement.current]);
+  const moveVideoTime = useCallback(
+    (time) => {
+      if (!time) {
+        alert('답변한 질문이 아닙니다.');
+        return;
+      }
+      videoElement.current.currentTime = time;
+    },
+    [videoElement.current]
+  );
 
-  // console.log(feedbackform, 'Feedback feedbackform');
+  const onRedirectInterviews = useCallback(() => {
+    router.push('/interviews');
+  });
+
   console.log(feedbackDesc, 'Feedback feedbackDesc');
 
   return (
@@ -171,7 +176,9 @@ const Feedback = ({
             />
             <VideoDownload>
               <VideoDownloadButton>
-                <a href={blob} target="_blank" rel="noopener">영상 다운받기</a>
+                <a href={blob} target="_blank" rel="noopener">
+                  영상 다운받기
+                </a>
               </VideoDownloadButton>
             </VideoDownload>
           </ViedoBoard>
@@ -205,20 +212,30 @@ const Feedback = ({
             />
           ))}
         </FeedbackFormBoard>
+
         <ButtonWrapper>
           <SubmitButton onClick={onSubmit}>작성하기</SubmitButton>
         </ButtonWrapper>
       </AppLayout>
-      {isModal && (
-        <Modal onCancelModal={() => setIsModal(false)}>
-          <GuideMessage
-            message={
-              '수고하셨습니다! 영상과 내 답변을 참고해서 피드백을 작성해 보세요 :)'
-            }
-            onOk={() => setIsModal(false)}
-          />
-        </Modal>
-      )}
+
+      {isModal &&
+        (isFinishedFeedback ? (
+          <Modal onCancelModal={onRedirectInterviews}>
+            <GuideMessage
+              message={'피드백 작성이 완료 되었습니다.'}
+              onOk={onRedirectInterviews}
+            />
+          </Modal>
+        ) : (
+          <Modal onCancelModal={() => setIsModal(false)}>
+            <GuideMessage
+              message={
+                '수고하셨습니다! 영상과 내 답변을 참고해서 피드백을 작성해 보세요 :)'
+              }
+              onOk={() => setIsModal(false)}
+            />
+          </Modal>
+        ))}
     </>
   );
 };

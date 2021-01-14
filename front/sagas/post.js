@@ -121,7 +121,7 @@ function* uploadFeedbackPost(action) {
       type: UPLOAD_FEEDBACK_POST_SUCCESS,
       data: result.data,
     });
-    yield call(Router.push, '/interviews');
+    // yield call(Router.push, '/interviews');
   } catch (err) {
     console.error(err);
     yield put({

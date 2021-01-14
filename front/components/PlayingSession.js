@@ -148,7 +148,6 @@ const PlaySession = ({
 
           <main className={styles.mainContents}>
             <article className={styles.videoWrapper}>
-              비디오
               <video
                 ref={videoElement}
                 autoPlay
@@ -158,7 +157,6 @@ const PlaySession = ({
               />
             </article>
             <article className={styles.speechBoard}>
-              <label>스피치 저장</label>
               <p>{saveSpeech}</p>
               <p>{speech}</p>
             </article>
