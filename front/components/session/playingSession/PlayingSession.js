@@ -2,12 +2,12 @@ import React, { useState, useCallback, useEffect, useRef } from 'react';
 import Head from 'next/head';
 import PropTypes from 'prop-types';
 import { useRouter } from 'next/router';
-import styles from '../styles/playingSession.module.scss';
+import styles from './styles.module.scss';
 
-import Modal from './modal/Modal';
-import ConfirmMessage from './modal/ConfirmMessage';
-import useInterval from '../hooks/useInterval';
-import socket, { socketEmits } from '../socket';
+import Modal from '../../modal/Modal';
+import ConfirmMessage from '../../modal/ConfirmMessage';
+import useInterval from '../../../hooks/useInterval';
+import socket, { socketEmits } from '../../../socket';
 // import styled from 'styled-components';
 
 // 로딩 추가

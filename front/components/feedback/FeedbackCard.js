@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import PlayedSessionCard from './PlayedSessionCard';
+import PlayedSessionCard from '../PlayedSessionCard';
 
 const FeedbackCard = ({ feedbackPostId, sessionPost, onClick, desc }) => {
   console.log(feedbackPostId, sessionPost, 'FeedbackCard');

@@ -4,11 +4,11 @@ import { useRouter } from 'next/router';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 
-import { ON_STAR_POST_REQUEST } from '../reducers/post';
+import { ON_STAR_POST_REQUEST } from '../../reducers/post';
 import SessionCard from './SessionCard';
-import Modal from './modal/Modal';
-import GuideMessage from './modal/GuideMessage';
-import ConfirmMessage from './modal/ConfirmMessage';
+import Modal from '../modal/Modal';
+import GuideMessage from '../modal/GuideMessage';
+import ConfirmMessage from '../modal/ConfirmMessage';
 
 const Container = styled.section`
   display: grid;

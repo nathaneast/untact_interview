@@ -7,8 +7,8 @@ import { useRouter } from 'next/router';
 import wrapper from '../../store/configureStore';
 import { LOAD_MY_INFO_REQUEST } from '../../reducers/user';
 import { LOAD_SESSION_POST_REQUEST } from '../../reducers/post';
-import PlayingSession from '../../components/PlayingSession';
-import Feedback from '../../components/Feedback';
+import PlayingSession from '../../components/session/playingSession/PlayingSession';
+import Feedback from '../../components/feedback/Feedback/Feedback';
 import { socketEmits } from '../../socket';
 
 // 다음 버튼 클릭시 timer 바꾸는것말고 일정하게 바뀌도록 고민

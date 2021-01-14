@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useState, useRef } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React, { useCallback, useState, useRef } from 'react';
+import { useSelector } from 'react-redux';
 import { END } from 'redux-saga';
 import axios from 'axios';
 
@@ -8,7 +8,7 @@ import { LOAD_MY_INFO_REQUEST } from '../../reducers/user';
 import { LOAD_FEEDBACK_POST_REQUEST } from '../../reducers/post';
 import TimeStampCard from '../../components/TimeStampCard';
 import AppLayout from '../../components/AppLayout';
-import FeedbackFormCard from '../../components/FeedbackFormCard';
+import FeedbackFormCard from '../../components/feedback/FeedbackFormCard';
 import PlayedSessionCard from '../../components/PlayedSessionCard';
 
 const feedbackPost = () => {

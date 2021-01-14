@@ -8,7 +8,7 @@ import { LOAD_SESSION_POSTS_REQUEST } from '../reducers/post';
 import { LOAD_MY_INFO_REQUEST } from '../reducers/user';
 import AppLayout from '../components/AppLayout';
 import wrapper from '../store/configureStore';
-import SessionCardList from '../components/SessionCardList';
+import SessionCardList from '../components/session/SessionCardList';
 
 const Menu = styled.ul`
   display: flex;

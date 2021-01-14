@@ -3,91 +3,25 @@ import { useDispatch } from 'react-redux';
 import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
 import Head from 'next/head';
-import styled from 'styled-components';
 
-import { UPLOAD_FEEDBACK_POST_REQUEST } from '../reducers/post';
-import useInput from '../hooks/useInput';
-import { ButtonNavy } from '../styles/reStyled';
-import FeedbackFormCard from './FeedbackFormCard';
-import TimeStampCard from './TimeStampCard';
-// import PlayedSessionCard from './PlayedSessionCard';
-import Modal from './modal/Modal';
-import GuideMessage from './modal/GuideMessage';
-import AppLayout from './AppLayout';
-
-const MainContents = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 10px 0px;
-`;
-
-const ViedoBoard = styled.div`
-  margin: 15px;
-`;
-
-const VideoDownload = styled.div`
-  display: flex;
-  justify-content: center;
-`;
-
-const VideoDownloadButton = styled(ButtonNavy)`
-  padding: 8px 250px;
-  border: 1px solid gray;
-  & a {
-    color: #FFFFF6;
-  }
-`;
-
-const TimeStampBoard = styled.section`
-  margin: 15px;
-  padding: 15px 5px;
-  width: 380px;
-  height: 500px;
-  background-color: #dcdde1;
-  border-radius: 30px;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
-  overflow-y: scroll;
-  &::-webkit-scrollbar {
-    display: none;
-  }
-`;
-
-const FeedbackDesc = styled.div`
-  padding: 20px;
-  background-color: white;
-  border-radius: 12px;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
-  display: flex;
-  flex-direction: column;
-  width: 600px;
-  & span {
-    display:block;
-    color: black;
-    font-size: 18px;
-    font-weight: bolder;
-    padding: 5px;
-  }
-  & textarea {
-    color: #2f3640;
-    border-radius: 10px;
-    margin-top: 5px;
-    font-size: 16;
-  }
-`;
-
-const FeedbackFormBoard = styled.section`
-  margin-bottom: 15px;
-`;
-
-const ButtonWrapper = styled.div`
-  margin-bottom: 20px;
-`;
-
-const SubmitButton = styled(ButtonNavy)`
-  padding: 8px 80px;
-  border-radius: 20px;
-`;
+import {
+  MainContents,
+  VideoBoard,
+  VideoDownload,
+  VideoDownloadButton,
+  TimeStampBoard,
+  FeedbackDesc,
+  FeedbackFormBoard,
+  ButtonWrapper,
+  SubmitButton,
+} from './styles';
+import { UPLOAD_FEEDBACK_POST_REQUEST } from '../../../reducers/post';
+import useInput from '../../../hooks/useInput';
+import FeedbackFormCard from '../FeedbackFormCard';
+import TimeStampCard from '../../TimeStampCard';
+import Modal from '../../modal/Modal';
+import GuideMessage from '../../modal/GuideMessage';
+import AppLayout from '../../AppLayout';
 
 // 모든 피드백 입력 되었는지 폼 검사 로직 추가
 const Feedback = ({
@@ -165,7 +99,7 @@ const Feedback = ({
       </Head>
       <AppLayout>
         <MainContents>
-          <ViedoBoard>
+          <VideoBoard>
             <video
               controls
               autoPlay
@@ -181,7 +115,7 @@ const Feedback = ({
                 </a>
               </VideoDownloadButton>
             </VideoDownload>
-          </ViedoBoard>
+          </VideoBoard>
           <TimeStampBoard>
             {timeStamps.map((item, index) => (
               <TimeStampCard
