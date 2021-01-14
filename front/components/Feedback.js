@@ -33,6 +33,10 @@ const TimeStampBoard = styled.section`
   background-color: #dcdde1;
   border-radius: 30px;
   box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+  overflow-y: scroll;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 const FeedbackDesc = styled.div`
