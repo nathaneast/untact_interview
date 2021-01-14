@@ -21,8 +21,24 @@ const MainContents = styled.div`
   margin: 10px 0px;
 `;
 
-const ViedoWrapper = styled.div`
+const ViedoBoard = styled.div`
   margin: 15px;
+`;
+
+const VideoDownload = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+`;
+
+const VideoDownloadButton = styled(ButtonNavy)`
+  border-radius: 8px;
+  padding: 8px 25px;
+  background-color: #e84118;
+  border: 1px solid gray;
+  & a {
+    color: #FFFFF6
+  }
 `;
 
 const TimeStampBoard = styled.section`
@@ -70,7 +86,7 @@ const ButtonWrapper = styled.div`
   margin-bottom: 20px;
 `;
 
-const Button = styled(ButtonNavy)`
+const SubmitButton = styled(ButtonNavy)`
   padding: 8px 80px;
   border-radius: 20px;
 `;
@@ -144,7 +160,7 @@ const Feedback = ({
       </Head>
       <AppLayout>
         <MainContents>
-          <ViedoWrapper>
+          <ViedoBoard>
             <video
               controls
               autoPlay
@@ -153,7 +169,12 @@ const Feedback = ({
               width="600px"
               height="450px"
             />
-          </ViedoWrapper>
+            <VideoDownload>
+              <VideoDownloadButton>
+                <a href={blob} target="_blank" rel="noopener">영상 다운받기</a>
+              </VideoDownloadButton>
+            </VideoDownload>
+          </ViedoBoard>
           <TimeStampBoard>
             {timeStamps.map((item, index) => (
               <TimeStampCard
@@ -185,7 +206,7 @@ const Feedback = ({
           ))}
         </FeedbackFormBoard>
         <ButtonWrapper>
-          <Button onClick={onSubmit}>작성하기</Button>
+          <SubmitButton onClick={onSubmit}>작성하기</SubmitButton>
         </ButtonWrapper>
       </AppLayout>
       {isModal && (

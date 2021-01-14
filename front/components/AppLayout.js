@@ -7,12 +7,11 @@ import Modal from './modal/Modal';
 import LoginForm from './modal/LoginForm';
 import { LOG_OUT_REQUEST, CLEAR_LOGIN_ERROR_REQUEST } from '../reducers/user';
 
-const AppWrapper = styled.div`
-  background-color: green;
-  height: 100%;
-  width: 100%;
-  background-color: #FFFFF6;
-  `;
+// const AppWrapper = styled.div`
+//   background-color: #FFFFF6;
+//   height: 100%;
+//   width: 100%;
+//   `;
 
 const Container = styled.div`
   display: flex;
@@ -81,7 +80,7 @@ const AppLayout = ({ children }) => {
   });
 
   return (
-    <AppWrapper>
+    // <AppWrapper>
       <Container>
         <Header>
           <Logo>
@@ -142,7 +141,7 @@ const AppLayout = ({ children }) => {
           </Modal>
         )}
       </Container>
-    </AppWrapper>
+    // </AppWrapper>
   );
 };
 

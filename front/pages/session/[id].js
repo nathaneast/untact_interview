@@ -22,9 +22,15 @@ const SessionPost = () => {
   const [timeStamps, setTimeStamps] = useState(null);
   const [blob, setBlob] = useState(null);
 
+  const [saveVideo, setSaveVideo] = useState(null);
+
   const oneMoreCheckEndSTT = useCallback((e) => {
     socketEmits.endGoogleCloudStream();
   });
+
+  useEffect(() => {
+    console.log(saveVideo, 'saveVideo');
+  }, [saveVideo]);
 
   useEffect(() => {
     if (!me) {
@@ -63,6 +69,7 @@ const SessionPost = () => {
           saveBlob={setBlob}
           saveTimeStamp={setTimeStamps}
           sessionTitle={singlePost.title}
+          setSaveVideo={setSaveVideo}
         />
       ))}
     </>

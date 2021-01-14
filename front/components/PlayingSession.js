@@ -19,6 +19,7 @@ const PlaySession = ({
   saveBlob,
   sessionTitle,
   moveFeedback,
+  setSaveVideo,
 }) => {
   const [limitTime, setLimitTime] = useState(30);
   const [timer, setTimer] = useState(limitTime);
@@ -59,10 +60,10 @@ const PlaySession = ({
     recorder.current.stopRecording(() => {
       // videoElement.current.srcObject = null;
       saveBlob(URL.createObjectURL(recorder.current.getBlob()));
-      const isConfirm = confirm('영상을 저장 하시겠습니까?');
-      if (isConfirm) {
-        invokeSaveAsDialog(recorder.current.getBlob(), `${sessionTitle}_${new Date().valueOf()}.webm`);
-      }
+      // const isConfirm = confirm('영상을 저장 하시겠습니까?');
+      // if (isConfirm) {
+      //   invokeSaveAsDialog(recorder.current.getBlob(), `${sessionTitle}_${new Date().valueOf()}.webm`);
+      // }
       recorder.current.stream.stop();
       recorder.current.destroy();
       recorder.current = null;
@@ -156,7 +157,7 @@ const PlaySession = ({
                 height="450px"
               />
             </article>
-            <article className={styles.speechNote}>
+            <article className={styles.speechBoard}>
               <label>스피치 저장</label>
               <p>{saveSpeech}</p>
               <p>{speech}</p>
@@ -187,6 +188,7 @@ PlaySession.propTypes = {
   saveTimeStamp: PropTypes.func.isRequired,
   saveBlob: PropTypes.func.isRequired,
   sessionTitle: PropTypes.string.isRequired,
+  setSaveVideo: PropTypes.func.isRequired,
 };
 
 export default PlaySession;

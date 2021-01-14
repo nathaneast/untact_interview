@@ -42,7 +42,7 @@ TimeStampCard.propTypes = {
 };
 
 TimeStampCard.defaultProps = {
-  time: null,
+  time: PropTypes.string,
 };
 
 export default TimeStampCard;

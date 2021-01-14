@@ -25,6 +25,9 @@ $color-cream:#FFFFF6;
   }
   .exit {
     cursor: pointer;
+    &:hover {
+      color: #e84118;
+    }
   }
 }
 
@@ -61,13 +64,18 @@ $color-cream:#FFFFF6;
     // width: 600px;
     // height: 450px;
   }
-  .speechNote {
+  .speechBoard {
     width: 380px;
     height: 500px;
     margin: 0px 10px;
+    padding: 15px;
     background-color: #d1d8e0;
     border-radius: 30px;
     box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+    overflow-y: scroll;
+    &::-webkit-scrollbar {
+    display: none;
+    }
   }
 }
 

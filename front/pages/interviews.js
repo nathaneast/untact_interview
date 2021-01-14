@@ -10,11 +10,6 @@ import AppLayout from '../components/AppLayout';
 import wrapper from '../store/configureStore';
 import SessionCardList from '../components/SessionCardList';
 
-const Container = styled.div`
-  height: 100%;
-  background-color: blue;
-`;
-
 const Menu = styled.ul`
   display: flex;
   list-style-type: none;
@@ -35,7 +30,7 @@ const Interviews = () => {
   const dispatch = useDispatch();
   const { me } = useSelector((state) => state.user);
   const { sessionPosts, hasMorePosts, loadPostsLoading } = useSelector(
-    (state) => state.post,
+    (state) => state.post
   );
   const [selectedCategory, setSelectedCategory] = useState('all');
 
@@ -84,24 +79,24 @@ const Interviews = () => {
         setSelectedCategory(e.target.dataset.name);
       }
     },
-    [selectedCategory],
+    [selectedCategory]
   );
 
   // console.log(me, 'home me');
   // console.log(sessionPosts, 'Interviews, sessionPosts ');
 
   return (
-    <Container>
     <AppLayout>
       <Menu onClick={onSelectCategory}>
-        <MenuItem id="all" data-name="all">All</MenuItem>
+        <MenuItem id="all" data-name="all">
+          All
+        </MenuItem>
         <MenuItem data-name="frontEnd">FrontEnd</MenuItem>
         <MenuItem data-name="backEnd">BackEnd</MenuItem>
         <MenuItem data-name="others">others</MenuItem>
       </Menu>
       <SessionCardList posts={sessionPosts} meId={me?._id} />
     </AppLayout>
-    </Container>
   );
 };
 
