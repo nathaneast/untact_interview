@@ -53,18 +53,19 @@ const Feedback = ({
   };
 
   const onSubmit = useCallback(() => {
-    const FeedbackformKeys = Object.keys(feedbackform);
-    const isFeedbacksEmptyCheck = FeedbackformKeys.every(
-      (key, index) => key === `feedback_${index + 1}` && feedbackform[key]
-    );
-    if (isFeedbacksEmptyCheck && feedbackDesc) {
+    const feedbackformKeys = Object.keys(feedbackform);
+    const isAllFeedbacks = feedbackformKeys.length === 5 && (
+      feedbackformKeys.every(
+        (key) => true === Boolean(feedbackform[key]),
+      ));
+    if (isAllFeedbacks && feedbackDesc) {
       dispatch({
         type: UPLOAD_FEEDBACK_POST_REQUEST,
         data: {
           creatorId,
           sessionPostId,
           timeStamps,
-          feedbacks: FeedbackformKeys.map((key) => feedbackform[key]),
+          feedbacks: feedbackformKeys.map((key) => feedbackform[key]),
           feedbackDesc,
         },
       });

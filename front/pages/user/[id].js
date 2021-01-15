@@ -8,8 +8,8 @@ import wrapper from '../../store/configureStore';
 import { LOAD_MY_INFO_REQUEST, LOAD_USER_INFO_REQUEST } from '../../reducers/user';
 import { LOAD_USER_POSTS_REQUEST } from '../../reducers/post';
 import AppLayout from '../../components/AppLayout';
-import SessionCardList from '../../components/SessionCardList';
-import FeedbackCardList from '../../components/FeedbackCardList';
+import SessionCardList from '../../components/session/SessionCardList';
+import FeedbackCardList from '../../components/feedback/FeedbackCardList';
 
 const User = () => {
   const dispatch = useDispatch();

@@ -80,7 +80,6 @@ const AppLayout = ({ children }) => {
   });
 
   return (
-    // <AppWrapper>
       <Container>
         <Header>
           <Logo>
@@ -98,7 +97,7 @@ const AppLayout = ({ children }) => {
               {me ? (
                 <>
                   <NavItem>
-                    <Link href="/writeSessionPost">
+                    <Link href="/sessionForm">
                       <span>글쓰기</span>
                     </Link>
                   </NavItem>
@@ -141,7 +140,6 @@ const AppLayout = ({ children }) => {
           </Modal>
         )}
       </Container>
-    // </AppWrapper>
   );
 };
 
