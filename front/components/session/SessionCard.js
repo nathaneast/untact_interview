@@ -98,7 +98,7 @@ const SessionCard = ({
       </PostTitleWrapper>
       <PostDetail>
         <Creator>
-          <span onClick={() => moveUserProfile(userId)}>글쓴이: {email}</span>
+          <span onClick={() => moveUserProfile(userId)}>creator: {email}</span>
         </Creator>
         <Star>
           <span onClick={() => onStarHandler(postId)}>{isStarUser(star) ? '⭐' : '☆'}</span>
@@ -107,7 +107,7 @@ const SessionCard = ({
       </PostDetail>
     </PostInfo>
     <ButtonWrapper>
-      <Button onClick={() => onClick(postId)}>진행하기</Button>
+      <Button onClick={() => onClick(postId)}>Play</Button>
     </ButtonWrapper>
   </PostCard>
 );

@@ -24,7 +24,7 @@ router.get('/', async (req, res, next) => {
 
 router.get('/:userId', async (req, res, next) => {
   try {
-    const user = await User.findById(req.params.userId).select('email nickname');
+    const user = await User.findById(req.params.userId).select('email nickname createdAt');
     res.status(200).json(user);
   } catch (error) {
     console.error(error);

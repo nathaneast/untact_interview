@@ -4,6 +4,15 @@ import { useRouter } from 'next/router';
 import { END } from 'redux-saga';
 import axios from 'axios';
 
+import {
+  UserBoard,
+  Profile,
+  Avatar,
+  UserInfo,
+  MenuWrapper,
+  Menu,
+  MenuItem,
+} from '../../styles/user';
 import wrapper from '../../store/configureStore';
 import { LOAD_MY_INFO_REQUEST, LOAD_USER_INFO_REQUEST } from '../../reducers/user';
 import { LOAD_USER_POSTS_REQUEST } from '../../reducers/post';
@@ -20,9 +29,7 @@ const User = () => {
     hasMorePosts,
     loadUserPostsLoading,
   } = useSelector((state) => state.post);
-  const {
-    userInfo,
-  } = useSelector((state) => state.user);
+  const { userInfo } = useSelector((state) => state.user);
 
   const [selectedCategory, setSelectedCategory] = useState('writePosts');
   const router = useRouter();
@@ -61,12 +68,18 @@ const User = () => {
     return () => {
       window.removeEventListener('scroll', onScroll);
     };
-  }, [sessionPosts, feedbackPosts, hasMorePosts, loadUserPostsLoading, selectedCategory]);
+  }, [
+    sessionPosts,
+    feedbackPosts,
+    hasMorePosts,
+    loadUserPostsLoading,
+    selectedCategory,
+  ]);
 
   const onSelectCategory = useCallback(
     (e) => {
       if (
-        e.target.tagName === 'LI' &&
+        e.target.tagName === 'BUTTON' &&
         selectedCategory !== e.target.dataset.name
       ) {
         dispatch({
@@ -91,30 +104,45 @@ const User = () => {
 
   return (
     <AppLayout>
-      <article>
-        <label>user Profile</label>
+      <UserBoard>
         {userInfo && (
-          <>
-            <div>
-              <span>name: {userInfo.nickname}</span>
-            </div>
-            <div>
-              <span>email: {userInfo.email}</span>
-            </div>
-          </>
+          <Profile>
+            <Avatar>
+              <div>
+                <span>{userInfo.email[0]}</span>
+              </div>
+            </Avatar>
+            <UserInfo>
+              <div>
+                <span>email: {userInfo.email}</span>
+              </div>
+              <div>
+                <span>name: {userInfo.nickname}</span>
+              </div>
+              <div>
+                <span>createdAt: {userInfo.createdAt.split('T')[0]}</span>
+              </div>
+            </UserInfo>
+          </Profile>
         )}
-      </article>
-      <nav>
-        <ul onClick={onSelectCategory}>
-          <li data-name="writePosts">writePosts</li>
-          {me && me._id === userId.current ? (
-            <li data-name="feedback">feedback</li>
-          ) : (
-            ''
-          )}
-          <li data-name="star">star</li>
-        </ul>
-      </nav>
+        <MenuWrapper>
+          <Menu onClick={onSelectCategory}>
+            <MenuItem>
+              <button data-name="writePosts">writePosts</button>
+            </MenuItem>
+            {me && me._id === userId.current ? (
+              <MenuItem>
+                <button data-name="feedback">feedback</button>
+              </MenuItem>
+            ) : (
+              ''
+            )}
+            <MenuItem>
+              <button data-name="star">star</button>
+            </MenuItem>
+          </Menu>
+        </MenuWrapper>
+      </UserBoard>
       <section>
         {selectedCategory === 'feedback' ? (
           <FeedbackCardList posts={feedbackPosts} />
