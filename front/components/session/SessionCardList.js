@@ -9,6 +9,7 @@ import SessionCard from './SessionCard';
 import Modal from '../modal/Modal';
 import GuideMessage from '../modal/GuideMessage';
 import ConfirmMessage from '../modal/ConfirmMessage';
+import NonePostMessageCard from '../NonePostMessageCard';
 
 const Container = styled.section`
   display: grid;
@@ -83,22 +84,23 @@ const SessionCardList = ({ posts, meId }) => {
           />
         ))}
       </Container>
-      {isModal && (meId ? (
-        <Modal onCancelModal={onCancelModal}>
-          <ConfirmMessage
-            onCancel={onCancelModal}
-            onOk={onStartSession}
-            message={'인터뷰를 진행 하시겠습니까?'}
-          />
-        </Modal>
-      ) : (
-        <Modal onCancelModal={onCancelModal}>
-          <GuideMessage
-            onOk={onCancelModal}
-            message={'로그인 후에 이용 가능 합니다.'}
-          />
-        </Modal>
-      ))}
+      {isModal &&
+        (meId ? (
+          <Modal onCancelModal={onCancelModal}>
+            <ConfirmMessage
+              onCancel={onCancelModal}
+              onOk={onStartSession}
+              message={'인터뷰를 진행 하시겠습니까?'}
+            />
+          </Modal>
+        ) : (
+          <Modal onCancelModal={onCancelModal}>
+            <GuideMessage
+              onOk={onCancelModal}
+              message={'로그인 후에 이용 가능 합니다.'}
+            />
+          </Modal>
+        ))}
     </>
   );
 };

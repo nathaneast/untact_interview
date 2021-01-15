@@ -13,13 +13,12 @@ router.get('/', async (req, res, next) => {
     console.log(lastId, category, 'GET posts / req.query');
     if (category === 'all') {
       const allPosts = await SessionPost.find(lastId ? { _id: { $lt: lastId } } : null)
-        .limit(5)
+        .limit(8)
         .populate('creator', 'nickname email')
         .populate('category', 'name')
         .sort({ createdAt: -1 });
       return res.status(200).send(allPosts);
     } else {
-      // 다른 카테고리일때
       const categoryPosts = await Category.findOne({
         name: category
       })
@@ -29,7 +28,7 @@ router.get('/', async (req, res, next) => {
         match: lastId ? { _id: { $lt: lastId } } : null,
         options: { 
           sort: { 'createdAt': -1 },
-          limit: 5,
+          limit: 8,
         },
         populate : {
           path : 'creator',

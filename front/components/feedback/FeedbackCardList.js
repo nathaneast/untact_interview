@@ -23,6 +23,7 @@ const FeedbackCardList = ({ posts }) => {
           onClick={onClickRedirectFeedback}
         />
       ))}
+      ;
     </section>
   );
 };

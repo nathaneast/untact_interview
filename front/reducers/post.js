@@ -67,7 +67,7 @@ const reducer = (state = initialState, action) => {
       case LOAD_USER_POSTS_SUCCESS:
         draft.loadUserPostsLoading = false;
         draft.loadUserPostsDone = true;
-        draft.hasMorePosts = action.data.result.length === 5;
+        draft.hasMorePosts = action.data.result.length === 8;
         if (action.data.category === 'feedback') {
           draft.feedbackPosts = action.data.isSame
             ? draft.feedbackPosts.concat(action.data.result)
@@ -93,7 +93,7 @@ const reducer = (state = initialState, action) => {
         draft.sessionPosts = action.data.isSame
           ? draft.sessionPosts.concat(action.data.result)
           : action.data.result;
-        draft.hasMorePosts = action.data.result.length === 5;
+        draft.hasMorePosts = action.data.result.length === 8;
         break;
       case LOAD_SESSION_POSTS_FAILURE:
         draft.loadSessionPostsLoading = false;

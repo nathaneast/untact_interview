@@ -19,6 +19,7 @@ import { LOAD_USER_POSTS_REQUEST } from '../../reducers/post';
 import AppLayout from '../../components/AppLayout';
 import SessionCardList from '../../components/session/SessionCardList';
 import FeedbackCardList from '../../components/feedback/FeedbackCardList';
+import NonePostMessageCard from '../../components/NonePostMessageCard';
 
 const User = () => {
   const dispatch = useDispatch();
@@ -29,29 +30,29 @@ const User = () => {
     hasMorePosts,
     loadUserPostsLoading,
   } = useSelector((state) => state.post);
-  const { userInfo } = useSelector((state) => state.user);
+  const { userInfo, loadUserPostsDone } = useSelector((state) => state.user);
 
-  const [selectedCategory, setSelectedCategory] = useState('writePosts');
+  const [selectedMenu, setSelectedMenu] = useState('writePosts');
   const router = useRouter();
   const userId = useRef(router.asPath.split('/user/')[1]);
 
   const loadSameCategoryPosts = useCallback(() => {
     const anyPostLastId =
-      selectedCategory === 'feedback'
+      selectedMenu === 'feedback'
         ? feedbackPosts[feedbackPosts.length - 1]?._id
         : sessionPosts[sessionPosts.length - 1]?._id;
     return dispatch({
       type: LOAD_USER_POSTS_REQUEST,
       data: {
         category: {
-          name: selectedCategory,
+          name: selectedMenu,
           isSame: true,
         },
         userId: userId.current,
         lastId: anyPostLastId,
       },
     });
-  }, [selectedCategory, sessionPosts, feedbackPosts]);
+  }, [selectedMenu, sessionPosts, feedbackPosts]);
 
   useEffect(() => {
     function onScroll() {
@@ -73,14 +74,14 @@ const User = () => {
     feedbackPosts,
     hasMorePosts,
     loadUserPostsLoading,
-    selectedCategory,
+    selectedMenu,
   ]);
 
   const onSelectCategory = useCallback(
     (e) => {
       if (
         e.target.tagName === 'BUTTON' &&
-        selectedCategory !== e.target.dataset.name
+        selectedMenu !== e.target.dataset.name
       ) {
         dispatch({
           type: LOAD_USER_POSTS_REQUEST,
@@ -93,14 +94,20 @@ const User = () => {
             lastId: null,
           },
         });
-        setSelectedCategory(e.target.dataset.name);
+        setSelectedMenu(e.target.dataset.name);
       }
     },
-    [selectedCategory],
+    [selectedMenu],
   );
 
-  console.log(sessionPosts, 'UserPage sessionPosts');
-  console.log(feedbackPosts, 'UserPage feedbackPosts');
+  const isSelectedFeedback = useCallback(() => selectedMenu === 'feedback', [selectedMenu]);
+
+  const isNonePosts = useCallback(() => {
+    return isSelectedFeedback() ? feedbackPosts.length === 0 : sessionPosts.length === 0;
+  }, [sessionPosts, feedbackPosts]);
+
+  // console.log(sessionPosts, 'UserPage sessionPosts');
+  // console.log(feedbackPosts, 'UserPage feedbackPosts');
 
   return (
     <AppLayout>
@@ -144,10 +151,14 @@ const User = () => {
         </MenuWrapper>
       </UserBoard>
       <section>
-        {selectedCategory === 'feedback' ? (
-          <FeedbackCardList posts={feedbackPosts} />
+        {isNonePosts() ? (
+          <NonePostMessageCard />
         ) : (
-          <SessionCardList posts={sessionPosts} meId={me?._id} />
+          isSelectedFeedback() ? (
+            <FeedbackCardList posts={feedbackPosts} />
+          ) : (
+            <SessionCardList posts={sessionPosts} meId={me?._id} />
+          )
         )}
       </section>
     </AppLayout>

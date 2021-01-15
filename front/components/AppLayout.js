@@ -7,12 +7,6 @@ import Modal from './modal/Modal';
 import LoginForm from './modal/LoginForm';
 import { LOG_OUT_REQUEST, CLEAR_LOGIN_ERROR_REQUEST } from '../reducers/user';
 
-// const AppWrapper = styled.div`
-//   background-color: #FFFFF6;
-//   height: 100%;
-//   width: 100%;
-//   `;
-
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -80,66 +74,61 @@ const AppLayout = ({ children }) => {
   });
 
   return (
-      <Container>
-        <Header>
-          <Logo>
-            <Link href="/">
-              <span>Untact Interview</span>
-            </Link>
-          </Logo>
-          <nav>
-            <NavBar>
-              <NavItem>
-                <Link href="/interviews">
-                  <span>시작하기</span>
-                </Link>
-              </NavItem>
-              {me ? (
-                <>
-                  <NavItem>
-                    <Link href="/sessionForm">
-                      <span>글쓰기</span>
-                    </Link>
-                  </NavItem>
-                  <NavItem>
-                    <Link href={`/user/${me._id}`}>
-                      <span>내정보</span>
-                    </Link>
-                  </NavItem>
-                  <NavItem>
-                    <span onClick={onLogOut}>로그아웃</span>
-                  </NavItem>
-                  <NavItem>
-                    <span>{me.nickname}</span>
-                  </NavItem>
-                </>
-              ) : (
-                <>
-                  <NavItem>
-                    <span onClick={onLogIn} >
-                      로그인
-                    </span>
-                  </NavItem>
-                  <NavItem>
-                    <Link href="/signup">
-                      <span>회원가입</span>
-                    </Link>
-                  </NavItem>
-                </>
-              )}
-            </NavBar>
-          </nav>
-        </Header>
-        <Contents>{children}</Contents>
-        {/* <footer>푸터</footer> */}
-        {tryLogin && (
-          <Modal onCancelModal={() => setTryLogin(false)}>
-            <LoginForm
-              onCancelModal={() => setTryLogin(false)}
-            />
-          </Modal>
-        )}
-      </Container>
+    <Container>
+      <Header>
+        <Logo>
+          <Link href="/">
+            <span>Untact Interview</span>
+          </Link>
+        </Logo>
+        <nav>
+          <NavBar>
+            <NavItem>
+              <Link href="/interviews">
+                <span>시작하기</span>
+              </Link>
+            </NavItem>
+            {me ? (
+              <>
+                <NavItem>
+                  <Link href="/sessionForm">
+                    <span>글쓰기</span>
+                  </Link>
+                </NavItem>
+                <NavItem>
+                  <Link href={`/user/${me._id}`}>
+                    <span>내정보</span>
+                  </Link>
+                </NavItem>
+                <NavItem>
+                  <span onClick={onLogOut}>로그아웃</span>
+                </NavItem>
+                <NavItem>
+                  <span>{me.nickname}</span>
+                </NavItem>
+              </>
+            ) : (
+              <>
+                <NavItem>
+                  <span onClick={onLogIn}>로그인</span>
+                </NavItem>
+                <NavItem>
+                  <Link href="/signup">
+                    <span>회원가입</span>
+                  </Link>
+                </NavItem>
+              </>
+            )}
+          </NavBar>
+        </nav>
+      </Header>
+      <Contents>{children}</Contents>
+      {tryLogin && (
+        <Modal onCancelModal={() => setTryLogin(false)}>
+          <LoginForm onCancelModal={() => setTryLogin(false)} />
+        </Modal>
+      )}
+    </Container>
   );
 };
 
