@@ -44,14 +44,6 @@ const writeSessionPost = () => {
     if (!isEveryValues) {
       return alert('모든 값을 입력 해주세요');
     }
-    // const data = {
-    //   creator: me._id,
-    //   questions: questionformKeys.map((key) => questionform[key]),
-    //   title,
-    //   desc,
-    //   category,
-    // };
-    // console.log(data, 'data');
     dispatch({
       type: UPLOAD_SESSION_POST_REQUEST,
       data: {
@@ -165,7 +157,7 @@ const writeSessionPost = () => {
           </QuestionWrappers>
 
           <SubmitWrapper>
-            <SubmitButton type="submit">글쓰기</SubmitButton>
+            <SubmitButton type="submit">작성하기</SubmitButton>
           </SubmitWrapper>
         </Form>
       </Container>

@@ -58,7 +58,7 @@ margin-bottom: 14px;
     border-radius: 10px;
     height: 40px;
     font-size: 16px;
-    width: 120px;
+    width: 580px;
   }
 }
 `;
@@ -114,7 +114,7 @@ margin: 5px;
 
 export const QuestionInput = styled.div`
 & input {
-  width: 580px;
+  width: 560px;
   border-radius: 15px;
   height: 40px;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);

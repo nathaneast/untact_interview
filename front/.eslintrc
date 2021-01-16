@@ -33,6 +33,9 @@
     "no-param-reassign": "off",
     "arrow-body-style": "off",
     "consistent-return": "off",
-    "no-alert": "off"
+    "no-alert": "off",
+    "no-nested-ternary": "off",
+    "react/button-has-type": "off",
+    "operator-linebreak": "off"
   }
 }

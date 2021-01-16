@@ -61,7 +61,7 @@ router.get('/:userId', async (req, res, next) => {
         match: lastId ? { _id: { $lt: lastId } } : null,
         options: {
           sort: { createdAt: -1},
-          limit: 5,
+          limit: 8,
         },
         populate: [
           { 
@@ -80,8 +80,7 @@ router.get('/:userId', async (req, res, next) => {
           }
       ],
       });
-
-      console.log(userPosts.feedbackPosts, 'feedback Post');
+      
       return res.status(200).send(userPosts.feedbackPosts ? userPosts.feedbackPosts : []);
     } else {
       const targetPost = category === 'writePosts' ? 'sessionPosts' : 'starPosts';
@@ -94,7 +93,7 @@ router.get('/:userId', async (req, res, next) => {
         match,
         options: {
           sort: { createdAt: -1},
-          limit: 5,
+          limit: 8,
         },
         populate: [
           { 

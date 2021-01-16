@@ -30,9 +30,13 @@ const User = () => {
     hasMorePosts,
     loadUserPostsLoading,
   } = useSelector((state) => state.post);
-  const { userInfo, loadUserPostsDone } = useSelector((state) => state.user);
+  const { userInfo } = useSelector((state) => state.user);
+  const { loadUserPostsDone } = useSelector((state) => state.post);
 
   const [selectedMenu, setSelectedMenu] = useState('writePosts');
+  // const [sessionMove, setSessionMove] = useState(false);
+  // const [scrollLoading, setScrollLoading] = useState(false);
+
   const router = useRouter();
   const userId = useRef(router.asPath.split('/user/')[1]);
 
@@ -94,20 +98,63 @@ const User = () => {
             lastId: null,
           },
         });
+        // const con1 = selectedMenu === 'writePosts' && 
+        // e.target.dataset.name === 'star';
+        // const con2 = selectedMenu === 'star' && 
+        // e.target.dataset.name === 'writePosts';
+        // console.log(con1, con2, '세션메뉴끼리 이동 체크');
+        // if (con1 && con2) {
+        //   console.log(con1, con2, '세션메뉴끼리 이동 상태설정');
+        //   setSessionMove(true);
+        // }
         setSelectedMenu(e.target.dataset.name);
       }
     },
     [selectedMenu],
   );
 
-  const isSelectedFeedback = useCallback(() => selectedMenu === 'feedback', [selectedMenu]);
+  const isSelectedFeedback = useCallback(() => (
+    selectedMenu === 'feedback'
+  ), [selectedMenu]);
 
-  const isNonePosts = useCallback(() => {
-    return isSelectedFeedback() ? feedbackPosts.length === 0 : sessionPosts.length === 0;
-  }, [sessionPosts, feedbackPosts]);
+  const isNonePosts = useCallback(
+    () => (
+      isSelectedFeedback()
+        ? feedbackPosts.length === 0
+        : sessionPosts.length === 0
+    ), [sessionPosts, feedbackPosts],
+  );
 
-  // console.log(sessionPosts, 'UserPage sessionPosts');
-  // console.log(feedbackPosts, 'UserPage feedbackPosts');
+  // const renderPosts = useCallback(() => {
+  //   console.log('렌더 포스트 실행 !');
+  //   const render = isSelectedFeedback() ? (
+  //     <FeedbackCardList posts={feedbackPosts} />
+  //   ) : (
+  //     <SessionCardList posts={sessionPosts} meId={me?._id} />
+  //   );
+  //   if (loadUserPostsDone && scrollLoading) {
+  //     console.log('포스트받아오고 스크롤로딩 false');
+  //     setScrollLoading(false);
+  //   }
+  //   console.log(render, 'render');
+  //   return render;
+  // }, [feedbackPosts, sessionPosts, me, scrollLoading]);
+
+  // const rednerSessionPosts = useCallback(() => {
+  //   console.log('rednerSessionPosts !');
+  //   if (sessionMove) {
+  //     setSessionMove(false);
+  //     return (
+  //       loadUserPostsDone && (
+  //         <SessionCardList posts={sessionPosts} meId={me?._id} />
+  //       )
+  //     );
+  //   } else {
+  //     return <SessionCardList posts={sessionPosts} meId={me?._id} />;
+  //   }
+  // }, [sessionPosts, me]);
+
+  // console.log(scrollLoading, 'scrollLoading');
 
   return (
     <AppLayout>
@@ -151,7 +198,16 @@ const User = () => {
         </MenuWrapper>
       </UserBoard>
       <section>
-        {isNonePosts() ? (
+        {/* {(isNonePosts() ? (
+          <NonePostMessageCard />
+        ) : (
+          scrollLoading ? (
+            renderPosts()
+          ) : (
+            loadUserPostsDone && renderPosts()
+          )
+        ))} */}
+        {(isNonePosts() ? (
           <NonePostMessageCard />
         ) : (
           isSelectedFeedback() ? (
@@ -159,7 +215,7 @@ const User = () => {
           ) : (
             <SessionCardList posts={sessionPosts} meId={me?._id} />
           )
-        )}
+        ))}
       </section>
     </AppLayout>
   );
