@@ -1,6 +1,7 @@
 import produce from '../util/produce';
 
 export const initialState = {
+  mainPosts: [],
   sessionPosts: [],
   feedbackPosts: [],
   singlePost: '',
@@ -68,15 +69,22 @@ const reducer = (state = initialState, action) => {
         draft.loadUserPostsLoading = false;
         draft.loadUserPostsDone = true;
         draft.hasMorePosts = action.data.result.length === 8;
-        if (action.data.category === 'feedback') {
-          draft.feedbackPosts = action.data.isSame
-            ? draft.feedbackPosts.concat(action.data.result)
+        if (action.data.category.isSame) {
+          draft.mainPosts.length
+            ? draft.mainPosts.concat(action.data.result)
             : action.data.result;
         } else {
-          draft.sessionPosts = action.data.isSame
-            ? draft.sessionPosts.concat(action.data.result)
-            : action.data.result;
+          draft.mainPosts = action.data.result;
         }
+        // if (action.data.category === 'feedback') {
+        //   draft.feedbackPosts = action.data.isSame
+        //     ? draft.feedbackPosts.concat(action.data.result)
+        //     : action.data.result;
+        // } else {
+        //   draft.sessionPosts = action.data.isSame
+        //     ? draft.sessionPosts.concat(action.data.result)
+        //     : action.data.result;
+        // }
         break;
       case LOAD_USER_POSTS_FAILURE:
         draft.loadUserPostsLoading = false;
@@ -90,8 +98,8 @@ const reducer = (state = initialState, action) => {
       case LOAD_SESSION_POSTS_SUCCESS:
         draft.loadSessionPostsLoading = false;
         draft.loadSessionPostsDone = true;
-        draft.sessionPosts = action.data.isSame
-          ? draft.sessionPosts.concat(action.data.result)
+        draft.mainPosts = action.data.category.isSame
+          ? draft.mainPosts.concat(action.data.result)
           : action.data.result;
         draft.hasMorePosts = action.data.result.length === 8;
         break;
@@ -161,7 +169,7 @@ const reducer = (state = initialState, action) => {
       case ON_STAR_POST_SUCCESS:
         draft.onStarPostLoading = false;
         draft.onStarPostDone = true;
-        const post = draft.sessionPosts.find((v) => v._id === action.data.postId);
+        const post = draft.mainPosts.find((v) => v._id === action.data.postId);
         post.star = action.data.star;
         break;
       case ON_STAR_POST_FAILURE:

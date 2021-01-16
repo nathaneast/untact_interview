@@ -1,32 +1,53 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import PlayedSessionCard from '../PlayedSessionCard';
-
-const FeedbackCard = ({ feedbackPostId, sessionPost, onClick, desc }) => {
-  console.log(feedbackPostId, sessionPost, 'FeedbackCard');
-
-  return (
+const FeedbackCard = ({
+  feedbackId,
+  feedbackDesc,
+  title,
+  desc,
+  email,
+  onClick,
+  star,
+}) => (
+  <article>
+    <div>
+      <p>desc: {feedbackDesc}</p>
+    </div>
     <article>
-      피드백
-      <p>desc: {desc}</p>
-      <PlayedSessionCard
-        title={sessionPost.title}
-        category={sessionPost.category.name}
-        email={sessionPost.creator.email}
-        desc={sessionPost.desc}
-        star={sessionPost.star.length}
-      />
-      <button onClick={() => onClick(feedbackPostId)}>피드백 보기</button>
+      <div>
+        <span>title: {title}</span>
+      </div>
+      <div>
+        <span>email: {email}</span>
+      </div>
+      <div>
+        <span>desc: {desc}</span>
+      </div>
+      <div>
+        <span>title: {title}</span>
+      </div>
+      <div>
+        <span>star: {star.length}</span>
+      </div>
     </article>
-  );
-};
+    <button onClick={() => onClick(feedbackId)}>피드백 보기</button>
+  </article>
+);
 
 FeedbackCard.propTypes = {
-  feedbackPostId: PropTypes.string.isRequired,
+  feedbackId: PropTypes.string,
+  feedbackDesc: PropTypes.string,
+  title: PropTypes.string.isRequired,
   desc: PropTypes.string.isRequired,
-  sessionPost: PropTypes.object.isRequired,
+  email: PropTypes.string.isRequired,
+  star: PropTypes.array.isRequired,
   onClick: PropTypes.func.isRequired,
+};
+
+FeedbackCard.defaultProps = {
+  feedbackId: undefined,
+  feedbackDesc: undefined,
 };
 
 export default FeedbackCard;

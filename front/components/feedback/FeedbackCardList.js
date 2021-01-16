@@ -6,8 +6,8 @@ import FeedbackCard from './FeedbackCard';
 
 const FeedbackCardList = ({ posts }) => {
   const router = useRouter();
-  const onClickRedirectFeedback = useCallback((feedbackPostId) => {
-    router.push(`/feedback/${feedbackPostId}`);
+  const onClickRedirectFeedback = useCallback((feedbackId) => {
+    router.push(`/feedback/${feedbackId}`);
   });
 
   console.log(posts, 'FeedbackCardList posts');
@@ -17,13 +17,15 @@ const FeedbackCardList = ({ posts }) => {
       {posts.map((post) => (
         <FeedbackCard
           key={post._id}
-          feedbackPostId={post._id}
-          sessionPost={post.sessionPost}
+          feedbackId={post.feedbackPost?._id}
+          feedbackDesc={post.feedbackPost?.desc}
+          title={post.title}
           desc={post.desc}
+          email={post.creator.email}
+          star={post.star}
           onClick={onClickRedirectFeedback}
         />
       ))}
-      ;
     </section>
   );
 };

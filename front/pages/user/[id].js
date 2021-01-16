@@ -25,13 +25,11 @@ const User = () => {
   const dispatch = useDispatch();
   const { me } = useSelector((state) => state.user);
   const {
-    sessionPosts,
-    feedbackPosts,
+    mainPosts,
     hasMorePosts,
-    loadUserPostsLoading,
   } = useSelector((state) => state.post);
   const { userInfo } = useSelector((state) => state.user);
-  const { loadUserPostsDone } = useSelector((state) => state.post);
+  const { loadUserPostsLoading, loadUserPostsDone } = useSelector((state) => state.post);
 
   const [selectedMenu, setSelectedMenu] = useState('writePosts');
   // const [sessionMove, setSessionMove] = useState(false);
@@ -40,23 +38,23 @@ const User = () => {
   const router = useRouter();
   const userId = useRef(router.asPath.split('/user/')[1]);
 
-  const loadSameCategoryPosts = useCallback(() => {
-    const anyPostLastId =
-      selectedMenu === 'feedback'
-        ? feedbackPosts[feedbackPosts.length - 1]?._id
-        : sessionPosts[sessionPosts.length - 1]?._id;
-    return dispatch({
-      type: LOAD_USER_POSTS_REQUEST,
-      data: {
-        category: {
-          name: selectedMenu,
-          isSame: true,
-        },
-        userId: userId.current,
-        lastId: anyPostLastId,
-      },
-    });
-  }, [selectedMenu, sessionPosts, feedbackPosts]);
+  // const loadSameCategoryPosts = useCallback(() => {
+  //   // const anyPostLastId =
+  //   //   selectedMenu === 'feedback'
+  //   //     ? mainPosts[mainPosts.length - 1]?._id
+  //   //     : mainPosts[mainPosts.length - 1]?._id;
+  //   return dispatch({
+  //     type: LOAD_USER_POSTS_REQUEST,
+  //     data: {
+  //       category: {
+  //         name: selectedMenu,
+  //         isSame: true,
+  //       },
+  //       userId: userId.current,
+  //       lastId: mainPosts[mainPosts.length - 1]?._id,
+  //     },
+  //   });
+  // }, [selectedMenu, mainPosts, mainPosts]);
 
   useEffect(() => {
     function onScroll() {
@@ -65,7 +63,18 @@ const User = () => {
         document.documentElement.scrollHeight - 100
       ) {
         if (hasMorePosts && !loadUserPostsLoading) {
-          loadSameCategoryPosts();
+          // loadSameCategoryPosts();
+          dispatch({
+            type: LOAD_USER_POSTS_REQUEST,
+            data: {
+              category: {
+                name: selectedMenu,
+                isSame: true,
+              },
+              userId: userId.current,
+              lastId: mainPosts[mainPosts.length - 1]?._id,
+            },
+          });
         }
       }
     }
@@ -74,8 +83,8 @@ const User = () => {
       window.removeEventListener('scroll', onScroll);
     };
   }, [
-    sessionPosts,
-    feedbackPosts,
+    mainPosts,
+    mainPosts,
     hasMorePosts,
     loadUserPostsLoading,
     selectedMenu,
@@ -117,20 +126,20 @@ const User = () => {
     selectedMenu === 'feedback'
   ), [selectedMenu]);
 
-  const isNonePosts = useCallback(
-    () => (
-      isSelectedFeedback()
-        ? feedbackPosts.length === 0
-        : sessionPosts.length === 0
-    ), [sessionPosts, feedbackPosts],
-  );
+  // const isNonePosts = useCallback(
+  //   () => (
+  //     isSelectedFeedback()
+  //       ? mainPosts.length === 0
+  //       : mainPosts.length === 0
+  //   ), [mainPosts, mainPosts],
+  // );
 
   // const renderPosts = useCallback(() => {
   //   console.log('렌더 포스트 실행 !');
   //   const render = isSelectedFeedback() ? (
-  //     <FeedbackCardList posts={feedbackPosts} />
+  //     <FeedbackCardList posts={mainPosts} />
   //   ) : (
-  //     <SessionCardList posts={sessionPosts} meId={me?._id} />
+  //     <SessionCardList posts={mainPosts} meId={me?._id} />
   //   );
   //   if (loadUserPostsDone && scrollLoading) {
   //     console.log('포스트받아오고 스크롤로딩 false');
@@ -138,7 +147,7 @@ const User = () => {
   //   }
   //   console.log(render, 'render');
   //   return render;
-  // }, [feedbackPosts, sessionPosts, me, scrollLoading]);
+  // }, [mainPosts, mainPosts, me, scrollLoading]);
 
   // const rednerSessionPosts = useCallback(() => {
   //   console.log('rednerSessionPosts !');
@@ -146,13 +155,13 @@ const User = () => {
   //     setSessionMove(false);
   //     return (
   //       loadUserPostsDone && (
-  //         <SessionCardList posts={sessionPosts} meId={me?._id} />
+  //         <SessionCardList posts={mainPosts} meId={me?._id} />
   //       )
   //     );
   //   } else {
-  //     return <SessionCardList posts={sessionPosts} meId={me?._id} />;
+  //     return <SessionCardList posts={mainPosts} meId={me?._id} />;
   //   }
-  // }, [sessionPosts, me]);
+  // }, [mainPosts, me]);
 
   // console.log(scrollLoading, 'scrollLoading');
 
@@ -198,6 +207,20 @@ const User = () => {
         </MenuWrapper>
       </UserBoard>
       <section>
+        {loadUserPostsLoading ? (
+          <div>로딩 !</div>
+        ) : (
+          mainPosts.length ? (
+            isSelectedFeedback() ? (
+              <FeedbackCardList posts={mainPosts} />
+            ) : (
+              <SessionCardList posts={mainPosts} meId={me?._id} />
+            )
+          ) : (
+            <NonePostMessageCard />
+          )
+        )};
+
         {/* {(isNonePosts() ? (
           <NonePostMessageCard />
         ) : (
@@ -207,15 +230,16 @@ const User = () => {
             loadUserPostsDone && renderPosts()
           )
         ))} */}
-        {(isNonePosts() ? (
+
+        {/* {(isNonePosts() ? (
           <NonePostMessageCard />
         ) : (
           isSelectedFeedback() ? (
-            <FeedbackCardList posts={feedbackPosts} />
+            <FeedbackCardList posts={mainPosts} />
           ) : (
-            <SessionCardList posts={sessionPosts} meId={me?._id} />
+            <SessionCardList posts={mainPosts} meId={me?._id} />
           )
-        ))}
+        ))} */}
       </section>
     </AppLayout>
   );

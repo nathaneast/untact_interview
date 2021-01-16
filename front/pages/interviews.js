@@ -30,8 +30,8 @@ const MenuItem = styled.li`
 const Interviews = () => {
   const dispatch = useDispatch();
   const { me } = useSelector((state) => state.user);
-  const { sessionPosts, hasMorePosts, loadSessionPostsLoading } = useSelector(
-    (state) => state.post
+  const { mainPosts, hasMorePosts, loadSessionPostsLoading } = useSelector(
+    (state) => state.post,
   );
   const [selectedCategory, setSelectedCategory] = useState('all');
 
@@ -49,7 +49,7 @@ const Interviews = () => {
                 name: selectedCategory,
                 isSame: true,
               },
-              lastId: sessionPosts[sessionPosts.length - 1]?._id,
+              lastId: mainPosts[mainPosts.length - 1]?._id,
             },
           });
         }
@@ -59,7 +59,7 @@ const Interviews = () => {
     return () => {
       window.removeEventListener('scroll', onScroll);
     };
-  }, [sessionPosts, hasMorePosts, loadSessionPostsLoading, selectedCategory]);
+  }, [mainPosts, hasMorePosts, loadSessionPostsLoading, selectedCategory]);
 
   const onSelectCategory = useCallback(
     (e) => {
@@ -84,7 +84,7 @@ const Interviews = () => {
   );
 
   // console.log(me, 'home me');
-  // console.log(sessionPosts, 'Interviews, sessionPosts ');
+  // console.log(mainPosts, 'Interviews, mainPosts ');
 
   return (
     <AppLayout>
@@ -96,8 +96,8 @@ const Interviews = () => {
         <MenuItem data-name="backEnd">BackEnd</MenuItem>
         <MenuItem data-name="others">others</MenuItem>
       </Menu>
-      {sessionPosts.length ? (
-        <SessionCardList posts={sessionPosts} meId={me?._id} />
+      {mainPosts.length ? (
+        <SessionCardList posts={mainPosts} meId={me?._id} />
       ) : (
         <NonePostMessageCard />
       )}
