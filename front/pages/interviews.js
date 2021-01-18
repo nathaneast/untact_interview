@@ -9,7 +9,6 @@ import { LOAD_MY_INFO_REQUEST } from '../reducers/user';
 import AppLayout from '../components/AppLayout';
 import wrapper from '../store/configureStore';
 import SessionCardList from '../components/session/SessionCardList';
-import feedbackCardList from '../components/feedback/feedbackCardList';
 import NonePostMessageCard from '../components/NonePostMessageCard';
 
 const Category = styled.ul`
@@ -31,7 +30,7 @@ const CategoryItem = styled.li`
 const Interviews = () => {
   const dispatch = useDispatch();
   const { me } = useSelector((state) => state.user);
-  const { sessionPosts, feedbackPosts, hasMorePosts, loadSessionPostsLoading } = useSelector(
+  const { sessionPosts, hasMorePosts, loadSessionPostsLoading } = useSelector(
     (state) => state.post,
   );
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -60,7 +59,7 @@ const Interviews = () => {
     return () => {
       window.removeEventListener('scroll', onScroll);
     };
-  }, [sessionPosts, feedbackPosts, hasMorePosts, loadSessionPostsLoading, selectedCategory]);
+  }, [sessionPosts, hasMorePosts, loadSessionPostsLoading, selectedCategory]);
 
   const onSelectCategory = useCallback(
     (e) => {
@@ -84,17 +83,6 @@ const Interviews = () => {
     [selectedCategory],
   );
 
-  const isFeedbackPosts = useCallback(() => selectedCategory === 'feedback' ? true : false, [selectedCategory]);
-
-  const isNonePosts = useCallback(() => {
-    if (isFeedbackPosts()) {
-      return Boolean(feedbackPosts.legnth);
-    } else {
-      return Boolean(sessionPosts.legnth);
-    }
-  }, [selectedCategory]);
-
-
   return (
     <AppLayout>
       <Category onClick={onSelectCategory}>
@@ -105,14 +93,10 @@ const Interviews = () => {
         <CategoryItem data-name="backEnd">BackEnd</CategoryItem>
         <CategoryItem data-name="others">others</CategoryItem>
       </Category>
-      {isNonePosts() ? (
-        <NonePostMessageCard />
+      {sessionPosts.length ? (
+        <SessionCardList posts={sessionPosts} meId={me?.id} />
       ) : (
-        isFeedbackPosts() ? (
-          <feedbackCardList posts={feedbackPosts} />
-        ) : (
-          <SessionCardList posts={sessionPosts} meId={me?._id} />
-        )
+        <NonePostMessageCard />
       )}
     </AppLayout>
   );

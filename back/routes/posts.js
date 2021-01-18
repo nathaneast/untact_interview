@@ -81,19 +81,19 @@ router.get('/:userId', async (req, res, next) => {
       ],
       });
 
-      const result = userPosts.feedbackPosts.map((item) => {
-        const node = {
-          ...item.sessionPost._doc,
-          feedbackPost: {
-            _id: item._id,
-            desc: item.desc,
-          },
-        };
-        return node;
-      });
+      // const result = userPosts.feedbackPosts.map((item) => {
+      //   const node = {
+      //     ...item.sessionPost._doc,
+      //     feedbackPost: {
+      //       _id: item._id,
+      //       desc: item.desc,
+      //     },
+      //   };
+      //   return node;
+      // });
       
-      console.log(result, '피드백 result 결과');
-      return res.status(200).send(userPosts.feedbackPosts ? result : []);
+      // console.log(result, '피드백 result 결과');
+      return res.status(200).send(userPosts ? userPosts.feedbackPosts : []);
     } else {
       const targetPost = category === 'writePosts' ? 'sessionPosts' : 'starPosts';
       const match = lastId ? { _id: { $lt: lastId } } : null;

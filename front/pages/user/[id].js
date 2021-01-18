@@ -12,7 +12,6 @@ import {
   CategoryWrapper,
   Category,
   CategoryItem,
-  PostBoard,
 } from '../../styles/user';
 import wrapper from '../../store/configureStore';
 import { LOAD_MY_INFO_REQUEST, LOAD_USER_INFO_REQUEST } from '../../reducers/user';
@@ -26,11 +25,15 @@ const User = () => {
   const dispatch = useDispatch();
   const { me } = useSelector((state) => state.user);
   const {
-    mainPosts,
     hasMorePosts,
   } = useSelector((state) => state.post);
   const { userInfo } = useSelector((state) => state.user);
-  const { loadUserPostsLoading, loadUserPostsDone } = useSelector((state) => state.post);
+  const {
+    feedbackPosts,
+    sessionPosts,
+    loadUserPostsLoading,
+    loadUserPostsDone,
+  } = useSelector((state) => state.post);
 
   const [selectedMenu, setSelectedMenu] = useState('writePosts');
   // const [sessionMove, setSessionMove] = useState(false);
@@ -65,6 +68,10 @@ const User = () => {
       ) {
         if (hasMorePosts && !loadUserPostsLoading) {
           // loadSameCategoryPosts();
+          const anyPostLastId =
+            selectedMenu === 'feedback'
+              ? feedbackPosts[feedbackPosts.length - 1]?._id
+              : sessionPosts[sessionPosts.length - 1]?._id;
           dispatch({
             type: LOAD_USER_POSTS_REQUEST,
             data: {
@@ -73,7 +80,7 @@ const User = () => {
                 isSame: true,
               },
               userId: userId.current,
-              lastId: mainPosts[mainPosts.length - 1]?._id,
+              lastId: anyPostLastId,
             },
           });
         }
@@ -84,8 +91,8 @@ const User = () => {
       window.removeEventListener('scroll', onScroll);
     };
   }, [
-    mainPosts,
-    mainPosts,
+    feedbackPosts,
+    sessionPosts,
     hasMorePosts,
     loadUserPostsLoading,
     selectedMenu,
@@ -127,13 +134,13 @@ const User = () => {
     selectedMenu === 'feedback'
   ), [selectedMenu]);
 
-  // const isNonePosts = useCallback(
-  //   () => (
-  //     isSelectedFeedback()
-  //       ? mainPosts.length === 0
-  //       : mainPosts.length === 0
-  //   ), [mainPosts, mainPosts],
-  // );
+  const isNonePosts = useCallback(
+    () => (
+      isSelectedFeedback()
+        ? feedbackPosts.length === 0
+        : sessionPosts.length === 0
+    ), [feedbackPosts, sessionPosts],
+  );
 
   // const renderPosts = useCallback(() => {
   //   console.log('렌더 포스트 실행 !');
@@ -207,49 +214,15 @@ const User = () => {
           </Category>
         </CategoryWrapper>
       </UserBoard>
-<<<<<<< HEAD
         {(isNonePosts() ? (
-=======
-      <section>
-        {loadUserPostsLoading ? (
-          <div>로딩 !</div>
-        ) : (
-          mainPosts.length ? (
-            isSelectedFeedback() ? (
-              <FeedbackCardList posts={mainPosts} />
-            ) : (
-              <SessionCardList posts={mainPosts} meId={me?._id} />
-            )
-          ) : (
-            <NonePostMessageCard />
-          )
-        )};
-
-        {/* {(isNonePosts() ? (
-          <NonePostMessageCard />
-        ) : (
-          scrollLoading ? (
-            renderPosts()
-          ) : (
-            loadUserPostsDone && renderPosts()
-          )
-        ))} */}
-
-        {/* {(isNonePosts() ? (
->>>>>>> 552f14c4e13fe7e1ddc40ffc2229743407719d84
           <NonePostMessageCard />
         ) : (
           isSelectedFeedback() ? (
-            <FeedbackCardList posts={mainPosts} />
+            <FeedbackCardList posts={feedbackPosts} />
           ) : (
-            <SessionCardList posts={mainPosts} meId={me?._id} />
+            <SessionCardList posts={sessionPosts} meId={me?._id} />
           )
-<<<<<<< HEAD
         ))}
-=======
-        ))} */}
-      </section>
->>>>>>> 552f14c4e13fe7e1ddc40ffc2229743407719d84
     </AppLayout>
   );
 };
