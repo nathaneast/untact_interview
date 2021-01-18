@@ -9,6 +9,7 @@ import { LOAD_MY_INFO_REQUEST } from '../reducers/user';
 import AppLayout from '../components/AppLayout';
 import wrapper from '../store/configureStore';
 import SessionCardList from '../components/session/SessionCardList';
+import feedbackCardList from '../components/feedback/feedbackCardList';
 import NonePostMessageCard from '../components/NonePostMessageCard';
 
 const Category = styled.ul`
@@ -30,11 +31,7 @@ const CategoryItem = styled.li`
 const Interviews = () => {
   const dispatch = useDispatch();
   const { me } = useSelector((state) => state.user);
-<<<<<<< HEAD
-  const { sessionPosts, hasMorePosts, loadSessionPostsLoading } = useSelector(
-=======
-  const { mainPosts, hasMorePosts, loadSessionPostsLoading } = useSelector(
->>>>>>> 552f14c4e13fe7e1ddc40ffc2229743407719d84
+  const { sessionPosts, feedbackPosts, hasMorePosts, loadSessionPostsLoading } = useSelector(
     (state) => state.post,
   );
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -53,7 +50,7 @@ const Interviews = () => {
                 name: selectedCategory,
                 isSame: true,
               },
-              lastId: mainPosts[mainPosts.length - 1]?._id,
+              lastId: sessionPosts[sessionPosts.length - 1]?._id,
             },
           });
         }
@@ -63,7 +60,7 @@ const Interviews = () => {
     return () => {
       window.removeEventListener('scroll', onScroll);
     };
-  }, [mainPosts, hasMorePosts, loadSessionPostsLoading, selectedCategory]);
+  }, [sessionPosts, feedbackPosts, hasMorePosts, loadSessionPostsLoading, selectedCategory]);
 
   const onSelectCategory = useCallback(
     (e) => {
@@ -87,37 +84,35 @@ const Interviews = () => {
     [selectedCategory],
   );
 
-  // console.log(me, 'home me');
-<<<<<<< HEAD
-  console.log(selectedCategory, sessionPosts, hasMorePosts, loadSessionPostsLoading, 'Interviews, sessionPosts ');
-=======
-  // console.log(mainPosts, 'Interviews, mainPosts ');
->>>>>>> 552f14c4e13fe7e1ddc40ffc2229743407719d84
+  const isFeedbackPosts = useCallback(() => selectedCategory === 'feedback' ? true : false, [selectedCategory]);
+
+  const isNonePosts = useCallback(() => {
+    if (isFeedbackPosts()) {
+      return Boolean(feedbackPosts.legnth);
+    } else {
+      return Boolean(sessionPosts.legnth);
+    }
+  }, [selectedCategory]);
+
 
   return (
     <AppLayout>
       <Category onClick={onSelectCategory}>
         <CategoryItem id="all" data-name="all">
           All
-<<<<<<< HEAD
         </CategoryItem>
         <CategoryItem data-name="frontEnd">FrontEnd</CategoryItem>
         <CategoryItem data-name="backEnd">BackEnd</CategoryItem>
         <CategoryItem data-name="others">others</CategoryItem>
       </Category>
-      {sessionPosts.length ? (
-        <SessionCardList posts={sessionPosts} meId={me?._id} />
-=======
-        </MenuItem>
-        <MenuItem data-name="frontEnd">FrontEnd</MenuItem>
-        <MenuItem data-name="backEnd">BackEnd</MenuItem>
-        <MenuItem data-name="others">others</MenuItem>
-      </Menu>
-      {mainPosts.length ? (
-        <SessionCardList posts={mainPosts} meId={me?._id} />
->>>>>>> 552f14c4e13fe7e1ddc40ffc2229743407719d84
-      ) : (
+      {isNonePosts() ? (
         <NonePostMessageCard />
+      ) : (
+        isFeedbackPosts() ? (
+          <feedbackCardList posts={feedbackPosts} />
+        ) : (
+          <SessionCardList posts={sessionPosts} meId={me?._id} />
+        )
       )}
     </AppLayout>
   );
