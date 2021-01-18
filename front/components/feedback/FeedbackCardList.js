@@ -13,8 +13,8 @@ const Container = styled.section`
 
 const FeedbackCardList = ({ posts }) => {
   const router = useRouter();
-  const onClickRedirectFeedback = useCallback((feedbackPostId) => {
-    router.push(`/feedback/${feedbackPostId}`);
+  const onClickRedirectFeedback = useCallback((feedbackId) => {
+    router.push(`/feedback/${feedbackId}`);
   });
 
   console.log(posts, 'FeedbackCardList posts');
@@ -24,6 +24,7 @@ const FeedbackCardList = ({ posts }) => {
       {posts.map((post) => (
         <FeedbackCard
           key={post._id}
+<<<<<<< HEAD
           feedbackPostId={post._id}
           feedbackDesc={post.desc}
           sessionPost={post.sessionPost}
@@ -31,6 +32,18 @@ const FeedbackCardList = ({ posts }) => {
         />
       ))}
     </Container>
+=======
+          feedbackId={post.feedbackPost?._id}
+          feedbackDesc={post.feedbackPost?.desc}
+          title={post.title}
+          desc={post.desc}
+          email={post.creator.email}
+          star={post.star}
+          onClick={onClickRedirectFeedback}
+        />
+      ))}
+    </section>
+>>>>>>> 552f14c4e13fe7e1ddc40ffc2229743407719d84
   );
 };
 

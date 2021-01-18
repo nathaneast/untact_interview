@@ -30,7 +30,11 @@ const CategoryItem = styled.li`
 const Interviews = () => {
   const dispatch = useDispatch();
   const { me } = useSelector((state) => state.user);
+<<<<<<< HEAD
   const { sessionPosts, hasMorePosts, loadSessionPostsLoading } = useSelector(
+=======
+  const { mainPosts, hasMorePosts, loadSessionPostsLoading } = useSelector(
+>>>>>>> 552f14c4e13fe7e1ddc40ffc2229743407719d84
     (state) => state.post,
   );
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -49,7 +53,7 @@ const Interviews = () => {
                 name: selectedCategory,
                 isSame: true,
               },
-              lastId: sessionPosts[sessionPosts.length - 1]?._id,
+              lastId: mainPosts[mainPosts.length - 1]?._id,
             },
           });
         }
@@ -59,7 +63,7 @@ const Interviews = () => {
     return () => {
       window.removeEventListener('scroll', onScroll);
     };
-  }, [sessionPosts, hasMorePosts, loadSessionPostsLoading, selectedCategory]);
+  }, [mainPosts, hasMorePosts, loadSessionPostsLoading, selectedCategory]);
 
   const onSelectCategory = useCallback(
     (e) => {
@@ -84,13 +88,18 @@ const Interviews = () => {
   );
 
   // console.log(me, 'home me');
+<<<<<<< HEAD
   console.log(selectedCategory, sessionPosts, hasMorePosts, loadSessionPostsLoading, 'Interviews, sessionPosts ');
+=======
+  // console.log(mainPosts, 'Interviews, mainPosts ');
+>>>>>>> 552f14c4e13fe7e1ddc40ffc2229743407719d84
 
   return (
     <AppLayout>
       <Category onClick={onSelectCategory}>
         <CategoryItem id="all" data-name="all">
           All
+<<<<<<< HEAD
         </CategoryItem>
         <CategoryItem data-name="frontEnd">FrontEnd</CategoryItem>
         <CategoryItem data-name="backEnd">BackEnd</CategoryItem>
@@ -98,6 +107,15 @@ const Interviews = () => {
       </Category>
       {sessionPosts.length ? (
         <SessionCardList posts={sessionPosts} meId={me?._id} />
+=======
+        </MenuItem>
+        <MenuItem data-name="frontEnd">FrontEnd</MenuItem>
+        <MenuItem data-name="backEnd">BackEnd</MenuItem>
+        <MenuItem data-name="others">others</MenuItem>
+      </Menu>
+      {mainPosts.length ? (
+        <SessionCardList posts={mainPosts} meId={me?._id} />
+>>>>>>> 552f14c4e13fe7e1ddc40ffc2229743407719d84
       ) : (
         <NonePostMessageCard />
       )}
