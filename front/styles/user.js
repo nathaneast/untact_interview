@@ -45,14 +45,14 @@ export const UserInfo = styled.article`
   justify-content: center;
 `;
 
-export const MenuWrapper = styled.nav`
+export const CategoryWrapper = styled.nav`
   display: flex;
   justify-content: center;
   align-items: center;
   height: 50px;
 `;
 
-export const Menu = styled.ul`
+export const Category = styled.ul`
   display: flex;
   list-style: none;
   justify-content: center;
@@ -60,7 +60,7 @@ export const Menu = styled.ul`
   margin: 0px;
 `;
 
-export const MenuItem = styled.li`
+export const CategoryItem = styled.li`
     margin: 0px 7px;
   & button {
     width: 88px;
@@ -76,10 +76,4 @@ export const MenuItem = styled.li`
       color: #F8EFBA;
     }
   }
-`;
-
-export const PostBoard = styled.section`
-  display: grid;
-  grid-gap: 15px;
-  grid-template-columns: repeat(2, 1fr);
 `;

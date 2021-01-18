@@ -9,9 +9,9 @@ import {
   Profile,
   Avatar,
   UserInfo,
-  MenuWrapper,
-  Menu,
-  MenuItem,
+  CategoryWrapper,
+  Category,
+  CategoryItem,
   PostBoard,
 } from '../../styles/user';
 import wrapper from '../../store/configureStore';
@@ -180,25 +180,24 @@ const User = () => {
             </UserInfo>
           </Profile>
         )}
-        <MenuWrapper>
-          <Menu onClick={onSelectCategory}>
-            <MenuItem>
+        <CategoryWrapper>
+          <Category onClick={onSelectCategory}>
+            <CategoryItem>
               <button data-name="writePosts">writePosts</button>
-            </MenuItem>
+            </CategoryItem>
             {me && me._id === userId.current ? (
-              <MenuItem>
+              <CategoryItem>
                 <button data-name="feedback">feedback</button>
-              </MenuItem>
+              </CategoryItem>
             ) : (
               ''
             )}
-            <MenuItem>
+            <CategoryItem>
               <button data-name="star">star</button>
-            </MenuItem>
-          </Menu>
-        </MenuWrapper>
+            </CategoryItem>
+          </Category>
+        </CategoryWrapper>
       </UserBoard>
-      <PostBoard>
         {(isNonePosts() ? (
           <NonePostMessageCard />
         ) : (
@@ -208,7 +207,6 @@ const User = () => {
             <SessionCardList posts={sessionPosts} meId={me?._id} />
           )
         ))}
-      </PostBoard>
     </AppLayout>
   );
 };

@@ -1,25 +1,93 @@
-import React, { useCallback, useState, useRef } from 'react';
+import React, { useCallback, useState, useRef, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { END } from 'redux-saga';
 import axios from 'axios';
+import styled from 'styled-components';
 
 import wrapper from '../../store/configureStore';
 import { LOAD_MY_INFO_REQUEST } from '../../reducers/user';
 import { LOAD_FEEDBACK_POST_REQUEST } from '../../reducers/post';
-import TimeStampCard from '../../components/TimeStampCard';
 import AppLayout from '../../components/AppLayout';
 import FeedbackFormCard from '../../components/feedback/FeedbackFormCard';
-import PlayedSessionCard from '../../components/session/PlayedSessionCard';
+import TimeStampList from '../../components/TimeStampList';
+import { ButtonNavy } from '../../styles/reStyled';
+
+const MonitoringBoard = styled.article`
+  display: flex;
+  align-items: center;
+`;
+
+const UploadButton = styled(ButtonNavy)`
+`;
+
+const VideoWrapper = styled.div`
+  margin: 10px 0px;
+`;
+
+const EmptyVideoBoard = styled.div`
+  width: 650px;
+  height: 450px;
+  background-color: #636e72;
+  margin: 10px 0px;
+  border-radius: 10px;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #FFFFF6;
+  font-weight: bolder;
+  font-size: 20px;
+`;
+
+const PlayedSessionBoard = styled.div`
+  position: relative;
+  margin: 5px 0px;
+  font-size: 19px;
+  border-bottom: 1px solid #2d3436;
+  color: #2d3436;
+`;
+
+const SessionFlipCard = styled.div`
+  position: absolute;
+  left: 100px;
+  bottom: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 8px;
+  width: 200px;
+  height: 150px;
+  background-color: #34495e;
+  color: black;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+  & ul {
+    padding: 0px;
+    margin: 0px;
+    font-size: 15px;
+    font-weight: bolder;
+    list-style: none;
+    color: #FFFFF6;
+  }
+`;
 
 const feedbackPost = () => {
-  // const dispatch = useDispatch();
-  // const { me } = useSelector((state) => state.user);
   const { singlePost } = useSelector((state) => state.post);
 
   const [videoBlob, setVideoBlob] = useState(null);
+  const [isSessionFlipCard, setIsSessionFlipCard] = useState(false);
 
   const videoElement = useRef();
   const videoUpload = useRef();
+  const sessionCardElement = useRef();
+
+  useEffect(() => {
+    sessionCardElement.current.addEventListener('mouseover', () => {
+      setIsSessionFlipCard(true);
+    }, false);
+    sessionCardElement.current.addEventListener('mouseout', () => {
+      setIsSessionFlipCard(false);
+    }, false);
+  }, []);
 
   const onUpload = useCallback(() => {
     videoUpload.current.click();
@@ -33,80 +101,95 @@ const feedbackPost = () => {
     [setVideoBlob],
   );
 
-  const moveVideoTime = useCallback(
-    (time) => {
-      if (time) {
-        videoElement.current.currentTime = time;
-      }
-    },
-    [videoElement.current],
-  );
+  // const moveVideoTime = useCallback(
+  //   (videoEle, time) => {
+  //     if (time) {
+  //       videoEle.current.currentTime = time;
+  //     }
+  //   },
+  // );
 
-  console.log(singlePost, '피드백 포스트 singlePost');
+  // console.log(singlePost, '피드백 포스트 singlePost');
 
   return (
-    <>
-      <AppLayout>
-        <article>
-          <input
-            type="file"
-            name="video"
-            hidden
-            ref={videoUpload}
-            onChange={onChangeVideo}
-          />
-          <button onClick={onUpload}>영상 업로드</button>
-          {videoBlob ? (
-            <video
-              controls
-              autoPlay
-              ref={videoElement}
-              src={URL.createObjectURL(videoBlob)}
-              width="500px"
-              height="500px"
+    <AppLayout>
+      <MonitoringBoard>
+        <div>
+          <div>
+            <input
+              type="file"
+              name="video"
+              hidden
+              ref={videoUpload}
+              onChange={onChangeVideo}
             />
-          ) : (
-            <span>영상을 올려 주세요</span>
-          )}
-        </article>
-        <section>
-          <h2>타임 스탬프</h2>
-          {singlePost &&
-            singlePost.timeStamps.map((item, index) => (
-              <TimeStampCard
-                key={index}
-                text={item.text}
-                time={item.time}
-                answerNumber={index + 1}
-                onClick={moveVideoTime}
+            <UploadButton onClick={onUpload}>영상 업로드</UploadButton>
+          </div>
+          {videoBlob ? (
+            <VideoWrapper>
+              <video
+                controls
+                autoPlay
+                ref={videoElement}
+                src={URL.createObjectURL(videoBlob)}
+                width="600px"
+                height="450px"
               />
-            ))}
-        </section>
-        <h2>세션 포스트 카드</h2>
+            </VideoWrapper>
+          ) : (
+            <EmptyVideoBoard>
+              <span>영상을 올려 주세요 😃</span>
+            </EmptyVideoBoard>
+          )}
+        </div>
         {singlePost && (
-          <PlayedSessionCard
-            title={singlePost.sessionPost.title}
-            category={singlePost.sessionPost.category.name}
-            email={singlePost.sessionPost.creator.email}
-            desc={singlePost.sessionPost.desc}
-            star={singlePost.sessionPost.star.length}
+          <TimeStampList
+            timeStamps={singlePost.timeStamps}
+            targetVideo={videoElement.current}
           />
         )}
-        <section>
-          {singlePost && (
-            singlePost.sessionPost.questions.map((item, index) => (
-              <FeedbackFormCard
-                key={index}
-                answer={singlePost.timeStamps[index].text}
-                feedback={singlePost.feedbacks[index]}
-                FeedbackNumber={index + 1}
-                question={item}
-                writeMode={false}
-              />
-            )))}
-        </section>
-      </AppLayout>
-    </>
+        ;
+      </MonitoringBoard>
+
+      <PlayedSessionBoard ref={sessionCardElement}>
+        <span>진행한 인터뷰 보기</span>
+        {singlePost && isSessionFlipCard && (
+          <SessionFlipCard>
+            <ul>
+              <li>
+                <span>title: {singlePost.sessionPost.title}</span>
+              </li>
+              <li>
+                <span>creator: {singlePost.sessionPost.creator.email}</span>
+              </li>
+              <li>
+                <span>category: {singlePost.sessionPost.category.name}</span>
+              </li>
+              <li>
+                <span>desc: {singlePost.sessionPost.desc}</span>
+              </li>
+              <li>
+                <span>star: {singlePost.sessionPost.star.length}</span>
+              </li>
+            </ul>
+          </SessionFlipCard>
+        )}
+      </PlayedSessionBoard>
+
+      <section>
+        {singlePost &&
+          singlePost.sessionPost.questions.map((item, index) => (
+            <FeedbackFormCard
+              key={index}
+              answer={singlePost.timeStamps[index].text}
+              feedback={singlePost.feedbacks[index]}
+              FeedbackNumber={index + 1}
+              question={item}
+              writeMode={false}
+            />
+          ))}
+      </section>
+    </AppLayout>
   );
 };
 

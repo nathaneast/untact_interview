@@ -8,6 +8,8 @@ const Container = styled.article`
   width: 350px;
   height: auto;
   background-color: white;
+  border: 1px solid #dcdde1;
+  border-radius: 4px;
   box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
 `;
 
@@ -17,9 +19,11 @@ const FeedbackDescCard = styled.div`
   font-weight: bolder;
   margin: 5px 3px;
   padding: 10px;
-  background-color: #a5b1c2;
   border-radius: 5px;
   border: #95a5a6;
+  & span {
+    padding-left: 12px;
+  }
 `;
 
 const SessionInfoCard = styled.div`
@@ -28,31 +32,23 @@ const SessionInfoCard = styled.div`
   margin: 3px;
   border-radius: 5px;
   padding: 10px;
-  background-color: #ecf0f1;
-`;
-
-const SessionInfoTitle = styled.div`
-  color: black;
-  font-weight: bolder;
-`;
-
-const SessionInfoList = styled.div`
-  list-style: none;
-  padding: 0px;
-  margin: 7px;
-  padding-left: 8px;
-  & li {
-    color: #353b48;
+  & ul {
+    list-style: none;
+    padding: 0px;
+    margin: 7px;
+    padding-left: 13px;
+    & li {
+      color: #353b48;
+    }
   }
 `;
 
 const ButtonWrapper = styled.div`
-  margin: 4px 0px;
+  margin: 8px 0px;
   text-align: center;
 `;
 
 const Button = styled(ButtonNavy)`
-  padding: 6px 130px;
 `;
 
 const FeedbackCard = ({ feedbackPostId, feedbackDesc, sessionPost, onClick }) => (
@@ -62,10 +58,7 @@ const FeedbackCard = ({ feedbackPostId, feedbackDesc, sessionPost, onClick }) =>
     </FeedbackDescCard>
 
     <SessionInfoCard>
-      <SessionInfoTitle>
-        <span>진행한 인터뷰</span>
-      </SessionInfoTitle>
-      <SessionInfoList>
+      <ul>
         <li>
           <span>title: {sessionPost.title}</span>
         </li>
@@ -81,7 +74,7 @@ const FeedbackCard = ({ feedbackPostId, feedbackDesc, sessionPost, onClick }) =>
         <li>
           <span>star {sessionPost.star.length}</span>
         </li>
-      </SessionInfoList>
+      </ul>
     </SessionInfoCard>
 
     <ButtonWrapper>

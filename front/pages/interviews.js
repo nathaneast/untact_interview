@@ -11,7 +11,7 @@ import wrapper from '../store/configureStore';
 import SessionCardList from '../components/session/SessionCardList';
 import NonePostMessageCard from '../components/NonePostMessageCard';
 
-const Menu = styled.ul`
+const Category = styled.ul`
   display: flex;
   list-style-type: none;
   justify-content: space-around;
@@ -20,7 +20,7 @@ const Menu = styled.ul`
   width: 450px;
 `;
 
-const MenuItem = styled.li`
+const CategoryItem = styled.li`
   font-size: 17px;
   font-weight: bolder;
   color: #34495e;
@@ -80,7 +80,7 @@ const Interviews = () => {
         setSelectedCategory(e.target.dataset.name);
       }
     },
-    [selectedCategory]
+    [selectedCategory],
   );
 
   // console.log(me, 'home me');
@@ -88,14 +88,14 @@ const Interviews = () => {
 
   return (
     <AppLayout>
-      <Menu onClick={onSelectCategory}>
-        <MenuItem id="all" data-name="all">
+      <Category onClick={onSelectCategory}>
+        <CategoryItem id="all" data-name="all">
           All
-        </MenuItem>
-        <MenuItem data-name="frontEnd">FrontEnd</MenuItem>
-        <MenuItem data-name="backEnd">BackEnd</MenuItem>
-        <MenuItem data-name="others">others</MenuItem>
-      </Menu>
+        </CategoryItem>
+        <CategoryItem data-name="frontEnd">FrontEnd</CategoryItem>
+        <CategoryItem data-name="backEnd">BackEnd</CategoryItem>
+        <CategoryItem data-name="others">others</CategoryItem>
+      </Category>
       {sessionPosts.length ? (
         <SessionCardList posts={sessionPosts} meId={me?._id} />
       ) : (

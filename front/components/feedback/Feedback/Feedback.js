@@ -9,7 +9,7 @@ import {
   VideoBoard,
   VideoDownload,
   VideoDownloadButton,
-  TimeStampBoard,
+  // TimeStampBoard,
   FeedbackDesc,
   FeedbackFormBoard,
   ButtonWrapper,
@@ -18,10 +18,10 @@ import {
 import { UPLOAD_FEEDBACK_POST_REQUEST } from '../../../reducers/post';
 import useInput from '../../../hooks/useInput';
 import FeedbackFormCard from '../FeedbackFormCard';
-import TimeStampCard from '../../TimeStampCard';
 import Modal from '../../modal/Modal';
 import GuideMessage from '../../modal/GuideMessage';
 import AppLayout from '../../AppLayout';
+import TimeStampList from '../../TimeStampList';
 
 // 모든 피드백 입력 되었는지 폼 검사 로직 추가
 const Feedback = ({
@@ -30,11 +30,11 @@ const Feedback = ({
   questions,
   blob,
   timeStamps,
-  title,
-  category,
-  email,
-  desc,
-  star,
+  // title,
+  // category,
+  // email,
+  // desc,
+  // star,
 }) => {
   const dispatch = useDispatch();
   const [feedbackform, setFeedbackValues] = useState({});
@@ -54,10 +54,9 @@ const Feedback = ({
 
   const onSubmit = useCallback(() => {
     const feedbackformKeys = Object.keys(feedbackform);
-    const isAllFeedbacks = feedbackformKeys.length === 5 && (
-      feedbackformKeys.every(
-        (key) => true === Boolean(feedbackform[key]),
-      ));
+    const isAllFeedbacks =
+      feedbackformKeys.length === 5 &&
+      feedbackformKeys.every((key) => true === Boolean(feedbackform[key]));
     if (isAllFeedbacks && feedbackDesc) {
       dispatch({
         type: UPLOAD_FEEDBACK_POST_REQUEST,
@@ -76,16 +75,16 @@ const Feedback = ({
     }
   }, [feedbackform, feedbackDesc, timeStamps]);
 
-  const moveVideoTime = useCallback(
-    (time) => {
-      if (!time) {
-        alert('답변한 질문이 아닙니다.');
-        return;
-      }
-      videoElement.current.currentTime = time;
-    },
-    [videoElement.current]
-  );
+  // const moveVideoTime = useCallback(
+  //   (time) => {
+  //     if (!time) {
+  //       alert('답변한 질문이 아닙니다.');
+  //       return;
+  //     }
+  //     videoElement.current.currentTime = time;
+  //   },
+  //   [videoElement.current]
+  // );
 
   const onRedirectInterviews = useCallback(() => {
     router.push('/interviews');
@@ -117,7 +116,11 @@ const Feedback = ({
               </VideoDownloadButton>
             </VideoDownload>
           </VideoBoard>
-          <TimeStampBoard>
+          <TimeStampList
+            timeStamps={timeStamps}
+            targetVideo={videoElement.current}
+          />
+          {/* <TimeStampBoard>
             {timeStamps.map((item, index) => (
               <TimeStampCard
                 key={index}
@@ -127,7 +130,7 @@ const Feedback = ({
                 onClick={moveVideoTime}
               />
             ))}
-          </TimeStampBoard>
+          </TimeStampBoard> */}
         </MainContents>
 
         <FeedbackDesc>
@@ -181,11 +184,11 @@ Feedback.propTypes = {
   questions: PropTypes.array.isRequired,
   blob: PropTypes.string.isRequired,
   timeStamps: PropTypes.array.isRequired,
-  title: PropTypes.string.isRequired,
-  category: PropTypes.string.isRequired,
-  email: PropTypes.string.isRequired,
-  desc: PropTypes.string.isRequired,
-  star: PropTypes.array.isRequired,
+  // title: PropTypes.string.isRequired,
+  // category: PropTypes.string.isRequired,
+  // email: PropTypes.string.isRequired,
+  // desc: PropTypes.string.isRequired,
+  // star: PropTypes.array.isRequired,
 };
 
 export default Feedback;
