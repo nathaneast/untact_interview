@@ -1,25 +1,79 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import Head from 'next/head';
-import { Input, Form, Button } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import Router from 'next/router';
 import { END } from 'redux-saga';
 import axios from 'axios';
+import styled from 'styled-components';
 
+import { ButtonNavy } from '../styles/reStyled';
 import AppLayout from '../components/AppLayout';
 import useInput from '../hooks/useInput';
 import { SIGN_UP_REQUEST, LOAD_MY_INFO_REQUEST } from '../reducers/user';
 import wrapper from '../store/configureStore';
 
-// 비밀번호 체크 alert 처리x 디테일
+const Container = styled.div`
+  background-color: white;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+  margin-top: 50px;
+  width: 500px;
+  height: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 12px;
+`;
+
+const FormItem = styled.div`
+  margin: 10px 0px;
+  & label {
+    color: #2d3436;
+    font-size: 18px;
+    font-weight: bolder;
+    display: block;
+  }
+  & input {
+    margin: 5px;
+    color: #2d3436;
+    padding: 5px 18px;
+    border-radius: 8px;
+    font-size: 17px;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+  }
+`;
+
+const SignUpErrorWrapper = styled.div`
+  text-align: center;
+  & p {
+    font-size: 16px;
+    color: #e55039;
+  }
+`;
+
+const ButtonWrapper = styled.div`
+  text-align: center;
+  margin: 10px 0px;
+`;
+
+const Button = styled(ButtonNavy)`
+  background-color: #e74c3c;
+  border-radius: 17px;
+`;
+
 const Signup = () => {
+  const { me, signUpError } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+
   const [email, onChangeEmail] = useInput('');
   const [nickname, onChangeNickname] = useInput('');
   const [password, onChangePassword] = useInput('');
   const [passwordCheck, onChangePasswordCheck] = useInput('');
+  const [signUpErrorDisplay, setSignUpErrorDisplay] = useState('');
 
-  const { me, signUpError } = useSelector((state) => state.user);
-  const dispatch = useDispatch();
+  const handleErrorMessage = useCallback((text) => {
+    setSignUpErrorDisplay(text);
+    setTimeout(() => setSignUpErrorDisplay(''), 3000);
+  }, [signUpErrorDisplay]);
 
   useEffect(() => {
     if (me && me.id) {
@@ -29,14 +83,16 @@ const Signup = () => {
 
   useEffect(() => {
     if (signUpError) {
-      alert(signUpError);
+      handleErrorMessage(signUpError);
     }
   }, [signUpError]);
 
-  const onSubmit = useCallback(() => {
+  const onSubmit = useCallback((e) => {
+    e.preventDefault();
     if (password !== passwordCheck) {
-      return alert('두 비밀번호가 다릅니다');
+      return handleErrorMessage('두 비밀번호가 다릅니다');
     }
+    console.log('서브밋 !!');
     dispatch({
       type: SIGN_UP_REQUEST,
       data: { email, nickname, password },
@@ -48,65 +104,53 @@ const Signup = () => {
       <Head>
         <title>회원가입 | untact_interview</title>
       </Head>
-      <Form onFinish={onSubmit}>
-        <Form.Item
-          label="Email"
-          name="email"
-          rules={[
-            {
-              required: true,
-              message: 'email을 입력 해주세요',
-            },
-          ]}
-        >
-          <Input value={email} onChange={onChangeEmail} />
-        </Form.Item>
-        <Form.Item
-          label="Nickname"
-          name="nickname"
-          rules={[
-            {
-              required: true,
-              message: 'nickname을 입력 해주세요',
-            },
-          ]}
-        >
-          <Input value={nickname} onChange={onChangeNickname} />
-        </Form.Item>
-        <Form.Item
-          label="Password"
-          name="password"
-          rules={[
-            {
-              required: true,
-              message: 'password를 입력 해주세요',
-            },
-          ]}
-        >
-          <Input.Password value={password} onChange={onChangePassword} />
-        </Form.Item>
-        <Form.Item
-          label="PasswordCheck"
-          name="passwordCheck"
-          rules={[
-            {
-              required: true,
-              message: '비밀번호를 한번 더 입력 해주세요',
-            },
-          ]}
-        >
-          <Input.Password
-            value={passwordCheck}
-            onChange={onChangePasswordCheck}
-          />
-        </Form.Item>
-        {password !== passwordCheck ? (
-          <div style={{ color: 'red' }}>두 비밀번호가 다릅니다.</div>
-        ) : null}
-        <Button type="primary" htmlType="submit">
-          가입하기
-        </Button>
-      </Form>
+      <Container>
+        <form onSubmit={onSubmit}>
+          <FormItem>
+            <label>Email</label>
+            <input
+              type="eamil"
+              maxLength="24"
+              onChange={onChangeEmail}
+              // pattern="[a-zA-Z0-9.-_]{1,}@[a-zA-Z.-]{2,}[.]{1}[a-zA-Z]{2,}"
+              required
+            />
+          </FormItem>
+          <FormItem>
+            <label>nickname</label>
+            <input
+              type="text"
+              maxLength="15"
+              onChange={onChangeNickname}
+              required
+            />
+          </FormItem>
+          <FormItem>
+            <label>Password</label>
+            <input
+              type="password"
+              maxLength="12"
+              onChange={onChangePassword}
+              required
+            />
+          </FormItem>
+          <FormItem>
+            <label>Password Check</label>
+            <input
+              type="password"
+              maxLength="12"
+              onChange={onChangePasswordCheck}
+              required
+            />
+          </FormItem>
+          <SignUpErrorWrapper>
+            <p>{signUpErrorDisplay}</p>
+          </SignUpErrorWrapper>
+          <ButtonWrapper>
+            <Button type="submit">가입하기</Button>
+          </ButtonWrapper>
+        </form>
+      </Container>
     </AppLayout>
   );
 };
