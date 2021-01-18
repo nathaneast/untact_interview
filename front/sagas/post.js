@@ -63,13 +63,15 @@ function* loadUserPosts(action) {
   try {
     const result = yield call(loadUserPostsAPI, action.data);
     console.log(result, 'loadUserPosts');
-    // yield put({
-    //   type: LOAD_USER_POSTS_SUCCESS,
-    //   data: {
-    //     result: result.data,
-    //     isSame: action.data.category.isSame,
-    //     category: action.data.category.name,
-    //   },
+    yield put({
+      type: LOAD_USER_POSTS_SUCCESS,
+      data: {
+        result: result.data,
+        category: {
+          name: action.data.category.name,
+          isSame: action.data.category.isSame,
+        },
+      },
     });
   } catch (err) {
     console.error(err);
@@ -97,7 +99,9 @@ function* loadSessionPosts(action) {
       type: LOAD_SESSION_POSTS_SUCCESS,
       data: {
         result: result.data,
-        isSame: action.data.category.isSame,
+        category: {
+          isSame: action.data.category.isSame,
+        },
       },
     });
   } catch (err) {

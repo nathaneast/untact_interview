@@ -9,7 +9,7 @@ import { LOAD_FEEDBACK_POST_REQUEST } from '../../reducers/post';
 import TimeStampCard from '../../components/TimeStampCard';
 import AppLayout from '../../components/AppLayout';
 import FeedbackFormCard from '../../components/feedback/FeedbackFormCard';
-import PlayedSessionCard from '../../components/PlayedSessionCard';
+import PlayedSessionCard from '../../components/session/PlayedSessionCard';
 
 const feedbackPost = () => {
   // const dispatch = useDispatch();

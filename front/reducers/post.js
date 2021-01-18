@@ -68,12 +68,12 @@ const reducer = (state = initialState, action) => {
         draft.loadUserPostsLoading = false;
         draft.loadUserPostsDone = true;
         draft.hasMorePosts = action.data.result.length === 8;
-        if (action.data.category === 'feedback') {
-          draft.feedbackPosts = action.data.isSame
+        if (action.data.category.name === 'feedback') {
+          draft.feedbackPosts = action.data.category.isSame
             ? draft.feedbackPosts.concat(action.data.result)
             : action.data.result;
         } else {
-          draft.sessionPosts = action.data.isSame
+          draft.sessionPosts = action.data.category.isSame
             ? draft.sessionPosts.concat(action.data.result)
             : action.data.result;
         }

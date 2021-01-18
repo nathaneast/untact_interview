@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const PlayedSessionPostCard = ({ title, category, email, desc, star }) => (
+const PlayedSessionCard = ({ title, category, email, desc, star }) => (
   <article>
     <div>
       <ul>
@@ -25,7 +25,7 @@ const PlayedSessionPostCard = ({ title, category, email, desc, star }) => (
   </article>
 );
 
-PlayedSessionPostCard.propTypes = {
+PlayedSessionCard.propTypes = {
   title: PropTypes.string.isRequired,
   category: PropTypes.string.isRequired,
   email: PropTypes.string.isRequired,
@@ -33,4 +33,4 @@ PlayedSessionPostCard.propTypes = {
   star: PropTypes.number.isRequired,
 };
 
-export default PlayedSessionPostCard;
+export default PlayedSessionCard;

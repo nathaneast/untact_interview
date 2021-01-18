@@ -77,3 +77,9 @@ export const MenuItem = styled.li`
     }
   }
 `;
+
+export const PostBoard = styled.section`
+  display: grid;
+  grid-gap: 15px;
+  grid-template-columns: repeat(2, 1fr);
+`;

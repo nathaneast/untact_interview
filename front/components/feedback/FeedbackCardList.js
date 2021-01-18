@@ -13,18 +13,17 @@ const FeedbackCardList = ({ posts }) => {
   console.log(posts, 'FeedbackCardList posts');
 
   return (
-    <section>
+    <>
       {posts.map((post) => (
         <FeedbackCard
           key={post._id}
           feedbackPostId={post._id}
+          feedbackDesc={post.desc}
           sessionPost={post.sessionPost}
-          desc={post.desc}
           onClick={onClickRedirectFeedback}
         />
       ))}
-      ;
-    </section>
+    </>
   );
 };
 

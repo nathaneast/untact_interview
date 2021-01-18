@@ -12,6 +12,7 @@ import {
   MenuWrapper,
   Menu,
   MenuItem,
+  PostBoard,
 } from '../../styles/user';
 import wrapper from '../../store/configureStore';
 import { LOAD_MY_INFO_REQUEST, LOAD_USER_INFO_REQUEST } from '../../reducers/user';
@@ -197,16 +198,7 @@ const User = () => {
           </Menu>
         </MenuWrapper>
       </UserBoard>
-      <section>
-        {/* {(isNonePosts() ? (
-          <NonePostMessageCard />
-        ) : (
-          scrollLoading ? (
-            renderPosts()
-          ) : (
-            loadUserPostsDone && renderPosts()
-          )
-        ))} */}
+      <PostBoard>
         {(isNonePosts() ? (
           <NonePostMessageCard />
         ) : (
@@ -216,7 +208,7 @@ const User = () => {
             <SessionCardList posts={sessionPosts} meId={me?._id} />
           )
         ))}
-      </section>
+      </PostBoard>
     </AppLayout>
   );
 };
