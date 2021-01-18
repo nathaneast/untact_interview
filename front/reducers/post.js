@@ -90,7 +90,7 @@ const reducer = (state = initialState, action) => {
       case LOAD_SESSION_POSTS_SUCCESS:
         draft.loadSessionPostsLoading = false;
         draft.loadSessionPostsDone = true;
-        draft.sessionPosts = action.data.isSame
+        draft.sessionPosts = action.data.category.isSame
           ? draft.sessionPosts.concat(action.data.result)
           : action.data.result;
         draft.hasMorePosts = action.data.result.length === 8;

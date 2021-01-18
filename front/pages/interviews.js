@@ -31,7 +31,7 @@ const Interviews = () => {
   const dispatch = useDispatch();
   const { me } = useSelector((state) => state.user);
   const { sessionPosts, hasMorePosts, loadSessionPostsLoading } = useSelector(
-    (state) => state.post
+    (state) => state.post,
   );
   const [selectedCategory, setSelectedCategory] = useState('all');
 
@@ -84,7 +84,7 @@ const Interviews = () => {
   );
 
   // console.log(me, 'home me');
-  // console.log(sessionPosts, 'Interviews, sessionPosts ');
+  console.log(selectedCategory, sessionPosts, hasMorePosts, loadSessionPostsLoading, 'Interviews, sessionPosts ');
 
   return (
     <AppLayout>
