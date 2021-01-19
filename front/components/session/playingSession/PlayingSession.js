@@ -17,7 +17,7 @@ const PlaySession = ({
   sessionTitle,
   moveFeedback,
 }) => {
-  const [limitTime, setLimitTime] = useState(120);
+  const [limitTime, setLimitTime] = useState(30);
   const [timer, setTimer] = useState(limitTime);
   const [questionIndex, setQuestionIndex] = useState(0);
   const [isRunning, setIsRunning] = useState(true);
@@ -84,7 +84,6 @@ const PlaySession = ({
   );
 
   const onClick = useCallback(() => {
-    console.log('버튼 클릭 다음문제');
     if (questions.length - 1 > questionIndex) {
       setQuestionIndex(questionIndex + 1);
       setTimer(limitTime);

@@ -1,7 +1,6 @@
 import produce from '../util/produce';
 
 export const initialState = {
-  mainPosts: [],
   sessionPosts: [],
   feedbackPosts: [],
   singlePost: '',
@@ -162,7 +161,7 @@ const reducer = (state = initialState, action) => {
       case ON_STAR_POST_SUCCESS:
         draft.onStarPostLoading = false;
         draft.onStarPostDone = true;
-        const post = draft.mainPosts.find((v) => v._id === action.data.postId);
+        const post = draft.sessionPosts.find((v) => v._id === action.data.postId);
         post.star = action.data.star;
         break;
       case ON_STAR_POST_FAILURE:

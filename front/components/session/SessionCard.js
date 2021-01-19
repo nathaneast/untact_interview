@@ -97,12 +97,12 @@ const SessionCard = ({
         </PostDesc>
       </PostTitleWrapper>
       <PostDetail>
-        <Creator>
-          <span onClick={() => moveUserProfile(userId)}>creator: {email}</span>
+        <Creator onClick={() => moveUserProfile(userId)}>
+          <span>creator: {email}</span>
         </Creator>
-        <Star>
-          <span onClick={() => onStarHandler(postId)}>{isStarUser(star) ? '⭐' : '☆'}</span>
-        <span>{' '}{star.length}</span>
+        <Star onClick={() => onStarHandler(postId)}>
+          <span>{isStarUser(star) ? '⭐' : '☆'}</span>
+          <span> {star.length}</span>
         </Star>
       </PostDetail>
     </PostInfo>

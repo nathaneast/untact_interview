@@ -25,7 +25,7 @@ module.exports = (io) => {
     });
 
     client.on('detectFirstSentence', (data) => { // 다음 문제 넘어갔다는것
-      console.log('detectFirstSentence emit !');
+      console.log('다음 문제로 넘어감 !!! detectFirstSentence emit !');
       stt.detectProcess();
     });
   });

@@ -113,7 +113,8 @@ sttInstance.resultEndTime =
 const transcript = stream.results[0].alternatives[0].transcript;
 
 if (sttInstance.isDetectFirstSentence) {
-  console.log('speechCallback 첫 문장 감지');
+  console.log('speechCallback 문제의 첫 문장 감지! 현재문제 타임스탬프폼 만듬');
+  // 이전 문제 문장이 안끝났으면 현재 문제 타임스탬프 찍으면 안됨
   markingTimeStamp(currentRecTime);
   sttInstance.isDetectFirstSentence = false;
 }
@@ -134,29 +135,70 @@ if (stream.results[0].isFinal) {
   client.emit('speechResult', transcript);
 
   if (sttInstance.previousSentenceLength) {
-      console.log('sttInstance.previousSentenceLength true 로직');
-      sttInstance.timeStamps[sttInstance.currentQuestionIndex - 1].text =
-      sttInstance.timeStamps[sttInstance.currentQuestionIndex - 1].text 
-      ? sttInstance.timeStamps[sttInstance.currentQuestionIndex - 1].text + transcript.substring(0, sttInstance.previousSentenceLength)
+    console.log('sttInstance.previousSentenceLength true 로직');
+    // 이전 문제 문장 타임스탬프 만들기
+    sttInstance.timeStamps[
+      sttInstance.currentQuestionIndex - 1
+    ].text = sttInstance.timeStamps[sttInstance.currentQuestionIndex - 1].text
+      ? sttInstance.timeStamps[sttInstance.currentQuestionIndex - 1].text +
+        transcript.substring(0, sttInstance.previousSentenceLength)
       : transcript.substring(0, sttInstance.previousSentenceLength);
-  
-      sttInstance.timeStamps[sttInstance.currentQuestionIndex].text =
-      sttInstance.timeStamps[sttInstance.currentQuestionIndex].text 
-      ? sttInstance.timeStamps[sttInstance.currentQuestionIndex].text + transcript.substring(sttInstance.previousSentenceLength, transcript.length)
-      : transcript.substring(sttInstance.previousSentenceLength, transcript.length);
-      
-      console.log('이전문장:',transcript.substring(0, sttInstance.previousSentenceLength));
-      console.log('다음문장:',transcript.substring(sttInstance.previousSentenceLength, transcript.length));
-      
-      sttInstance.previousSentenceLength = null;
+
+      //현재 문제 문장 타임스탬프 만들기
+      const currentSpeechSentence = transcript.substring(
+        sttInstance.previousSentenceLength,
+        transcript.length
+      );
+      console.log(currentSpeechSentence, currentSpeechSentence.length , Boolean(currentSpeechSentence), 'currentSpeechSentence bool');
+
+      if (currentSpeechSentence) {
+        console.log(
+          currentSpeechSentence,
+          'currentSpeechSentence값이 있어서 현재 문제 타임스탬프에 넣기'
+        );
+        sttInstance.timeStamps[
+          sttInstance.currentQuestionIndex
+        ].text = transcript.substring(
+          sttInstance.previousSentenceLength,
+          transcript.length
+        );
+      } else {
+        console.log('이전, (현재) 문장이 빈값이라 현재문제 타임스탬프 지움');
+        sttInstance.timeStamps.pop();
+        console.log(sttInstance.timeStamps, '지우고나서 타임스탬프 결과');
+        sttInstance.isDetectFirstSentence = true;
+      }
+
+
+    console.log('문장완성--------------------------------------------------');
+    console.log(
+      '이전문장:',
+      transcript.substring(0, sttInstance.previousSentenceLength)
+    );
+    console.log(
+      '다음문장:',
+      transcript.substring(
+        sttInstance.previousSentenceLength,
+        transcript.length
+      )
+    );
+    console.log(sttInstance.timeStamps, '문장 finish 후 타임 스탬프');
+    console.log('-------------------------------------------------------');
+
+    sttInstance.previousSentenceLength = null;
   } else {
     console.log('sttInstance.previousSentenceLength false 로직');
-    sttInstance.timeStamps[sttInstance.currentQuestionIndex].text = sttInstance.timeStamps[sttInstance.currentQuestionIndex].text
-      ? sttInstance.timeStamps[sttInstance.currentQuestionIndex].text + transcript
-      // ? `${sttInstance.timeStamps[sttInstance.currentQuestionIndex].text} ${transcript}` //
+    sttInstance.timeStamps[sttInstance.currentQuestionIndex].text = sttInstance
+      .timeStamps[sttInstance.currentQuestionIndex].text
+      ? sttInstance.timeStamps[sttInstance.currentQuestionIndex].text +
+        transcript
       : transcript;
   }
-  console.log(sttInstance.timeStamps, sttInstance.currentQuestionIndex, 'sttInstance.timeStamps');
+  console.log(
+    sttInstance.timeStamps,
+    sttInstance.currentQuestionIndex,
+    '현재 문제에 추가되는 문장 sttInstance.timeStamps'
+  );
 
   sttInstance.isFinalEndTime = sttInstance.resultEndTime; // 문장 완료 후 끝나는 시간 저장
 } 
@@ -256,21 +298,26 @@ const startRecoding = (audioInputStreamTransform) => {
     .pipe(audioInputStreamTransform); // 0-1번
 }
 
-// end functions
 const checkEmptySTTResult = () => {
   if (!sttInstance.timeStamps[sttInstance.currentQuestionIndex]) {
+    console.log('이전 문제 인스턴스 없으니 만들기 checkEmptySTTResult');
     sttInstance.timeStamps[sttInstance.currentQuestionIndex] = new MyAnswer();
   }
 }
 
+// 다음 문제 넘어갔는데 이전 문제의 타임스탬프 인스턴스가 안만들어져 있으면
+// 기본 인스턴스로 만들어주는 역할 fn
 const detectProcess = () => {
-  sttInstance.isDetectFirstSentence = true;
+  console.log('다음 문제로 넘어갔다, detectProcess');
   checkEmptySTTResult();
+  sttInstance.isDetectFirstSentence = true;
   if (!sttInstance.isSentenceFinal) {
     sttInstance.isDivideSentence = true;
   }
   sttInstance.currentQuestionIndex++;
+  console.log('다음 문제로 넘어가고 나서 현재 상태');
   console.log(sttInstance.timeStamps, sttInstance.currentQuestionIndex, 'detectFirstSentence timeStamps, index');
+  console.log('----------------------------------------------');
 }
 
 const stopRecoding = () => {
