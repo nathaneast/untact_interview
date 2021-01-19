@@ -9,7 +9,6 @@ import {
   VideoBoard,
   VideoDownload,
   VideoDownloadButton,
-  // TimeStampBoard,
   FeedbackDesc,
   FeedbackFormBoard,
   ButtonWrapper,
@@ -23,22 +22,16 @@ import GuideMessage from '../../modal/GuideMessage';
 import AppLayout from '../../AppLayout';
 import TimeStampList from '../../TimeStampList';
 
-// 모든 피드백 입력 되었는지 폼 검사 로직 추가
 const Feedback = ({
   sessionPostId,
   creatorId,
   questions,
   blob,
   timeStamps,
-  // title,
-  // category,
-  // email,
-  // desc,
-  // star,
 }) => {
   const dispatch = useDispatch();
   const [feedbackform, setFeedbackValues] = useState({});
-  const [feedbackDesc, onChangeFeedbackDesc, setFeedbackDesc] = useInput('');
+  const [feedbackDesc, onChangeFeedbackDesc] = useInput('');
 
   const [isModal, setIsModal] = useState(true);
   const [isFinishedFeedback, setIsFinishedFeedback] = useState(false);
@@ -75,29 +68,18 @@ const Feedback = ({
     }
   }, [feedbackform, feedbackDesc, timeStamps]);
 
-  // const moveVideoTime = useCallback(
-  //   (time) => {
-  //     if (!time) {
-  //       alert('답변한 질문이 아닙니다.');
-  //       return;
-  //     }
-  //     videoElement.current.currentTime = time;
-  //   },
-  //   [videoElement.current]
-  // );
-
   const onRedirectInterviews = useCallback(() => {
     router.push('/interviews');
   });
 
-  console.log(feedbackDesc, 'Feedback feedbackDesc');
+  console.log(timeStamps, 'Feedback timeStamps');
 
   return (
     <>
-      <Head>
-        <title>피드백 작성 | Untact_Interview </title>
-      </Head>
       <AppLayout>
+        <Head>
+          <title>피드백 작성 | Untact_Interview </title>
+        </Head>
         <MainContents>
           <VideoBoard>
             <video
@@ -109,28 +91,17 @@ const Feedback = ({
               height="450px"
             />
             <VideoDownload>
-              <VideoDownloadButton>
-                <a href={blob} target="_blank" rel="noopener">
-                  영상 다운받기
-                </a>
-              </VideoDownloadButton>
+              <a href={blob} target="_blank" rel="noopener noreferrer">
+                <VideoDownloadButton>영상 다운받기</VideoDownloadButton>
+              </a>
             </VideoDownload>
           </VideoBoard>
-          <TimeStampList
-            timeStamps={timeStamps}
-            targetVideo={videoElement.current}
-          />
-          {/* <TimeStampBoard>
-            {timeStamps.map((item, index) => (
-              <TimeStampCard
-                key={index}
-                text={item.text}
-                time={item.time}
-                answerNumber={index + 1}
-                onClick={moveVideoTime}
-              />
-            ))}
-          </TimeStampBoard> */}
+          {videoElement.current && (
+            <TimeStampList
+              timeStamps={timeStamps}
+              targetVideo={videoElement.current}
+            />
+          )}
         </MainContents>
 
         <FeedbackDesc>
@@ -184,11 +155,6 @@ Feedback.propTypes = {
   questions: PropTypes.array.isRequired,
   blob: PropTypes.string.isRequired,
   timeStamps: PropTypes.array.isRequired,
-  // title: PropTypes.string.isRequired,
-  // category: PropTypes.string.isRequired,
-  // email: PropTypes.string.isRequired,
-  // desc: PropTypes.string.isRequired,
-  // star: PropTypes.array.isRequired,
 };
 
 export default Feedback;

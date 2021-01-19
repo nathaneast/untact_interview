@@ -77,8 +77,18 @@ const feedbackPost = () => {
   const [isSessionFlipCard, setIsSessionFlipCard] = useState(false);
 
   const videoElement = useRef();
+  const emptyVideoElement = useRef();
   const videoUpload = useRef();
   const sessionCardElement = useRef();
+
+  useEffect(() => {
+    if (videoBlob) {
+      videoElement.current.style.display = 'block';
+    } else {
+      videoElement.current.style.display = 'none';
+    }
+    console.log(videoElement, '유즈 이펙트');
+  }, [videoBlob, videoElement]);
 
   useEffect(() => {
     sessionCardElement.current.addEventListener('mouseover', () => {
@@ -101,15 +111,7 @@ const feedbackPost = () => {
     [setVideoBlob],
   );
 
-  // const moveVideoTime = useCallback(
-  //   (videoEle, time) => {
-  //     if (time) {
-  //       videoEle.current.currentTime = time;
-  //     }
-  //   },
-  // );
-
-  // console.log(singlePost, '피드백 포스트 singlePost');
+  console.log(videoElement, '피드백 페이지');
 
   return (
     <AppLayout>
@@ -125,24 +127,25 @@ const feedbackPost = () => {
             />
             <UploadButton onClick={onUpload}>영상 업로드</UploadButton>
           </div>
-          {videoBlob ? (
+          <div>
             <VideoWrapper>
               <video
                 controls
                 autoPlay
                 ref={videoElement}
-                src={URL.createObjectURL(videoBlob)}
+                src={videoBlob ? URL.createObjectURL(videoBlob) : null}
                 width="600px"
                 height="450px"
               />
             </VideoWrapper>
-          ) : (
-            <EmptyVideoBoard>
-              <span>영상을 올려 주세요 😃</span>
-            </EmptyVideoBoard>
-          )}
+            {!videoBlob && (
+              <EmptyVideoBoard ref={emptyVideoElement}>
+                <span>영상을 올려 주세요 😃</span>
+              </EmptyVideoBoard>
+            )}
+          </div>
         </div>
-        {singlePost && (
+        {singlePost && videoElement.current && (
           <TimeStampList
             timeStamps={singlePost.timeStamps}
             targetVideo={videoElement.current}

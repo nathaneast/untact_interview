@@ -24,8 +24,7 @@ $color-cream:#FFFFF6;
   .exit {
     cursor: pointer;
     &:hover {
-      background-color: #e55039;
-      color: #F8EFBA;
+      color:  #e55039;
     }
   }
 }
@@ -63,9 +62,6 @@ $color-cream:#FFFFF6;
   margin-bottom: 12px;
   .videoWrapper {
     margin: 0px 12px;
-    // background-color: green;
-    // width: 600px;
-    // height: 450px;
   }
   .speechBoard {
     width: 380px;
@@ -78,6 +74,12 @@ $color-cream:#FFFFF6;
     overflow-y: scroll;
     &::-webkit-scrollbar {
     display: none;
+    }
+    .speechBoardTitle {
+      & p {
+        font-weight: bolder;
+        color: #2d3436;
+      }
     }
   }
 }

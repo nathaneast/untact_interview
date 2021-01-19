@@ -15,29 +15,15 @@ export const VideoBoard = styled.div`
 export const VideoDownload = styled.div`
   display: flex;
   justify-content: center;
-`;
-
-export const VideoDownloadButton = styled(ButtonNavy)`
-  padding: 8px 250px;
-  border: 1px solid gray;
   & a {
     color: #fffff6;
   }
 `;
 
-// export const TimeStampBoard = styled.section`
-//   margin: 15px;
-//   padding: 15px 5px;
-//   width: 380px;
-//   height: 500px;
-//   background-color: #dcdde1;
-//   border-radius: 30px;
-//   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
-//   overflow-y: scroll;
-//   &::-webkit-scrollbar {
-//     display: none;
-//   }
-// `;
+export const VideoDownloadButton = styled(ButtonNavy)`
+  padding: 8px 250px;
+  border: 1px solid gray;
+`;
 
 export const FeedbackDesc = styled.div`
   padding: 20px;

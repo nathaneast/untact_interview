@@ -72,13 +72,14 @@ FeedbackFormCard.propTypes = {
   question: PropTypes.string.isRequired,
   answer: PropTypes.string.isRequired,
   FeedbackNumber: PropTypes.number.isRequired,
-  onChange: PropTypes.func.isRequired,
+  onChange: PropTypes.func,
   writeMode: PropTypes.bool.isRequired,
   feedback: PropTypes.string,
 };
 
 FeedbackFormCard.defaultProps = {
   feedback: null,
+  onChange: undefined,
 };
 
 export default FeedbackFormCard;

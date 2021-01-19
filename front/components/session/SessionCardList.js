@@ -26,7 +26,7 @@ const SessionCardList = ({ posts, meId }) => {
     router.push(`/session/${selectedPostId}`);
   });
 
-  const onClickStartPost = useCallback((postId) => {
+  const onClickStartSession = useCallback((postId) => {
     setIsModal(true);
     setSelectedPostId(postId);
   });
@@ -54,7 +54,7 @@ const SessionCardList = ({ posts, meId }) => {
         },
       });
     },
-    [meId]
+    [meId],
   );
 
   const isStarUser = useCallback((staredUsers) => {
@@ -64,7 +64,7 @@ const SessionCardList = ({ posts, meId }) => {
     return staredUsers.some((user) => user === meId);
   });
 
-  // console.log(posts, meId, isFeedbackPost, '포스트카드리스트 posts, meId, isFeedbackPost')
+  console.log(meId, '세션카드리스트 meId ');
 
   return (
     <>
@@ -79,7 +79,7 @@ const SessionCardList = ({ posts, meId }) => {
             desc={post.desc}
             email={post.creator.email}
             star={post.star}
-            onClick={onClickStartPost}
+            onClick={onClickStartSession}
             moveUserProfile={onClickRedirectUser}
             isStarUser={isStarUser}
             onStarHandler={onStarHandler}

@@ -46,14 +46,15 @@ class SttProcess {
 }
 
 class MyAnswer {
-  constructor(time = '', text = '') {
+  constructor(time = 0, text = '') {
     this.time = time;
     this.text = text;
   }
 }
 
 const markingTimeStamp = (time) => {
-  const question = new MyAnswer(Math.floor(time / 1000));
+  const timeResult = Math.floor(time / 1000) > 0 ? Math.floor(time / 1000) : 1;
+  const question = new MyAnswer(timeResult);
   sttInstance.timeStamps[sttInstance.currentQuestionIndex] = question;
 }
 

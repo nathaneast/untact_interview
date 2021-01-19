@@ -55,11 +55,6 @@ const SessionPost = () => {
             creatorId={me._id}
             sessionPostId={singlePost._id}
             questions={singlePost.questions}
-            // title={singlePost.title}
-            // category={singlePost.category.name}
-            // email={singlePost.creator.email}
-            // desc={singlePost.desc}
-            // star={singlePost.star}
           />
         )
       ) : (

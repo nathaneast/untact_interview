@@ -36,13 +36,13 @@ const TimeStampCard = ({ text, time, onClick, answerNumber }) => (
 
 TimeStampCard.propTypes = {
   text: PropTypes.string.isRequired,
-  time: PropTypes.number,
+  time: PropTypes.number.isRequired,
   onClick: PropTypes.func.isRequired,
   answerNumber: PropTypes.number.isRequired,
 };
 
-TimeStampCard.defaultProps = {
-  time: PropTypes.string,
-};
+// TimeStampCard.defaultProps = {
+//   time: PropTypes.string,
+// };
 
 export default TimeStampCard;

@@ -94,7 +94,7 @@ const Interviews = () => {
         <CategoryItem data-name="others">others</CategoryItem>
       </Category>
       {sessionPosts.length ? (
-        <SessionCardList posts={sessionPosts} meId={me?.id} />
+        <SessionCardList posts={sessionPosts} meId={me?._id} />
       ) : (
         <NonePostMessageCard />
       )}

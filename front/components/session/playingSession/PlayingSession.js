@@ -8,20 +8,16 @@ import Modal from '../../modal/Modal';
 import ConfirmMessage from '../../modal/ConfirmMessage';
 import useInterval from '../../../hooks/useInterval';
 import socket, { socketEmits } from '../../../socket';
-// import styled from 'styled-components';
 
 // 로딩 추가
-// 세션 끝 => 모달 추가
-// 영상 저장을 버튼으로 하는 방법 연구
 const PlaySession = ({
   questions,
   saveTimeStamp,
   saveBlob,
   sessionTitle,
   moveFeedback,
-  setSaveVideo,
 }) => {
-  const [limitTime, setLimitTime] = useState(30);
+  const [limitTime, setLimitTime] = useState(120);
   const [timer, setTimer] = useState(limitTime);
   const [questionIndex, setQuestionIndex] = useState(0);
   const [isRunning, setIsRunning] = useState(true);
@@ -60,10 +56,6 @@ const PlaySession = ({
     recorder.current.stopRecording(() => {
       // videoElement.current.srcObject = null;
       saveBlob(URL.createObjectURL(recorder.current.getBlob()));
-      // const isConfirm = confirm('영상을 저장 하시겠습니까?');
-      // if (isConfirm) {
-      //   invokeSaveAsDialog(recorder.current.getBlob(), `${sessionTitle}_${new Date().valueOf()}.webm`);
-      // }
       recorder.current.stream.stop();
       recorder.current.destroy();
       recorder.current = null;
@@ -71,7 +63,6 @@ const PlaySession = ({
     setIsRunning(false);
     socketEmits.endGoogleCloudStream('final');
     moveFeedback();
-    // alert('세션 끝');
   }, [sessionTitle]);
 
   useInterval(
@@ -98,13 +89,17 @@ const PlaySession = ({
       setQuestionIndex(questionIndex + 1);
       setTimer(limitTime);
       socketEmits.detectFirstSentence();
+      nextQuestionButton.current.disabled = true;
+      nextQuestionButton.current.style.backgroundColor = '#95a5a6';
+      nextQuestionButton.current.style.color = '#2d3436';
+      setTimeout(() => {
+        nextQuestionButton.current.disabled = false;
+        nextQuestionButton.current.style.backgroundColor = '#e84118';
+        nextQuestionButton.current.style.color = ':#FFFFF6';
+      }, 4000);
     } else {
       endSession();
     }
-    // nextQuestionButton.current.disabled = true;
-    // setTimeout(() => {
-    //   nextQuestionButton.current.disabled = false;
-    // }, 4000);
   }, [questions, questionIndex, limitTime]);
 
   const onRedirectInterviews = useCallback(() => {
@@ -133,7 +128,7 @@ const PlaySession = ({
                 </li>
               </ul>
             </div>
-            <div className={styles.exit} onClick={() => setIsExitModal(true)}>
+            <div className={styles.exit} onClick={() => setIsModal(true)}>
               <span>나가기</span>
             </div>
           </header>
@@ -157,13 +152,22 @@ const PlaySession = ({
               />
             </article>
             <article className={styles.speechBoard}>
-              <p>{saveSpeech}</p>
-              <p>{speech}</p>
+              <div className={styles.speechBoardTitle}>
+                <p>speech board</p>
+              </div>
+              <div>
+                <p>{saveSpeech}</p>
+              </div>
+              <div>
+                <p>{speech}</p>
+              </div>
             </article>
           </main>
 
-          <div className={styles.buttonWrapper} onClick={onClick}>
-            <button ref={nextQuestionButton}>다음 문제</button>
+          <div className={styles.buttonWrapper}>
+            <button ref={nextQuestionButton} onClick={onClick}>
+              다음 문제
+            </button>
           </div>
         </article>
       )}
@@ -186,7 +190,6 @@ PlaySession.propTypes = {
   saveTimeStamp: PropTypes.func.isRequired,
   saveBlob: PropTypes.func.isRequired,
   sessionTitle: PropTypes.string.isRequired,
-  setSaveVideo: PropTypes.func.isRequired,
 };
 
 export default PlaySession;

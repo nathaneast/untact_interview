@@ -218,9 +218,9 @@ const User = () => {
           <NonePostMessageCard />
         ) : (
           isSelectedFeedback() ? (
-            <FeedbackCardList posts={feedbackPosts} />
+            feedbackPosts && <FeedbackCardList posts={feedbackPosts} />
           ) : (
-            <SessionCardList posts={sessionPosts} meId={me?._id} />
+            sessionPosts && <SessionCardList posts={sessionPosts} meId={me?._id} />
           )
         ))}
     </AppLayout>

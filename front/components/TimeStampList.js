@@ -21,11 +21,13 @@ const Container = styled.section`
 const TimeStampList = ({ timeStamps, targetVideo }) => {
   const moveVideoTime = useCallback((videoEle, time) => {
     if (time) {
-      videoEle.current.currentTime = time;
+      videoEle.currentTime = time;
     } else {
       alert('답변한 질문이 아닙니다.');
     }
   });
+
+  // console.log(targetVideo, timeStamps, 'TimeStampList');
 
   return (
     <Container>
@@ -41,10 +43,13 @@ const TimeStampList = ({ timeStamps, targetVideo }) => {
     </Container>
   );
 };
-
 TimeStampList.propTypes = {
   timeStamps: PropTypes.array.isRequired,
-  targetVideo: PropTypes.node.isRequired,
+  targetVideo: PropTypes.any.isRequired,
+  // targetVideo: PropTypes.shape({ current: PropTypes.instanceOf(Element) }).isRequired,
+  // targetVideo: PropTypes.instanceOf(Element)
+  // targetVideo: PropTypes.instanceOf(Element).isRequired,
+  // targetVideo: PropTypes.node.isRequired,
 };
 
 export default TimeStampList;
