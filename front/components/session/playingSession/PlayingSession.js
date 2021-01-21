@@ -26,6 +26,7 @@ const PlaySession = ({
   const [speech, setSpeech] = useState(null);
 
   const [isModal, setIsModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const videoElement = useRef();
   const recorder = useRef();
@@ -43,32 +44,40 @@ const PlaySession = ({
           type: 'video',
           timeSlice: 1000,
         });
-        videoElement.current.srcObject = stream;
+        console.log(stream, 'stream레코더');
+        if (!isLoading) {
+          videoElement.current.srcObject = stream;
+        }
         recorder.current.stream = stream;
         recorder.current.startRecording();
 
         socket(setSpeech, setSaveSpeech, saveTimeStamp);
         socketEmits.startGoogleCloudStream();
+        setIsLoading(false);
       });
   }, []);
 
-  const endSession = useCallback(() => {
-    recorder.current.stopRecording(() => {
-      // videoElement.current.srcObject = null;
-      saveBlob(URL.createObjectURL(recorder.current.getBlob()));
-      recorder.current.stream.stop();
-      recorder.current.destroy();
-      recorder.current = null;
-    });
-    setIsRunning(false);
-    socketEmits.endGoogleCloudStream('final');
-    moveFeedback();
+  const endSession = useCallback((isFinal) => {
+    if (isFinal) {
+      recorder.current.stopRecording(() => {
+        saveBlob(URL.createObjectURL(recorder.current.getBlob()));
+        recorder.current.stream.stop();
+        recorder.current.destroy();
+        recorder.current = null;
+      });
+      setIsRunning(false);
+      socketEmits.endGoogleCloudStream(isFinal);
+      moveFeedback();
+    } else {
+      socketEmits.endGoogleCloudStream();
+      router.push('/interviews');
+    }
   }, [sessionTitle]);
 
   useInterval(
     () => {
       if (timer - 1 === 0 && questions.length - 1 === questionIndex) {
-        endSession();
+        endSession(true);
         return;
       }
       if (timer - 1 === 0) {
@@ -97,11 +106,12 @@ const PlaySession = ({
         nextQuestionButton.current.style.color = ':#FFFFF6';
       }, 4000);
     } else {
-      endSession();
+      endSession(true);
     }
   }, [questions, questionIndex, limitTime]);
 
   const onRedirectInterviews = useCallback(() => {
+    socketEmits.endGoogleCloudStream();
     router.push('/interviews');
   });
 
@@ -112,8 +122,11 @@ const PlaySession = ({
         <title>세션진행 | Untact_Interview </title>
         <script src="https://www.WebRTC-Experiment.com/RecordRTC.js" />
       </Head>
-      {questions && (
-        <article className={styles.container}>
+
+      {isLoading ? (
+        <div>로딩중</div>
+      ) : (
+        <div className={styles.container}>
           <header className={styles.header}>
             <div>
               <ul className={styles.navbar}>
@@ -160,19 +173,19 @@ const PlaySession = ({
               </div>
             </article>
           </main>
-
           <div className={styles.buttonWrapper}>
             <button ref={nextQuestionButton} onClick={onClick}>
               다음 문제
             </button>
           </div>
-        </article>
+        </div>
       )}
+
       {isModal && (
         <Modal onCancelModal={() => setIsModal(false)}>
           <ConfirmMessage
             message={'나가시겠습니까?'}
-            onOk={onRedirectInterviews}
+            onOk={() => endSession(false)}
             onCancel={() => setIsModal(false)}
           />
         </Modal>

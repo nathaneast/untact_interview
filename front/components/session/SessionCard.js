@@ -7,7 +7,7 @@ const Container = styled.article`
   display: flex;
   flex-direction: column;
   justify-content: space-around;
-  width: 360px;
+  width: 400px;
   height: 240px;
   border: 2px solid #34495e;
   border-radius: 30px;
@@ -18,19 +18,19 @@ const Container = styled.article`
 
 const PostInfo = styled.article`
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   padding: 10px;
 `;
 
 const PostTitleWrapper = styled.article`
-  margin: 10px;
+  width: 70%;
 `;
 
 const PostTitle = styled.div`
   border-bottom: 2px solid black;
   width: 200px;
   padding: 0px 10px;
-  & h1 {
+  & p {
     font-size: 20px;
     font-weight: bolder;
     margin: 5px 0px;
@@ -46,8 +46,8 @@ const PostDesc = styled.div`
 `;
 
 const PostDetail = styled.div`
-  margin: 10px;
   color: #34495e;
+  width: 30%;
 `;
 
 const ButtonWrapper = styled.div`
@@ -94,7 +94,7 @@ const SessionCard = ({
     <PostInfo>
       <PostTitleWrapper>
         <PostTitle>
-          <h1>{title}</h1>
+          <p>{title}</p>
         </PostTitle>
         <PostDesc>
           <p>{desc}</p>
