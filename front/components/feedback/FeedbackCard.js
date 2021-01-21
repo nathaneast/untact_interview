@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
-import { ButtonNavy } from '../../styles/reStyled';
+import { ButtonDefault } from '../../styles/reStyled';
 
 const Container = styled.article`
   width: 350px;
@@ -48,7 +48,7 @@ const ButtonWrapper = styled.div`
   text-align: center;
 `;
 
-const Button = styled(ButtonNavy)`
+const Button = styled(ButtonDefault)`
 `;
 
 const FeedbackCard = ({ feedbackPostId, feedbackDesc, sessionPost, onClick }) => (

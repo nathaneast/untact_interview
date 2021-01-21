@@ -74,7 +74,7 @@ const PlaySession = ({
       if (timer - 1 === 0) {
         console.log('다음문제');
         setQuestionIndex(questionIndex + 1);
-        setTimer(limitTime); // 타이머 취소하고 변경
+        setTimer(limitTime);
         socketEmits.detectFirstSentence();
       } else {
         setTimer(timer - 1);
@@ -104,8 +104,6 @@ const PlaySession = ({
   const onRedirectInterviews = useCallback(() => {
     router.push('/interviews');
   });
-
-  // console.log(questions, sessionTitle, 'PlaySession');
 
   return (
     <>

@@ -47,9 +47,10 @@ const NavItem = styled.li`
 
 const Link = styled.a`
   color: #FFFFF6;
+  text-decoration: none;
 `;
 
-const Contents = styled.a`
+const Contents = styled.div`
   align-items: center;
   display: flex;
   flex-direction: column;
@@ -100,8 +101,8 @@ const AppLayout = ({ children }) => {
                     <span>내정보</span>
                   </Link>
                 </NavItem>
-                <NavItem>
-                  <span onClick={onLogOut}>로그아웃</span>
+                <NavItem onClick={onLogOut}>
+                  <span>로그아웃</span>
                 </NavItem>
                 <NavItem>
                   <span>{me.nickname}</span>
@@ -109,8 +110,8 @@ const AppLayout = ({ children }) => {
               </>
             ) : (
               <>
-                <NavItem>
-                  <span onClick={onLogIn}>로그인</span>
+                <NavItem onClick={onLogIn}>
+                  <span>로그인</span>
                 </NavItem>
                 <NavItem>
                   <Link href="/signup">

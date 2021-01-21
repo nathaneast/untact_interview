@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const ButtonNavy = styled.button`
+export const ButtonDefault = styled.button`
   border-radius: 4px;
   padding: 6px 50px;
   color: #fffff6;

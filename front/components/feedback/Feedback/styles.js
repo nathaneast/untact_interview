@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { ButtonNavy } from '../../../styles/reStyled';
+import { ButtonDefault } from '../../../styles/reStyled';
 
 export const MainContents = styled.div`
   display: flex;
@@ -20,7 +20,7 @@ export const VideoDownload = styled.div`
   }
 `;
 
-export const VideoDownloadButton = styled(ButtonNavy)`
+export const VideoDownloadButton = styled(ButtonDefault)`
   padding: 8px 250px;
   border: 1px solid gray;
 `;
@@ -56,7 +56,7 @@ export const ButtonWrapper = styled.div`
   margin-bottom: 20px;
 `;
 
-export const SubmitButton = styled(ButtonNavy)`
+export const SubmitButton = styled(ButtonDefault)`
   padding: 8px 80px;
   border-radius: 20px;
 `;

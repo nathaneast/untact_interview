@@ -6,7 +6,7 @@ import { END } from 'redux-saga';
 import axios from 'axios';
 import styled from 'styled-components';
 
-import { ButtonNavy } from '../styles/reStyled';
+import { ButtonDefault } from '../styles/reStyled';
 import AppLayout from '../components/AppLayout';
 import useInput from '../hooks/useInput';
 import { SIGN_UP_REQUEST, LOAD_MY_INFO_REQUEST } from '../reducers/user';
@@ -55,7 +55,7 @@ const ButtonWrapper = styled.div`
   margin: 10px 0px;
 `;
 
-const Button = styled(ButtonNavy)`
+const Button = styled(ButtonDefault)`
   background-color: #e74c3c;
   border-radius: 17px;
 `;

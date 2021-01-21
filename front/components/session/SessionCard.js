@@ -1,11 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { ButtonNavy } from '../../styles/reStyled';
+import { ButtonDefault } from '../../styles/reStyled';
 
-const PostCard = styled.article`
+const Container = styled.article`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
   width: 360px;
-  height: 200px;
+  height: 240px;
   border: 2px solid #34495e;
   border-radius: 30px;
   background-color: white;
@@ -30,11 +33,12 @@ const PostTitle = styled.div`
   & h1 {
     font-size: 20px;
     font-weight: bolder;
+    margin: 5px 0px;
   }
 `;
 
 const PostDesc = styled.div`
-  padding: 5px 10px;
+  padding: 7px;
   color: #34495e;
   & p {
     margin: 0px
@@ -72,7 +76,7 @@ const Star = styled.div`
   }
 `;
 
-const Button = styled(ButtonNavy)``;
+const Button = styled(ButtonDefault)``;
 
 const SessionCard = ({
   postId,
@@ -86,7 +90,7 @@ const SessionCard = ({
   isStarUser,
   onStarHandler,
 }) => (
-  <PostCard>
+  <Container>
     <PostInfo>
       <PostTitleWrapper>
         <PostTitle>
@@ -109,7 +113,7 @@ const SessionCard = ({
     <ButtonWrapper>
       <Button onClick={() => onClick(postId)}>Play</Button>
     </ButtonWrapper>
-  </PostCard>
+  </Container>
 );
 
 SessionCard.propTypes = {

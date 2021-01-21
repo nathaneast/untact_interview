@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { ButtonNavy } from './reStyled';
+import { ButtonDefault } from './reStyled';
 
 export const Container = styled.div`
 display: flex;
@@ -128,7 +128,7 @@ display: flex;
 justify-content: center;
 `;
 
-export const SubmitButton = styled(ButtonNavy)`
+export const SubmitButton = styled(ButtonDefault)`
 background-color: #e84118;
 border-radius: 15px;
 padding: 10px 90px;

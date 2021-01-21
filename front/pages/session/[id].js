@@ -11,8 +11,6 @@ import PlayingSession from '../../components/session/playingSession/PlayingSessi
 import Feedback from '../../components/feedback/Feedback/Feedback';
 import { socketEmits } from '../../socket';
 
-// 다음 버튼 클릭시 timer 바꾸는것말고 일정하게 바뀌도록 고민
-// 레코딩 화면 나올때 문제,시간 같이 나오도록
 const SessionPost = () => {
   const { singlePost } = useSelector((state) => state.post);
   const { me } = useSelector((state) => state.user);
@@ -22,15 +20,9 @@ const SessionPost = () => {
   const [timeStamps, setTimeStamps] = useState(null);
   const [blob, setBlob] = useState(null);
 
-  const [saveVideo, setSaveVideo] = useState(null);
-
   const oneMoreCheckEndSTT = useCallback((e) => {
     socketEmits.endGoogleCloudStream();
   });
-
-  useEffect(() => {
-    console.log(saveVideo, 'saveVideo');
-  }, [saveVideo]);
 
   useEffect(() => {
     if (!me) {
@@ -42,8 +34,6 @@ const SessionPost = () => {
       window.removeEventListener('unload', oneMoreCheckEndSTT);
     };
   }, []);
-
-  // console.log(singlePost, 'Post singlePost');
 
   return (
     <>
@@ -64,7 +54,6 @@ const SessionPost = () => {
           saveBlob={setBlob}
           saveTimeStamp={setTimeStamps}
           sessionTitle={singlePost.title}
-          setSaveVideo={setSaveVideo}
         />
       ))}
     </>

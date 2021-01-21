@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { ButtonNavy } from '../../styles/reStyled';
+import { ButtonDefault } from '../../styles/reStyled';
 
 const Message = styled.div`
   & p {
@@ -16,7 +16,7 @@ const ButtonWrapper = styled.div`
   margin: 5px 0px;
 `;
 
-const Button = styled(ButtonNavy)`
+const Button = styled(ButtonDefault)`
   padding: 5px 26px;
 `;
 

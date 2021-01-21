@@ -3,7 +3,7 @@ import { END } from 'redux-saga';
 import axios from 'axios';
 import styled from 'styled-components';
 
-import { ButtonNavy } from '../styles/reStyled';
+import { ButtonDefault } from '../styles/reStyled';
 import { LOAD_MY_INFO_REQUEST } from '../reducers/user';
 import AppLayout from '../components/AppLayout';
 import wrapper from '../store/configureStore';
@@ -26,7 +26,7 @@ const Title = styled.div`
   }
 `;
 
-const IntroWrapper = styled.div`
+const IntroMessage = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -43,12 +43,13 @@ const ButtonWrapper = styled.div`
   text-align: center;
   margin: 10px;
   border-radius: 10px;
-  & a {
-    color: #FFFFF6;
-  }
 `;
 
-const Button = styled(ButtonNavy)`
+const Button = styled(ButtonDefault)`
+& a {
+  color: #fffff6;
+  text-decoration: none;
+}
 `;
 
 const OutroMessage = styled.div`
@@ -90,12 +91,12 @@ const Home = () => (
           <h1>Untact Interview</h1>
         </Title>
 
-        <IntroWrapper>
+        <IntroMessage>
           <Message>
             인터뷰를 진행하고 <br /> 피드백을 통해 <br /> 부족한 점을 보완해가며{' '}
             <br /> 성장하세요
           </Message>
-        </IntroWrapper>
+        </IntroMessage>
 
         <ButtonWrapper>
           <Button>
@@ -134,7 +135,6 @@ const Home = () => (
 
 export const getServerSideProps = wrapper.getServerSideProps(
   async (context) => {
-    // console.log('context Home', context);
     const cookie = context.req ? context.req.headers.cookie : '';
     axios.defaults.headers.Cookie = '';
     if (context.req && cookie) {

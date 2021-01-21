@@ -33,6 +33,7 @@
     "no-param-reassign": "off",
     "arrow-body-style": "off",
     "consistent-return": "off",
-    "no-alert": "off"
+    "no-alert": "off",
+    "no-unneeded-ternary": "off"
   }
 }

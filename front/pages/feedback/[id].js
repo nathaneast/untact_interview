@@ -10,14 +10,14 @@ import { LOAD_FEEDBACK_POST_REQUEST } from '../../reducers/post';
 import AppLayout from '../../components/AppLayout';
 import FeedbackFormCard from '../../components/feedback/FeedbackFormCard';
 import TimeStampList from '../../components/TimeStampList';
-import { ButtonNavy } from '../../styles/reStyled';
+import { ButtonDefault } from '../../styles/reStyled';
 
 const MonitoringBoard = styled.article`
   display: flex;
   align-items: center;
 `;
 
-const UploadButton = styled(ButtonNavy)`
+const UploadButton = styled(ButtonDefault)`
 `;
 
 const VideoWrapper = styled.div`

@@ -86,7 +86,7 @@ const SessionCardList = ({ posts, meId }) => {
           />
         ))}
       </Container>
-      {isModal &&
+      {isModal && (
         (meId ? (
           <Modal onCancelModal={onCancelModal}>
             <ConfirmMessage
@@ -102,7 +102,7 @@ const SessionCardList = ({ posts, meId }) => {
               message={'로그인 후에 이용 가능 합니다.'}
             />
           </Modal>
-        ))}
+        )))}
     </>
   );
 };
