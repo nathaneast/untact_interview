@@ -3,7 +3,7 @@ import socketIoClient from 'socket.io-client';
 const socket = socketIoClient.connect('http://localhost:7000');
 
 export default (setSpeech, setSaveSpeech, saveTimeStamp) => {
-  socket.on('connect', (data) => {
+  socket.on('connect', () => {
     socket.emit('join', '소켓 클라-서버 연결 성공!');
   });
   socket.on('messages', (data) => {

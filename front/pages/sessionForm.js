@@ -10,13 +10,11 @@ import {
   CategoryWrapper,
   DescWrapper,
   QuestionWrappers,
-  QuestionItem,
-  QuestionNumber,
-  QuestionInput,
   SubmitWrapper,
   SubmitButton,
 } from '../styles/sessionForm';
 import AppLayout from '../components/AppLayout';
+import QuestionFormCard from '../components/QuestionFormCard';
 import { UPLOAD_SESSION_POST_REQUEST } from '../reducers/post';
 import { LOAD_MY_INFO_REQUEST } from '../reducers/user';
 import useInput from '../hooks/useInput';
@@ -26,19 +24,18 @@ const writeSessionPost = () => {
   const dispatch = useDispatch();
   const { me } = useSelector((state) => state.user);
 
-  const [desc, onChangeDesc, setDesc] = useInput('');
-  const [title, onChangeTitle, setTitle] = useInput('');
-  const [category, onChangeCategory, setCategory] = useInput('frontEnd');
+  const [desc, onChangeDesc] = useInput('');
+  const [title, onChangeTitle] = useInput('');
+  const [category, onChangeCategory] = useInput('frontEnd');
 
   const [questionform, setQuestionValues] = useState({});
 
   const onSubmit = useCallback((e) => {
     e.preventDefault();
-    console.log('온 서브밋 !');
     const questionformKeys = Object.keys(questionform);
     const isAllQuestions = questionformKeys.length === 5 && (
       questionformKeys.every(
-        (key) => true === Boolean(questionform[key]),
+        (key) => questionform[key].length > 0,
       ));
     const isEveryValues = title && category && desc && isAllQuestions;
     if (!isEveryValues) {
@@ -56,7 +53,7 @@ const writeSessionPost = () => {
     });
   });
 
-  const onChangeQuestion = useCallback((e) => {
+  const onChange = useCallback((e) => {
     setQuestionValues({
       ...questionform,
       [e.target.name]: e.target.value,
@@ -94,66 +91,13 @@ const writeSessionPost = () => {
 
           <QuestionWrappers>
             <span>질문 작성</span>
-            <QuestionItem>
-              <QuestionNumber>
-                <label>1</label>
-              </QuestionNumber>
-              <QuestionInput>
-                <input
-                  name="question_1"
-                  type="text"
-                  onChange={onChangeQuestion}
-                />
-              </QuestionInput>
-            </QuestionItem>
-            <QuestionItem>
-              <QuestionNumber>
-                <label>2</label>
-              </QuestionNumber>
-              <QuestionInput>
-                <input
-                  name="question_2"
-                  type="text"
-                  onChange={onChangeQuestion}
-                />
-              </QuestionInput>
-            </QuestionItem>
-            <QuestionItem>
-              <QuestionNumber>
-                <label>3</label>
-              </QuestionNumber>
-              <QuestionInput>
-                <input
-                  name="question_3"
-                  type="text"
-                  onChange={onChangeQuestion}
-                />
-              </QuestionInput>
-            </QuestionItem>
-            <QuestionItem>
-              <QuestionNumber>
-                <label>4</label>
-              </QuestionNumber>
-              <QuestionInput>
-                <input
-                  name="question_4"
-                  type="text"
-                  onChange={onChangeQuestion}
-                />
-              </QuestionInput>
-            </QuestionItem>
-            <QuestionItem>
-              <QuestionNumber>
-                <label>5</label>
-              </QuestionNumber>
-              <QuestionInput>
-                <input
-                  name="question_5"
-                  type="text"
-                  onChange={onChangeQuestion}
-                />
-              </QuestionInput>
-            </QuestionItem>
+            {[...Array(5)].map((n, i) => (
+              <QuestionFormCard
+                key={i}
+                questionNumber={i + 1}
+                onChange={onChange}
+              />
+            ))}
           </QuestionWrappers>
 
           <SubmitWrapper>

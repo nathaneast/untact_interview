@@ -47,9 +47,8 @@ const Feedback = ({
 
   const onSubmit = useCallback(() => {
     const feedbackformKeys = Object.keys(feedbackform);
-    const isAllFeedbacks =
-      feedbackformKeys.length === 5 &&
-      feedbackformKeys.every((key) => true === Boolean(feedbackform[key]));
+    const isAllFeedbacks = feedbackformKeys.length === 5 && (
+      feedbackformKeys.every((key) => feedbackform[key].length > 0));
     if (isAllFeedbacks && feedbackDesc) {
       dispatch({
         type: UPLOAD_FEEDBACK_POST_REQUEST,
@@ -71,8 +70,6 @@ const Feedback = ({
   const onRedirectInterviews = useCallback(() => {
     router.push('/interviews');
   });
-
-  console.log(timeStamps, 'Feedback timeStamps');
 
   return (
     <>
@@ -127,7 +124,7 @@ const Feedback = ({
         </ButtonWrapper>
       </AppLayout>
 
-      {isModal &&
+      {isModal && (
         (isFinishedFeedback ? (
           <Modal onCancelModal={onRedirectInterviews}>
             <GuideMessage
@@ -139,12 +136,12 @@ const Feedback = ({
           <Modal onCancelModal={() => setIsModal(false)}>
             <GuideMessage
               message={
-                '수고하셨습니다! 영상과 내 답변을 참고해서 피드백을 작성해 보세요 :)'
+                '수고하셨습니다! 영상과 내 답변을 참고해서 피드백을 작성해 보세요'
               }
               onOk={() => setIsModal(false)}
             />
           </Modal>
-        ))}
+        )))}
     </>
   );
 };

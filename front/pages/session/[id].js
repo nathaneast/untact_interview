@@ -20,7 +20,7 @@ const SessionPost = () => {
   const [timeStamps, setTimeStamps] = useState(null);
   const [blob, setBlob] = useState(null);
 
-  const oneMoreCheckEndSTT = useCallback((e) => {
+  const oneMoreCheckEndSTT = useCallback(() => {
     socketEmits.endGoogleCloudStream();
   });
 

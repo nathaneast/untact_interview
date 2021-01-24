@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import Head from 'next/head';
 import { useDispatch, useSelector } from 'react-redux';
 import Router from 'next/router';
@@ -68,12 +68,12 @@ const Signup = () => {
   const [nickname, onChangeNickname] = useInput('');
   const [password, onChangePassword] = useInput('');
   const [passwordCheck, onChangePasswordCheck] = useInput('');
-  const [signUpErrorDisplay, setSignUpErrorDisplay] = useState('');
+  const [displaySignUpError, setDisplaySignUpError] = useState('');
 
   const handleErrorMessage = useCallback((text) => {
-    setSignUpErrorDisplay(text);
-    setTimeout(() => setSignUpErrorDisplay(''), 3000);
-  }, [signUpErrorDisplay]);
+    setDisplaySignUpError(text);
+    setTimeout(() => setDisplaySignUpError(''), 3000);
+  }, [displaySignUpError]);
 
   useEffect(() => {
     if (me && me.id) {
@@ -92,7 +92,6 @@ const Signup = () => {
     if (password !== passwordCheck) {
       return handleErrorMessage('두 비밀번호가 다릅니다');
     }
-    console.log('서브밋 !!');
     dispatch({
       type: SIGN_UP_REQUEST,
       data: { email, nickname, password },
@@ -112,7 +111,7 @@ const Signup = () => {
               type="eamil"
               maxLength="24"
               onChange={onChangeEmail}
-              // pattern="[a-zA-Z0-9.-_]{1,}@[a-zA-Z.-]{2,}[.]{1}[a-zA-Z]{2,}"
+              pattern="[a-zA-Z0-9.-_]{1,}@[a-zA-Z.-]{2,}[.]{1}[a-zA-Z]{2,}"
               required
             />
           </FormItem>
@@ -144,7 +143,7 @@ const Signup = () => {
             />
           </FormItem>
           <SignUpErrorWrapper>
-            <p>{signUpErrorDisplay}</p>
+            <p>{displaySignUpError}</p>
           </SignUpErrorWrapper>
           <ButtonWrapper>
             <Button type="submit">가입하기</Button>

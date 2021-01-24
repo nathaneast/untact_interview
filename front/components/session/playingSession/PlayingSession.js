@@ -8,8 +8,8 @@ import Modal from '../../modal/Modal';
 import ConfirmMessage from '../../modal/ConfirmMessage';
 import useInterval from '../../../hooks/useInterval';
 import socket, { socketEmits } from '../../../socket';
+import Loader from '../../Loader';
 
-// 로딩 추가
 const PlaySession = ({
   questions,
   saveTimeStamp,
@@ -30,8 +30,15 @@ const PlaySession = ({
 
   const videoElement = useRef();
   const recorder = useRef();
+  const recorderStream = useRef();
   const nextQuestionButton = useRef();
   const router = useRouter();
+
+  useEffect(() => {
+    if (!isLoading) {
+      videoElement.current.srcObject = recorderStream.current;
+    }
+  }, [recorderStream.current, videoElement.current]);
 
   useEffect(() => {
     navigator.mediaDevices
@@ -44,35 +51,35 @@ const PlaySession = ({
           type: 'video',
           timeSlice: 1000,
         });
-        console.log(stream, 'stream레코더');
-        if (!isLoading) {
-          videoElement.current.srcObject = stream;
-        }
+
+        recorderStream.current = stream;
         recorder.current.stream = stream;
         recorder.current.startRecording();
-
         socket(setSpeech, setSaveSpeech, saveTimeStamp);
         socketEmits.startGoogleCloudStream();
         setIsLoading(false);
       });
   }, []);
 
-  const endSession = useCallback((isFinal) => {
-    if (isFinal) {
-      recorder.current.stopRecording(() => {
-        saveBlob(URL.createObjectURL(recorder.current.getBlob()));
-        recorder.current.stream.stop();
-        recorder.current.destroy();
-        recorder.current = null;
-      });
-      setIsRunning(false);
-      socketEmits.endGoogleCloudStream(isFinal);
-      moveFeedback();
-    } else {
-      socketEmits.endGoogleCloudStream();
-      router.push('/interviews');
-    }
-  }, [sessionTitle]);
+  const endSession = useCallback(
+    (isFinal) => {
+      if (isFinal) {
+        recorder.current.stopRecording(() => {
+          saveBlob(URL.createObjectURL(recorder.current.getBlob()));
+          recorder.current.stream.stop();
+          recorder.current.destroy();
+          recorder.current = null;
+        });
+        setIsRunning(false);
+        socketEmits.endGoogleCloudStream(isFinal);
+        moveFeedback();
+      } else {
+        socketEmits.endGoogleCloudStream();
+        router.push('/interviews');
+      }
+    },
+    [sessionTitle],
+  );
 
   useInterval(
     () => {
@@ -81,7 +88,6 @@ const PlaySession = ({
         return;
       }
       if (timer - 1 === 0) {
-        console.log('다음문제');
         setQuestionIndex(questionIndex + 1);
         setTimer(limitTime);
         socketEmits.detectFirstSentence();
@@ -110,11 +116,6 @@ const PlaySession = ({
     }
   }, [questions, questionIndex, limitTime]);
 
-  const onRedirectInterviews = useCallback(() => {
-    socketEmits.endGoogleCloudStream();
-    router.push('/interviews');
-  });
-
   return (
     <>
       <Head>
@@ -122,9 +123,8 @@ const PlaySession = ({
         <title>세션진행 | Untact_Interview </title>
         <script src="https://www.WebRTC-Experiment.com/RecordRTC.js" />
       </Head>
-
       {isLoading ? (
-        <div>로딩중</div>
+        <Loader />
       ) : (
         <div className={styles.container}>
           <header className={styles.header}>
@@ -180,7 +180,6 @@ const PlaySession = ({
           </div>
         </div>
       )}
-
       {isModal && (
         <Modal onCancelModal={() => setIsModal(false)}>
           <ConfirmMessage

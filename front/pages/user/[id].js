@@ -24,41 +24,18 @@ import NonePostMessageCard from '../../components/NonePostMessageCard';
 const User = () => {
   const dispatch = useDispatch();
   const { me } = useSelector((state) => state.user);
-  const {
-    hasMorePosts,
-  } = useSelector((state) => state.post);
+  const { hasMorePosts } = useSelector((state) => state.post);
   const { userInfo } = useSelector((state) => state.user);
   const {
     feedbackPosts,
     sessionPosts,
     loadUserPostsLoading,
-    loadUserPostsDone,
   } = useSelector((state) => state.post);
 
-  const [selectedMenu, setSelectedMenu] = useState('writePosts');
-  // const [sessionMove, setSessionMove] = useState(false);
-  // const [scrollLoading, setScrollLoading] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState('writePosts');
 
   const router = useRouter();
   const userId = useRef(router.asPath.split('/user/')[1]);
-
-  // const loadSameCategoryPosts = useCallback(() => {
-  //   // const anyPostLastId =
-  //   //   selectedMenu === 'feedback'
-  //   //     ? mainPosts[mainPosts.length - 1]?._id
-  //   //     : mainPosts[mainPosts.length - 1]?._id;
-  //   return dispatch({
-  //     type: LOAD_USER_POSTS_REQUEST,
-  //     data: {
-  //       category: {
-  //         name: selectedMenu,
-  //         isSame: true,
-  //       },
-  //       userId: userId.current,
-  //       lastId: mainPosts[mainPosts.length - 1]?._id,
-  //     },
-  //   });
-  // }, [selectedMenu, mainPosts, mainPosts]);
 
   useEffect(() => {
     function onScroll() {
@@ -67,16 +44,14 @@ const User = () => {
         document.documentElement.scrollHeight - 100
       ) {
         if (hasMorePosts && !loadUserPostsLoading) {
-          // loadSameCategoryPosts();
-          const anyPostLastId =
-            selectedMenu === 'feedback'
-              ? feedbackPosts[feedbackPosts.length - 1]?._id
-              : sessionPosts[sessionPosts.length - 1]?._id;
+          const anyPostLastId = selectedCategory === 'feedback'
+            ? feedbackPosts[feedbackPosts.length - 1]?._id
+            : sessionPosts[sessionPosts.length - 1]?._id;
           dispatch({
             type: LOAD_USER_POSTS_REQUEST,
             data: {
               category: {
-                name: selectedMenu,
+                name: selectedCategory,
                 isSame: true,
               },
               userId: userId.current,
@@ -95,14 +70,13 @@ const User = () => {
     sessionPosts,
     hasMorePosts,
     loadUserPostsLoading,
-    selectedMenu,
+    selectedCategory,
   ]);
 
   const onSelectCategory = useCallback(
     (e) => {
       if (
-        e.target.tagName === 'BUTTON' &&
-        selectedMenu !== e.target.dataset.name
+        e.target.tagName === 'BUTTON' && selectedCategory !== e.target.dataset.name
       ) {
         dispatch({
           type: LOAD_USER_POSTS_REQUEST,
@@ -115,24 +89,15 @@ const User = () => {
             lastId: null,
           },
         });
-        // const con1 = selectedMenu === 'writePosts' && 
-        // e.target.dataset.name === 'star';
-        // const con2 = selectedMenu === 'star' && 
-        // e.target.dataset.name === 'writePosts';
-        // console.log(con1, con2, '세션메뉴끼리 이동 체크');
-        // if (con1 && con2) {
-        //   console.log(con1, con2, '세션메뉴끼리 이동 상태설정');
-        //   setSessionMove(true);
-        // }
-        setSelectedMenu(e.target.dataset.name);
+        setSelectedCategory(e.target.dataset.name);
       }
     },
-    [selectedMenu],
+    [selectedCategory],
   );
 
   const isSelectedFeedback = useCallback(() => (
-    selectedMenu === 'feedback'
-  ), [selectedMenu]);
+    selectedCategory === 'feedback'
+  ), [selectedCategory]);
 
   const isNonePosts = useCallback(
     () => (
@@ -141,37 +106,6 @@ const User = () => {
         : sessionPosts.length === 0
     ), [feedbackPosts, sessionPosts],
   );
-
-  // const renderPosts = useCallback(() => {
-  //   console.log('렌더 포스트 실행 !');
-  //   const render = isSelectedFeedback() ? (
-  //     <FeedbackCardList posts={mainPosts} />
-  //   ) : (
-  //     <SessionCardList posts={mainPosts} meId={me?._id} />
-  //   );
-  //   if (loadUserPostsDone && scrollLoading) {
-  //     console.log('포스트받아오고 스크롤로딩 false');
-  //     setScrollLoading(false);
-  //   }
-  //   console.log(render, 'render');
-  //   return render;
-  // }, [mainPosts, mainPosts, me, scrollLoading]);
-
-  // const rednerSessionPosts = useCallback(() => {
-  //   console.log('rednerSessionPosts !');
-  //   if (sessionMove) {
-  //     setSessionMove(false);
-  //     return (
-  //       loadUserPostsDone && (
-  //         <SessionCardList posts={mainPosts} meId={me?._id} />
-  //       )
-  //     );
-  //   } else {
-  //     return <SessionCardList posts={mainPosts} meId={me?._id} />;
-  //   }
-  // }, [mainPosts, me]);
-
-  // console.log(scrollLoading, 'scrollLoading');
 
   return (
     <AppLayout>
@@ -199,30 +133,28 @@ const User = () => {
         <CategoryWrapper>
           <Category onClick={onSelectCategory}>
             <CategoryItem>
-              <button data-name="writePosts">writePosts</button>
+              <button data-name="writePosts">내 인터뷰</button>
             </CategoryItem>
-            {me && me._id === userId.current ? (
+            {me && me._id === userId.current && (
               <CategoryItem>
-                <button data-name="feedback">feedback</button>
+                <button data-name="feedback">피드백</button>
               </CategoryItem>
-            ) : (
-              ''
             )}
             <CategoryItem>
-              <button data-name="star">star</button>
+              <button data-name="star">스타 인터뷰</button>
             </CategoryItem>
           </Category>
         </CategoryWrapper>
       </UserBoard>
-        {(isNonePosts() ? (
-          <NonePostMessageCard />
+      {(isNonePosts() ? (
+        <NonePostMessageCard />
+      ) : (
+        isSelectedFeedback() ? (
+          feedbackPosts && <FeedbackCardList posts={feedbackPosts} />
         ) : (
-          isSelectedFeedback() ? (
-            feedbackPosts && <FeedbackCardList posts={feedbackPosts} />
-          ) : (
-            sessionPosts && <SessionCardList posts={sessionPosts} meId={me?._id} />
-          )
-        ))}
+          sessionPosts && <SessionCardList posts={sessionPosts} meId={me?._id} />
+        )
+      ))}
     </AppLayout>
   );
 };

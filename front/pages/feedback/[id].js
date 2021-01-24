@@ -17,8 +17,7 @@ const MonitoringBoard = styled.article`
   align-items: center;
 `;
 
-const UploadButton = styled(ButtonDefault)`
-`;
+const UploadButton = styled(ButtonDefault)``;
 
 const VideoWrapper = styled.div`
   margin: 10px 0px;
@@ -30,11 +29,11 @@ const EmptyVideoBoard = styled.div`
   background-color: #636e72;
   margin: 10px 0px;
   border-radius: 10px;
-  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
   display: flex;
   justify-content: center;
   align-items: center;
-  color: #FFFFF6;
+  color: #fffff6;
   font-weight: bolder;
   font-size: 20px;
 `;
@@ -59,25 +58,26 @@ const SessionFlipCard = styled.div`
   height: 150px;
   background-color: #34495e;
   color: black;
-  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
   & ul {
     padding: 0px;
     margin: 0px;
     font-size: 15px;
     font-weight: bolder;
     list-style: none;
-    color: #FFFFF6;
+    color: #fffff6;
   }
 `;
 
 const feedbackPost = () => {
-  const { singlePost } = useSelector((state) => state.post);
+  const { singlePost } = useSelector(
+    (state) => state.post,
+  );
 
   const [videoBlob, setVideoBlob] = useState(null);
   const [isSessionFlipCard, setIsSessionFlipCard] = useState(false);
 
   const videoElement = useRef();
-  const emptyVideoElement = useRef();
   const videoUpload = useRef();
   const sessionCardElement = useRef();
 
@@ -87,16 +87,23 @@ const feedbackPost = () => {
     } else {
       videoElement.current.style.display = 'none';
     }
-    console.log(videoElement, '유즈 이펙트');
   }, [videoBlob, videoElement]);
 
   useEffect(() => {
-    sessionCardElement.current.addEventListener('mouseover', () => {
-      setIsSessionFlipCard(true);
-    }, false);
-    sessionCardElement.current.addEventListener('mouseout', () => {
-      setIsSessionFlipCard(false);
-    }, false);
+    sessionCardElement.current.addEventListener(
+      'mouseover',
+      () => {
+        setIsSessionFlipCard(true);
+      },
+      false,
+    );
+    sessionCardElement.current.addEventListener(
+      'mouseout',
+      () => {
+        setIsSessionFlipCard(false);
+      },
+      false,
+    );
   }, []);
 
   const onUpload = useCallback(() => {
@@ -105,13 +112,10 @@ const feedbackPost = () => {
 
   const onChangeVideo = useCallback(
     (e) => {
-      console.log(e.target.files, 'onChangeVideo target files');
       setVideoBlob(e.target.files[0]);
     },
     [setVideoBlob],
   );
-
-  console.log(videoElement, '피드백 페이지');
 
   return (
     <AppLayout>
@@ -139,13 +143,13 @@ const feedbackPost = () => {
               />
             </VideoWrapper>
             {!videoBlob && (
-              <EmptyVideoBoard ref={emptyVideoElement}>
+              <EmptyVideoBoard>
                 <span>영상을 올려 주세요 😃</span>
               </EmptyVideoBoard>
             )}
           </div>
         </div>
-        {singlePost && videoElement.current && (
+        {singlePost && (
           <TimeStampList
             timeStamps={singlePost.timeStamps}
             targetVideo={videoElement.current}
@@ -180,7 +184,7 @@ const feedbackPost = () => {
       </PlayedSessionBoard>
 
       <section>
-        {singlePost &&
+        {singlePost && (
           singlePost.sessionPost.questions.map((item, index) => (
             <FeedbackFormCard
               key={index}
@@ -190,7 +194,7 @@ const feedbackPost = () => {
               question={item}
               writeMode={false}
             />
-          ))}
+          )))}
       </section>
     </AppLayout>
   );

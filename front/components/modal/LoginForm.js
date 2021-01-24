@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
@@ -48,12 +48,14 @@ const LoginForm = ({ onCancelModal }) => {
 
   const [email, onChangeEmail] = useInput('');
   const [password, onChangePassword] = useInput('');
-  const [loginErrorDisplay, setLoginErrorDisplay] = useState('');
+  const [displayLoginError, setDisplayLoginError] = useState('');
+
+  const timerId = useRef();
 
   const handleErrorMessage = useCallback((text) => {
-    setLoginErrorDisplay(text);
-    setTimeout(() => setLoginErrorDisplay(''), 3000);
-  }, [setLoginErrorDisplay]);
+    setDisplayLoginError(text);
+    timerId.current = setTimeout(() => setDisplayLoginError(''), 3000);
+  }, [timerId.current]);
 
   useEffect(() => {
     if (logInDone) {
@@ -62,6 +64,10 @@ const LoginForm = ({ onCancelModal }) => {
       handleErrorMessage(logInError);
     }
   }, [logInError, logInDone]);
+
+  useEffect(() => {
+    return displayLoginError ? clearTimeout(timerId.current) : '';
+  }, [timerId.current, displayLoginError]);
 
   const onSubmit = useCallback(
     (e) => {
@@ -102,7 +108,7 @@ const LoginForm = ({ onCancelModal }) => {
           />
         </FormItem>
         <LoginError>
-          <p>{loginErrorDisplay}</p>
+          <p>{displayLoginError}</p>
         </LoginError>
         <ButtonWrapper>
           <Button type="submit">로그인</Button>

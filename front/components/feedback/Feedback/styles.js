@@ -26,7 +26,7 @@ export const VideoDownloadButton = styled(ButtonDefault)`
 `;
 
 export const FeedbackDesc = styled.div`
-  padding: 20px;
+  padding: 15px;
   background-color: white;
   border-radius: 12px;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
@@ -45,6 +45,7 @@ export const FeedbackDesc = styled.div`
     border-radius: 10px;
     margin-top: 5px;
     font-size: 16;
+    width: 600px;
   }
 `;
 

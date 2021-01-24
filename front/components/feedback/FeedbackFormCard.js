@@ -32,6 +32,7 @@ const Item = styled.div`
     border-radius: 10px;
     margin-top: 10px;
     font-size: 16;
+    width: 580px;
   }
 `;
 
@@ -72,8 +73,8 @@ FeedbackFormCard.propTypes = {
   question: PropTypes.string.isRequired,
   answer: PropTypes.string.isRequired,
   FeedbackNumber: PropTypes.number.isRequired,
-  onChange: PropTypes.func,
   writeMode: PropTypes.bool.isRequired,
+  onChange: PropTypes.func,
   feedback: PropTypes.string,
 };
 
