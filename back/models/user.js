@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-// const dayjs = require("dayjs");
 
 const UserSchema = new mongoose.Schema(
   {
@@ -16,10 +15,6 @@ const UserSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    // createdAt: {
-    //   type: String,
-    //   default: dayjs().format("YYYY-MM-DD"),
-    // },
     sessionPosts: [
       {
         type: mongoose.Schema.Types.ObjectId,

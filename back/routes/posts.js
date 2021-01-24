@@ -3,14 +3,12 @@ const express = require('express');
 const SessionPost = require('../models/sessionPost');
 const Category = require('../models/category');
 const User = require('../models/user');
-// const { isLoggedIn, isNotLoggedIn } = require('./middlewares');
 
 const router = express.Router();
 
 router.get('/', async (req, res, next) => {
   try {
     const { lastId, category } = req.query;
-    console.log(lastId, category, 'GET posts / req.query');
     if (category === 'all') {
       const allPosts = await SessionPost.find(lastId ? { _id: { $lt: lastId } } : null)
         .limit(8)
@@ -36,8 +34,6 @@ router.get('/', async (req, res, next) => {
         },
       })
 
-      console.log('categoryPosts', categoryPosts);
-
       return res.status(200).send(categoryPosts ? categoryPosts.posts : []);
     }
   } catch (error) {
@@ -50,9 +46,7 @@ router.get('/:userId', async (req, res, next) => {
   try {
     const { userId } = req.params;
     const { lastId, category } = req.query;
-    console.log(userId, lastId, category, 'posts/:userId - userId, lastId, category');
-
-  if (category === 'feedback') {
+    if (category === 'feedback') {
     const userPosts = await User.findById(userId)
       .select('_id')
       .populate({
@@ -81,18 +75,6 @@ router.get('/:userId', async (req, res, next) => {
       ],
       });
 
-      // const result = userPosts.feedbackPosts.map((item) => {
-      //   const node = {
-      //     ...item.sessionPost._doc,
-      //     feedbackPost: {
-      //       _id: item._id,
-      //       desc: item.desc,
-      //     },
-      //   };
-      //   return node;
-      // });
-      
-      // console.log(result, '피드백 result 결과');
       return res.status(200).send(userPosts ? userPosts.feedbackPosts : []);
     } else {
       const targetPost = category === 'writePosts' ? 'sessionPosts' : 'starPosts';
@@ -118,7 +100,7 @@ router.get('/:userId', async (req, res, next) => {
           }
       ],
       });
-      console.log(userPosts[targetPost], 'userPosts Post');
+
       return res.status(200).send(userPosts[targetPost] ? userPosts[targetPost] : []);
     }
   } catch (error) {
@@ -126,15 +108,5 @@ router.get('/:userId', async (req, res, next) => {
     next(error);
   }
 });
-
-// {
-//   "questions": "['ex1', 'ex2', 'ex3', 'ex4', 'ex5']",
-//   "createdAt": "2020-12-10",
-//   "star": "[]",
-//   "creator": "5fd06f5faeb6ba3ae00cd447",
-//   "title": "test글 1",
-//   "desc": "test desc",
-//   "category": "5fd08552207ecd10c8377ff2",
-// }
 
 module.exports = router;

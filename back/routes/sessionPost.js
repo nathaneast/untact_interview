@@ -20,8 +20,6 @@ router.get('/', async (req, res, next) => {
   }
 });
 
-// 시간 포맷 제대로 저장 안되서 중복 발생
-// 인피니티 스크롤때 같은 날짜가져옴 오류 해결하기
 router.post('/', isLoggedIn, async (req, res, next) => {
   try {
     const { creator, questions, title, desc, category } = req.body;
@@ -84,13 +82,9 @@ router.patch('/:postId/star', isLoggedIn, async (req, res, next) => {
   try {
     const { postId } = req.params;
     const { userId } = req.body;
-
     const post = await SessionPost.findById(postId);
     const isStaredUser = post.star.some((user) => user === userId);
-    
-    console.log(isStaredUser, 'isStaredUser');
-    
-    const update = (field, id) =>
+    const update = (field, id) => (
       isStaredUser
         ? {
             $pull: {
@@ -101,23 +95,19 @@ router.patch('/:postId/star', isLoggedIn, async (req, res, next) => {
             $push: {
               [field]: id,
             },
-          };
-
+          }
+    );
     const updatePost = await SessionPost.findByIdAndUpdate(
       postId,
       update('star', userId),
       { new: true }
     );
-    
     const updateUser = await User.findByIdAndUpdate(
       userId,
       update('starPosts', postId),
       { new: true }
     );
-
-    console.log(updatePost, 'updatePost');
-    console.log(updateUser, 'updateUser');
-
+    
     return res.status(200).send({
       postId: updatePost._id,
       star: updatePost.star,

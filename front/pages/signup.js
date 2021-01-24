@@ -70,9 +70,11 @@ const Signup = () => {
   const [passwordCheck, onChangePasswordCheck] = useInput('');
   const [displaySignUpError, setDisplaySignUpError] = useState('');
 
+  const timerId = useRef();
+
   const handleErrorMessage = useCallback((text) => {
     setDisplaySignUpError(text);
-    setTimeout(() => setDisplaySignUpError(''), 3000);
+    timerId.current = setTimeout(() => setDisplaySignUpError(''), 3000);
   }, [displaySignUpError]);
 
   useEffect(() => {
@@ -86,6 +88,10 @@ const Signup = () => {
       handleErrorMessage(signUpError);
     }
   }, [signUpError]);
+
+  useEffect(() => {
+    return displaySignUpError ? clearTimeout(timerId.current) : '';
+  }, [timerId.current, displaySignUpError]);
 
   const onSubmit = useCallback((e) => {
     e.preventDefault();

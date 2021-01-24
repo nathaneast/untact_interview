@@ -46,7 +46,6 @@ router.get('/:feedbackPostId', isLoggedIn, async (req, res, next) => {
           },
         ],
       });
-    console.log(feedbackPost, 'feedbackPost');
     return res.status(200).send(feedbackPost);
   } catch (error) {
     console.error(error);

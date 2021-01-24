@@ -27,8 +27,6 @@ const TimeStampList = ({ timeStamps, targetVideo }) => {
     }
   });
 
-  // console.log(targetVideo, timeStamps, 'TimeStampList');
-
   return (
     <Container>
       {timeStamps.map((item, index) => (
@@ -46,10 +44,6 @@ const TimeStampList = ({ timeStamps, targetVideo }) => {
 TimeStampList.propTypes = {
   timeStamps: PropTypes.array.isRequired,
   targetVideo: PropTypes.any.isRequired,
-  // targetVideo: PropTypes.shape({ current: PropTypes.instanceOf(Element) }).isRequired,
-  // targetVideo: PropTypes.instanceOf(Element)
-  // targetVideo: PropTypes.instanceOf(Element).isRequired,
-  // targetVideo: PropTypes.node.isRequired,
 };
 
 export default TimeStampList;

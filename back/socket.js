@@ -9,22 +9,19 @@ module.exports = (io) => {
     });
 
     client.on('startGoogleCloudStream', () => {
-      console.log('startGoogleCloudStream 받음');
       stt.startSTT(client);
     });
 
     client.on('endGoogleCloudStream', (isFinal) => {
-      console.log('endGoogleCloudStream', isFinal);
       stt.endGoogleCloudStream();
       stt.stopRecoding();
       if (isFinal) {
-        client.emit('responseTimeStamps', stt.timeStamps());
+        client.emit('timeStampsResult', stt.timeStampsResult());
       }
     });
 
     client.on('detectFirstSentence', () => { // 다음 문제로 넘어가는것
-      console.log('다음 문제로 넘어감 !!! detectFirstSentence emit !');
-      stt.detectProcess();
+      stt.detectFirstSentence();
     });
   });
 };

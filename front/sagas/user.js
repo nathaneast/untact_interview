@@ -30,13 +30,11 @@ function loadUserInfoAPI(data) {
 function* loadUserInfo(action) {
   try {
     const result = yield call(loadUserInfoAPI, action.data);
-    console.log('saga loadUserInfo', result);
     yield put({
       type: LOAD_USER_INFO_SUCCESS,
       data: result.data,
     });
   } catch (err) {
-    console.error(err);
     yield put({
       type: LOAD_USER_INFO_FAILURE,
       error: err.response.data,
@@ -51,13 +49,11 @@ function loadMyInfoAPI() {
 function* loadMyInfo() {
   try {
     const result = yield call(loadMyInfoAPI);
-    console.log('saga loadMyInfo', result);
     yield put({
       type: LOAD_MY_INFO_SUCCESS,
       data: result.data,
     });
   } catch (err) {
-    console.error(err);
     yield put({
       type: LOAD_MY_INFO_FAILURE,
       error: err.response.data,
@@ -72,14 +68,12 @@ function logOutAPI() {
 function* logOut() {
   try {
     const result = yield call(logOutAPI);
-    console.log('saga logOut', result);
     yield put({
       type: LOG_OUT_SUCCESS,
       data: result.data,
     });
     yield call(Router.push, '/');
   } catch (err) {
-    console.error(err);
     yield put({
       type: LOG_OUT_FAILURE,
       error: err.response.data,
@@ -95,14 +89,12 @@ function signUpAPI(data) {
 function* signUp(action) {
   try {
     const result = yield call(signUpAPI, action.data);
-    console.log('saga signUp', result);
     yield put({
       type: SIGN_UP_SUCCESS,
       data: result.data,
     });
     yield call(Router.push, '/');
   } catch (err) {
-    console.error(err);
     yield put({
       type: SIGN_UP_FAILURE,
       error: err.response.data,
@@ -112,12 +104,10 @@ function* signUp(action) {
 
 function* clearLoginError() {
   try {
-    console.log('clearLoginError');
     yield put({
       type: CLEAR_LOGIN_ERROR_SUCCESS,
     });
   } catch (err) {
-    console.error(err);
     yield put({
       type: CLEAR_LOGIN_ERROR_FAILURE,
       error: err.response.data,
@@ -132,13 +122,11 @@ function logInAPI(data) {
 function* logIn(action) {
   try {
     const result = yield call(logInAPI, action.data);
-    console.log('saga logIn', result);
     yield put({
       type: LOG_IN_SUCCESS,
       data: result.data,
     });
   } catch (err) {
-    console.error(err);
     yield put({
       type: LOG_IN_FAILURE,
       error: err.response.data,

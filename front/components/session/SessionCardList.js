@@ -64,8 +64,6 @@ const SessionCardList = ({ posts, meId }) => {
     return staredUsers.some((user) => user === meId);
   });
 
-  console.log(meId, '세션카드리스트 meId ');
-
   return (
     <>
       <Container>

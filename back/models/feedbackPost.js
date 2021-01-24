@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const dayjs = require('dayjs');
 
 const FeedbackPostSchema = new mongoose.Schema(
   {
@@ -15,10 +14,6 @@ const FeedbackPostSchema = new mongoose.Schema(
       type: Array,
       required: true,
     },
-    // createdAt: {
-    //   type: String,
-    //   default: dayjs().format('YYYY-MM-DD hh:mm:ss'),
-    // },
     creator: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'user',

@@ -41,8 +41,4 @@ TimeStampCard.propTypes = {
   answerNumber: PropTypes.number.isRequired,
 };
 
-// TimeStampCard.defaultProps = {
-//   time: PropTypes.string,
-// };
-
 export default TimeStampCard;

@@ -94,7 +94,6 @@ function loadSessionPostsAPI(data) {
 function* loadSessionPosts(action) {
   try {
     const result = yield call(loadSessionPostsAPI, action.data);
-    console.log('loadSessionPosts', result);
     yield put({
       type: LOAD_SESSION_POSTS_SUCCESS,
       data: {
@@ -105,7 +104,6 @@ function* loadSessionPosts(action) {
       },
     });
   } catch (err) {
-    console.error(err);
     yield put({
       type: LOAD_SESSION_POSTS_FAILURE,
       error: err.response.data,
@@ -120,14 +118,11 @@ function uploadFeedbackPostAPI(data) {
 function* uploadFeedbackPost(action) {
   try {
     const result = yield call(uploadFeedbackPostAPI, action.data);
-    console.log('uploadFeedbackPost', result);
     yield put({
       type: UPLOAD_FEEDBACK_POST_SUCCESS,
       data: result.data,
     });
-    // yield call(Router.push, '/interviews');
   } catch (err) {
-    console.error(err);
     yield put({
       type: UPLOAD_FEEDBACK_POST_FAILURE,
       error: err.response.data,
@@ -143,14 +138,12 @@ function uploadSessionPostAPI(data) {
 function* uploadSessionPost(action) {
   try {
     const result = yield call(uploadSessionPostAPI, action.data);
-    console.log('uploadPost', result);
     yield put({
       type: UPLOAD_SESSION_POST_SUCCESS,
       data: result.data,
     });
     yield call(Router.push, '/interviews');
   } catch (err) {
-    console.error(err);
     yield put({
       type: UPLOAD_SESSION_POST_FAILURE,
       error: err.response.data,
@@ -166,13 +159,11 @@ function loadFeedbackPostAPI(data) {
 function* loadFeedbackPost(action) {
   try {
     const result = yield call(loadFeedbackPostAPI, action.data);
-    console.log('loadFeedbackPost', result);
     yield put({
       type: LOAD_FEEDBACK_POST_SUCCESS,
       data: result.data,
     });
   } catch (err) {
-    console.error(err);
     yield put({
       type: LOAD_FEEDBACK_POST_FAILURE,
       error: err.response.data,
@@ -187,13 +178,11 @@ function loadSessionPostAPI(data) {
 function* loadSessionPost(action) {
   try {
     const result = yield call(loadSessionPostAPI, action.data);
-    console.log('loadPost', result);
     yield put({
       type: LOAD_SESSION_POST_SUCCESS,
       data: result.data,
     });
   } catch (err) {
-    console.error(err);
     yield put({
       type: LOAD_SESSION_POST_FAILURE,
       error: err.response.data,
