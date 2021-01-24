@@ -6,7 +6,7 @@ import TimeStampCard from './TimeStampCard';
 
 const Container = styled.section`
   margin: 15px;
-  padding: 15px 5px;
+  padding: 30px 5px;
   width: 380px;
   height: 500px;
   background-color: #dcdde1;

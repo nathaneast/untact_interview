@@ -26,22 +26,22 @@ class SttProcess {
   constructor() {
     this.timeStamps = [];
     this.currentQuestionIndex = 0;
-    this.streamingLimit = 180000;
+    this.streamingLimit = 20000;
     this.recognizeStream = null;
     this.restartCounter = 0;
     this.audioInput = [];
     this.lastAudioInput = [];
     this.resultEndTime = 0; // 문장마다 끝나는 시간
-    this.isFinalEndTime = 0;
     this.finalRequestEndTime = 0;
     this.newStream = true;
     this.bridgingOffset = 0;
-    this.isDetectFirstSentence = true;
-    this.isSentenceFinal = false;
-    this.isDivideSentence = false;
     this.previousSentenceLength = null;
     this.recording;
     this.reStartTimerId = null;
+    this.isFinalEndTime = 0;
+    this.isDetectFirstSentence = true;
+    this.isSentenceFinal = false;
+    this.isDivideSentence = false;
   }
 }
 
@@ -88,11 +88,14 @@ const speechCallback = (stream, client) => {
   sttInstance.resultEndTime =
     stream.results[0].resultEndTime.seconds * 1000 +
     Math.round(stream.results[0].resultEndTime.nanos / 1000000);
-
-  const currentRecTime =
+  
+  const currentRecTime = 
     sttInstance.resultEndTime -
     sttInstance.bridgingOffset +
     sttInstance.streamingLimit * sttInstance.restartCounter;
+
+    console.log(sttInstance.resultEndTime, 'sttInstance.resultEndTime');
+    console.log(currentRecTime, 'currentRecTime');
 
   sttInstance.isSentenceFinal = stream.results[0].isFinal;
 
@@ -121,10 +124,6 @@ const speechCallback = (stream, client) => {
     client.emit('speechResult', transcript);
 
     if (sttInstance.previousSentenceLength) {
-      const previousTimeStamp =
-        sttInstance.timeStamps[sttInstance.currentQuestionIndex - 1];
-      const currentTimeStamp =
-        sttInstance.timeStamps[sttInstance.currentQuestionIndex];
       const previousSentence = transcript.substring(
         0,
         sttInstance.previousSentenceLength
@@ -133,8 +132,12 @@ const speechCallback = (stream, client) => {
         sttInstance.previousSentenceLength,
         transcript.length
       );
+      let previousTimeStamp =
+      sttInstance.timeStamps[sttInstance.currentQuestionIndex - 1];
+      let currentTimeStamp =
+      sttInstance.timeStamps[sttInstance.currentQuestionIndex];
 
-      previousTimeStamp = previousTimeStamp.text
+      sttInstance.timeStamps[sttInstance.currentQuestionIndex - 1].text = previousTimeStamp.text
         ? previousTimeStamp.text + previousSentence
         : previousSentence;
 
@@ -143,7 +146,7 @@ const speechCallback = (stream, client) => {
           currentSentence,
           'currentSentence 있어서 현재 문제 타임스탬프에 넣기'
         );
-        currentTimeStamp.text = currentSentence;
+        sttInstance.timeStamps[sttInstance.currentQuestionIndex].text = currentSentence;
       } else {
         console.log('현재 문장이 빈값이라 현재문제 타임스탬프 지움');
         sttInstance.timeStamps.pop();
@@ -165,8 +168,8 @@ const speechCallback = (stream, client) => {
 
       sttInstance.previousSentenceLength = null;
     } else {
-      const currentTimeStamp = sttInstance.timeStamps[sttInstance.currentQuestionIndex];
-      currentTimeStamp.text = currentTimeStamp.text 
+      let currentTimeStamp = sttInstance.timeStamps[sttInstance.currentQuestionIndex];
+      sttInstance.timeStamps[sttInstance.currentQuestionIndex].text = currentTimeStamp.text 
         ? currentTimeStamp.text + transcript
         : transcript;
       console.log(transcript, '현재 타임스탬프에 추가된 문장');
@@ -176,6 +179,7 @@ const speechCallback = (stream, client) => {
     console.log(sttInstance.timeStamps, '문장 finish 후 타임 스탬프');
 
     sttInstance.isFinalEndTime = sttInstance.resultEndTime; // 문장 완료 후 끝나는 시간 저장
+
   }
 };
 
@@ -186,7 +190,7 @@ const startStream = (client) => {
     .streamingRecognize(request)
     .on('error', (err) => {
       if (err.code === 11) {
-        reStartStream();
+        // reStartStream();
       } else {
         console.error('API request error ' + err);
       }
@@ -250,14 +254,13 @@ const startRecoding = (audioInputStreamTransform) => {
     .on('error', (err) => {
       console.error('Audio sttInstance.recording error ' + err);
     })
-    .pipe(audioInputStreamTransform); // 0-1번
+    .pipe(audioInputStreamTransform);
 }
 
 const checkEmptySTTResult = () => {
-  const currentTimeStamp = sttInstance.timeStamps[sttInstance.currentQuestionIndex];
-  if (!currentTimeStamp) {
+  if (!sttInstance.timeStamps[sttInstance.currentQuestionIndex]) {
     console.log('이전 문제 인스턴스 없으니 만들기 checkEmptySTTResult');
-    currentTimeStamp = new MyAnswer();
+    sttInstance.timeStamps[sttInstance.currentQuestionIndex] = new MyAnswer();
   }
 }
 
@@ -299,6 +302,6 @@ module.exports = {
   },
   stopRecoding: () => stopRecoding(),
   endGoogleCloudStream: () => endGoogleCloudStream(),
-  timeStampsResult: () => sttInstance.timeStamps,
+  getTimeStamps: () => sttInstance.timeStamps,
   detectFirstSentence: () => detectFirstSentence(),
 };

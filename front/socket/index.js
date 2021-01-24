@@ -17,8 +17,8 @@ export default (setSpeech, setSaveSpeech, saveTimeStamp) => {
     setSaveSpeech((prev) => prev ? `${prev} ${data}` : data);
     setSpeech('');
   });
-  socket.on('timeStampsResult', (data) => {
-    console.log(data, 'timeStampsResult');
+  socket.on('getTimeStamps', (data) => {
+    console.log(data, 'getTimeStamps');
     saveTimeStamp(data);
   });
 };
