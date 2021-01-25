@@ -133,15 +133,15 @@ const User = () => {
         <CategoryWrapper>
           <Category onClick={onSelectCategory}>
             <CategoryItem>
-              <button data-name="writePosts">내 인터뷰</button>
+              <button data-name="writePosts"><span>내 인터뷰</span></button>
             </CategoryItem>
             {me && me._id === userId.current && (
               <CategoryItem>
-                <button data-name="feedback">피드백</button>
+                <button data-name="feedback"><span>피드백</span></button>
               </CategoryItem>
             )}
             <CategoryItem>
-              <button data-name="star">스타 인터뷰</button>
+              <button data-name="star"><span>스타 인터뷰</span></button>
             </CategoryItem>
           </Category>
         </CategoryWrapper>

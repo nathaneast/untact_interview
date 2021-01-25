@@ -52,9 +52,15 @@ const LoginForm = ({ onCancelModal }) => {
 
   const timerId = useRef();
 
+  const clearTimer = useCallback(() => {
+    clearTimeout(timerId.current);
+    setDisplayLoginError('');
+    timerId.current = null;
+  });
+
   const handleErrorMessage = useCallback((text) => {
     setDisplayLoginError(text);
-    timerId.current = setTimeout(() => setDisplayLoginError(''), 3000);
+    timerId.current = setTimeout(() => clearTimer(), 3000);
   }, [timerId.current]);
 
   useEffect(() => {
@@ -66,13 +72,16 @@ const LoginForm = ({ onCancelModal }) => {
   }, [logInError, logInDone]);
 
   useEffect(() => {
-    return displayLoginError ? clearTimeout(timerId.current) : '';
-  }, [timerId.current, displayLoginError]);
+    return () => {
+      if (timerId.current) {
+        clearTimer();
+      }
+    };
+  }, []);
 
   const onSubmit = useCallback(
     (e) => {
       e.preventDefault();
-      console.log('submit', email, password);
       dispatch({
         type: LOG_IN_REQUEST,
         data: { email, password },
@@ -92,7 +101,7 @@ const LoginForm = ({ onCancelModal }) => {
             type="eamil"
             maxLength="24"
             onChange={onChangeEmail}
-            // pattern="[a-zA-Z0-9.-_]{1,}@[a-zA-Z.-]{2,}[.]{1}[a-zA-Z]{2,}"
+            pattern="[a-zA-Z0-9.-_]{1,}@[a-zA-Z.-]{2,}[.]{1}[a-zA-Z]{2,}"
             required
           />
         </FormItem>

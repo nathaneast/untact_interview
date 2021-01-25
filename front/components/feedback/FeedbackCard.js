@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { ButtonDefault } from '../../styles/reStyled';
 
 const Container = styled.article`
-  width: 350px;
+  width: 400px;
   height: auto;
   background-color: white;
   border: 1px solid #dcdde1;

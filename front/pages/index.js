@@ -9,7 +9,9 @@ import AppLayout from '../components/AppLayout';
 import wrapper from '../store/configureStore';
 
 const Container = styled.div`
-  margin: 50px 0px 20px 0px;
+  background-color: #2f3640;
+  width: 100%;
+  height: 100%;
 `;
 
 const IntroContents = styled.div`
@@ -20,66 +22,63 @@ const IntroContents = styled.div`
 `;
 
 const Title = styled.div`
+  margin-top: 25px;
   & h1 {
-    font-size: 40px;
-    color: #222f3e;
+    font-size: 50px;
+    color: #FFFFF6;
   }
 `;
 
 const IntroMessage = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 50px 0px;
-`;
-
-const Message = styled.p`
-  color: #222f3e;
-  font-weight: bolder;
-  font-size: 18px;
+  text-align: center;
+  margin: 20px 0px;
+  p {
+    color: #FFFFF6;
+    font-weight: bolder;
+    font-size: 18px;
+  }
 `;
 
 const ButtonWrapper = styled.div`
   text-align: center;
-  margin: 10px;
   border-radius: 10px;
 `;
 
 const Button = styled(ButtonDefault)`
-& a {
-  color: #fffff6;
-  text-decoration: none;
-}
-`;
-
-const OutroMessage = styled.div`
-  margin: 15px 0px;
+  background-color: #e55039;
+  border-radius: 15px;
+  padding: 8px 40px;
+  & a {
+    color: #fffff6;
+    text-decoration: none;
+  }
 `;
 
 const ManualBoard = styled.main`
   display: grid;
-  grid-gap: 60px;
-  grid-template-columns: repeat(2, 1fr);
-  margin: 20px 0px;
-  & div {
-    width: 550px;
-    height: 400px;
-    background-color: green;
-    border-radius: 15px;
-  }
+  grid-template-columns: repeat(2,600px);
+  margin: 18px 0px;
+  justify-content: center;
 `;
 
 const ManualItem = styled.div`
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 18px 0px;
   & div {
-    color: black;
+    background: green;
+    color: #FFFFF6;
     width: 550px;
     height: 400px;
-    background-color: green;
     border-radius: 15px;
   }
-  p {
+  & p {
     color: black;
     text-align: center;
+    margin-top: 12px;
+    color: #FFFFF6;
   }
 `;
 
@@ -92,10 +91,7 @@ const Home = () => (
         </Title>
 
         <IntroMessage>
-          <Message>
-            인터뷰를 진행하고 <br /> 피드백을 통해 <br /> 부족한 점을 보완해가며{' '}
-            <br /> 성장하세요
-          </Message>
+          <p>인터뷰를 진행하고 <br /> 셀프 피드백을 해보세요 <br />당신의 성장을 응원합니다 😉👍</p>
         </IntroMessage>
 
         <ButtonWrapper>
@@ -105,10 +101,6 @@ const Home = () => (
             </a>
           </Button>
         </ButtonWrapper>
-
-        <OutroMessage>
-          <Message>당신의 성장을 응원합니다 😉👍</Message>
-        </OutroMessage>
       </IntroContents>
 
       <ManualBoard>

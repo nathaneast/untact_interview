@@ -14,9 +14,9 @@ const Container = styled.div`
   justify-content: center;
 `;
 
-const Header = styled.div`
+const Header = styled.header`
   width: 100%;
-  height: 50px;
+  height: 55px;
   justify-content: space-between;
   background-color: #34495e;
   display: flex;
@@ -26,6 +26,12 @@ const Header = styled.div`
 
 const Logo = styled.div`
   margin-left: 40px;
+  cursor: pointer;
+`;
+
+const LogoTitle = styled.span`
+  font-weight: bolder;
+  font-size: 20px;
   cursor: pointer;
 `;
 
@@ -39,6 +45,8 @@ const NavBar = styled.ul`
 `;
 
 const NavItem = styled.li`
+  display: flex;
+  align-items: center;
   font-size: 15px;
   font-weight: bolder;
   color: #FFFFF6;
@@ -50,10 +58,20 @@ const Link = styled.a`
   text-decoration: none;
 `;
 
+const Avatar = styled.div`
+  padding: 8px 14px;
+  background-color: #FFFFF6;
+  border-radius: 17px;
+  color: #2f3640;  
+  cursor: pointer;
+`;
+
 const Contents = styled.div`
   align-items: center;
   display: flex;
   flex-direction: column;
+  width: 100%;
+  height: 100%;
 `;
 
 const AppLayout = ({ children }) => {
@@ -79,7 +97,7 @@ const AppLayout = ({ children }) => {
       <Header>
         <Logo>
           <Link href="/">
-            <span>Untact Interview</span>
+            <LogoTitle>Untact Interview</LogoTitle>
           </Link>
         </Logo>
         <nav>
@@ -96,16 +114,15 @@ const AppLayout = ({ children }) => {
                     <span>글쓰기</span>
                   </Link>
                 </NavItem>
-                <NavItem>
-                  <Link href={`/user/${me._id}`}>
-                    <span>내정보</span>
-                  </Link>
-                </NavItem>
                 <NavItem onClick={onLogOut}>
                   <span>로그아웃</span>
                 </NavItem>
                 <NavItem>
-                  <span>{me.nickname}</span>
+                  <Link href={`/user/${me._id}`}>
+                    <Avatar>
+                      <span>{me.nickname}</span>
+                    </Avatar>
+                  </Link>
                 </NavItem>
               </>
             ) : (

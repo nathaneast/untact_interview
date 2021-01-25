@@ -21,17 +21,24 @@ const Category = styled.ul`
 `;
 
 const CategoryItem = styled.li`
-  font-size: 17px;
+  font-size: 20px;
   font-weight: bolder;
   color: #34495e;
   cursor: pointer;
+  &:hover {
+    color: #e84118;
+  }
+`;
+
+const Imoge = styled.span`
+  font-size: 13px;
 `;
 
 const Interviews = () => {
   const dispatch = useDispatch();
   const { me } = useSelector((state) => state.user);
   const { sessionPosts, hasMorePosts, loadSessionPostsLoading } = useSelector(
-    (state) => state.post,
+    (state) => state.post
   );
   const [selectedCategory, setSelectedCategory] = useState('all');
 
@@ -63,21 +70,23 @@ const Interviews = () => {
 
   const onSelectCategory = useCallback(
     (e) => {
-      if (
-        e.target.tagName === 'LI' &&
-        selectedCategory !== e.target.dataset.name
-      ) {
+      const clickedCategory =
+        e.target.tagName === 'LI'
+          ? e.target.dataset.name
+          : e.target.parentNode.dataset.name;
+      console.log(e.target.tagName, clickedCategory);
+      if (e.target.tagName !== 'UL' && selectedCategory !== clickedCategory) {
         dispatch({
           type: LOAD_SESSION_POSTS_REQUEST,
           data: {
             category: {
-              name: e.target.dataset.name,
+              name: clickedCategory,
               isSame: false,
             },
             lastId: null,
           },
         });
-        setSelectedCategory(e.target.dataset.name);
+        setSelectedCategory(clickedCategory);
       }
     },
     [selectedCategory],
@@ -86,12 +95,22 @@ const Interviews = () => {
   return (
     <AppLayout>
       <Category onClick={onSelectCategory}>
-        <CategoryItem id="all" data-name="all">
-          All
+        <CategoryItem data-name="all">
+          <Imoge>🚀</Imoge>
+          <span>All</span>
         </CategoryItem>
-        <CategoryItem data-name="frontEnd">FrontEnd</CategoryItem>
-        <CategoryItem data-name="backEnd">BackEnd</CategoryItem>
-        <CategoryItem data-name="others">others</CategoryItem>
+        <CategoryItem data-name="frontend">
+          <Imoge>🌈</Imoge>
+          <span>FrontEnd</span>
+        </CategoryItem>
+        <CategoryItem data-name="backend">
+          <Imoge>🔥</Imoge>
+          <span>BackEnd</span>
+        </CategoryItem>
+        <CategoryItem data-name="others">
+          <Imoge>🙏</Imoge>
+          <span>Others</span>
+        </CategoryItem>
       </Category>
       {sessionPosts.length ? (
         <SessionCardList posts={sessionPosts} meId={me?._id} />

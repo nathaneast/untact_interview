@@ -72,9 +72,15 @@ const Signup = () => {
 
   const timerId = useRef();
 
+  const clearTimer = useCallback(() => {
+    clearTimeout(timerId.current);
+    setDisplaySignUpError('');
+    timerId.current = null;
+  });
+
   const handleErrorMessage = useCallback((text) => {
     setDisplaySignUpError(text);
-    timerId.current = setTimeout(() => setDisplaySignUpError(''), 3000);
+    timerId.current = setTimeout(() => clearTimer(), 3000);
   }, [displaySignUpError]);
 
   useEffect(() => {
@@ -90,8 +96,12 @@ const Signup = () => {
   }, [signUpError]);
 
   useEffect(() => {
-    return displaySignUpError ? clearTimeout(timerId.current) : '';
-  }, [timerId.current, displaySignUpError]);
+    return () => {
+      if (timerId.current) {
+        clearTimer();
+      }
+    };
+  }, []);
 
   const onSubmit = useCallback((e) => {
     e.preventDefault();

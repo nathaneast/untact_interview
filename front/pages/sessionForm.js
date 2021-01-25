@@ -26,7 +26,7 @@ const writeSessionPost = () => {
 
   const [desc, onChangeDesc] = useInput('');
   const [title, onChangeTitle] = useInput('');
-  const [category, onChangeCategory] = useInput('frontEnd');
+  const [category, onChangeCategory] = useInput('frontend');
 
   const [questionform, setQuestionValues] = useState({});
 

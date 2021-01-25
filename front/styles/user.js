@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 export const UserBoard = styled.div`
-  width: 730px;
+  width: 810px;
   margin: 12px 0px;
   background-color: #34495e;
   border-radius: 30px;
@@ -61,7 +61,7 @@ export const Category = styled.ul`
 `;
 
 export const CategoryItem = styled.li`
-    margin: 0px 7px;
+  margin: 0px 7px;
   & button {
     padding: 3px 5px;
     width: 88px;
@@ -72,6 +72,9 @@ export const CategoryItem = styled.li`
     border-radius: 10px;
     box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
     cursor: pointer;
+    & span {
+      font-weight: bolder;
+    }
     &:hover{
       background-color: #e55039;
       color: #F8EFBA;
