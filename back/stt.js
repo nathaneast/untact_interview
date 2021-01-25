@@ -33,15 +33,16 @@ class SttProcess {
     this.lastAudioInput = [];
     this.resultEndTime = 0; // 문장마다 끝나는 시간
     this.finalRequestEndTime = 0;
-    this.newStream = true;
     this.bridgingOffset = 0;
     this.previousSentenceLength = null;
     this.recording;
     this.reStartTimerId = null;
+    this.isNewStream = true;
     this.isFinalEndTime = 0;
     this.isDetectFirstSentence = true;
     this.isSentenceFinal = false;
     this.isDivideSentence = false;
+    this.isReStartStream = false;
   }
 }
 
@@ -75,12 +76,13 @@ const reStartStream = (client) => {
   sttInstance.lastAudioInput = [];
   sttInstance.lastAudioInput = sttInstance.audioInput;
 
-  sttInstance.restartCounter++;
+  // sttInstance.restartCounter++;
 
   console.log('레코딩 재시작', `${sttInstance.streamingLimit * sttInstance.restartCounter}`);
 
-  sttInstance.newStream = true;
-
+  sttInstance.isNewStream = true;
+  sttInstance.isReStartStream = true;
+  
   startStream(client);
 }
 
@@ -88,6 +90,12 @@ const speechCallback = (stream, client) => {
   sttInstance.resultEndTime =
     stream.results[0].resultEndTime.seconds * 1000 +
     Math.round(stream.results[0].resultEndTime.nanos / 1000000);
+
+    if (sttInstance.isSentenceFinal && sttInstance.isReStartStream) {
+      console.log('문장완성되고 리스타트 => 카운터 ++');
+      sttInstance.restartCounter++;
+      sttInstance.isReStartStream = false;
+    } 
   
   const currentRecTime = 
     sttInstance.resultEndTime -
@@ -98,6 +106,8 @@ const speechCallback = (stream, client) => {
     console.log(currentRecTime, 'currentRecTime');
 
   sttInstance.isSentenceFinal = stream.results[0].isFinal;
+
+  console.log(sttInstance.isSentenceFinal, 'isSentenceFinal');
 
   const transcript = stream.results[0].alternatives[0].transcript;
 
@@ -180,6 +190,13 @@ const speechCallback = (stream, client) => {
 
     sttInstance.isFinalEndTime = sttInstance.resultEndTime; // 문장 완료 후 끝나는 시간 저장
 
+    if (sttInstance.isReStartStream) {
+      sttInstance.restartCounter++;
+      sttInstance.isReStartStream = false;
+      console.log('문장완성 덜됨 => 리스타트 => 문장완성 => 카운터++');
+      console.log('현재시간', `${sttInstance.streamingLimit * sttInstance.restartCounter}`);
+    } 
+
   }
 };
 
@@ -197,19 +214,21 @@ const startStream = (client) => {
     })
     .on('data', (stream) => speechCallback(stream, client));
 
-  // 3분뒤 스트림 재시작
+  // 스트림 재시작
   sttInstance.reStartTimerId = setTimeout(() => reStartStream(client), sttInstance.streamingLimit);
 }
 
 const audioProcess = () => new Writable({
   write(chunk, encoding, next) {
-    if (sttInstance.newStream && sttInstance.lastAudioInput.length !== 0) {
-      const chunkTime = sttInstance.streamingLimit / sttInstance.lastAudioInput.length;
-      if (chunkTime !== 0) {
-        if (sttInstance.bridgingOffset < 0) {
-          sttInstance.bridgingOffset = 0;
+    const chunkTime = sttInstance.streamingLimit / sttInstance.lastAudioInput.length;
+    if (chunkTime !== 0) {
+      if (sttInstance.bridgingOffset < 0) {
+        console.log(sttInstance.bridgingOffset, 'sttInstance.bridgingOffset < 0')
+        if (sttInstance.isNewStream && sttInstance.lastAudioInput.length !== 0) {
+        sttInstance.bridgingOffset = 0;
         }
         if (sttInstance.bridgingOffset > sttInstance.finalRequestEndTime) {
+          console.log(sttInstance.bridgingOffset, 'sttInstance.bridgingOffset > sttInstance.finalRequestEndTime')
           sttInstance.bridgingOffset = sttInstance.finalRequestEndTime;
         }
         const chunksFromMS = Math.floor(
@@ -219,13 +238,15 @@ const audioProcess = () => new Writable({
           (sttInstance.lastAudioInput.length - chunksFromMS) * chunkTime
         );
 
+        console.log(sttInstance.bridgingOffset,'마지막');
+
         sttInstance.recognizeStream.write(sttInstance.lastAudioInput[sttInstance.lastAudioInput.length - 1]);
       }
-      sttInstance.newStream = false;
     }
-
+    
     sttInstance.audioInput.push(chunk);
-
+    
+    sttInstance.isNewStream = false;
     if (sttInstance.recognizeStream) {
       sttInstance.recognizeStream.write(chunk);
     }
