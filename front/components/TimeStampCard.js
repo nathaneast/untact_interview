@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
 const Container = styled.article`
-  margin: 5px 10px;
+  margin: 15px 10px;
 `;
 
 const ContentsWrapper = styled.div`
@@ -16,6 +16,7 @@ const ContentsWrapper = styled.div`
   }
   & p {
     padding: 5px;
+    margin: 5px 0px;
   }
   &:hover {
     color: #FFFFF6;

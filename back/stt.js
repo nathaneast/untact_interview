@@ -43,6 +43,8 @@ class SttProcess {
     this.isSentenceFinal = false;
     this.isDivideSentence = false;
     this.isReStartStream = false;
+    this.isResponseTimeStamps = false;
+    this.clientEmitCallback = null;
   }
 }
 
@@ -75,8 +77,6 @@ const reStartStream = (client) => {
 
   sttInstance.lastAudioInput = [];
   sttInstance.lastAudioInput = sttInstance.audioInput;
-
-  // sttInstance.restartCounter++;
 
   console.log('레코딩 재시작', `${sttInstance.streamingLimit * sttInstance.restartCounter}`);
 
@@ -142,13 +142,10 @@ const speechCallback = (stream, client) => {
         sttInstance.previousSentenceLength,
         transcript.length
       );
-      let previousTimeStamp =
-      sttInstance.timeStamps[sttInstance.currentQuestionIndex - 1];
-      let currentTimeStamp =
-      sttInstance.timeStamps[sttInstance.currentQuestionIndex];
+      let previousTimeStampText = sttInstance.timeStamps[sttInstance.currentQuestionIndex - 1].text;
 
-      sttInstance.timeStamps[sttInstance.currentQuestionIndex - 1].text = previousTimeStamp.text
-        ? previousTimeStamp.text + previousSentence
+      sttInstance.timeStamps[sttInstance.currentQuestionIndex - 1].text = previousTimeStampText
+        ? previousTimeStampText + previousSentence
         : previousSentence;
 
       if (currentSentence) {
@@ -196,6 +193,13 @@ const speechCallback = (stream, client) => {
       console.log('문장완성 덜됨 => 리스타트 => 문장완성 => 카운터++');
       console.log('현재시간', `${sttInstance.streamingLimit * sttInstance.restartCounter}`);
     } 
+
+    if (sttInstance.isResponseTimeStamps) {
+      console.log('마지막문제 문장 완성해서 응답!');
+      sttInstance.clientEmitCallback(sttInstance.timeStamps);
+      sttInstance.isResponseTimeStamps = false;
+      sttInstance.clientEmitCallback = null;
+    }
 
   }
 };
@@ -314,6 +318,11 @@ const endGoogleCloudStream = () => {
   }
 }
 
+const setTimeStampsState = (clientEmitCallback) => {
+  sttInstance.isResponseTimeStamps = true;
+  sttInstance.clientEmitCallback = clientEmitCallback;
+}
+
 module.exports = {
   startSTT: (client) => {
     const audioInputStreamTransform = audioProcess();
@@ -323,6 +332,6 @@ module.exports = {
   },
   stopRecoding: () => stopRecoding(),
   endGoogleCloudStream: () => endGoogleCloudStream(),
-  getTimeStamps: () => sttInstance.timeStamps,
+  getTimeStamps: (clientEmitCallback) => setTimeStampsState(clientEmitCallback),
   detectFirstSentence: () => detectFirstSentence(),
 };

@@ -103,14 +103,14 @@ const PlaySession = ({
       setQuestionIndex(questionIndex + 1);
       setTimer(limitTime);
       socketEmits.detectFirstSentence();
-      nextQuestionButton.current.disabled = true;
-      nextQuestionButton.current.style.backgroundColor = '#95a5a6';
-      nextQuestionButton.current.style.color = '#2d3436';
-      setTimeout(() => {
-        nextQuestionButton.current.disabled = false;
-        nextQuestionButton.current.style.backgroundColor = '#e84118';
-        nextQuestionButton.current.style.color = ':#FFFFF6';
-      }, 4000);
+      // nextQuestionButton.current.disabled = true;
+      // nextQuestionButton.current.style.backgroundColor = '#95a5a6';
+      // nextQuestionButton.current.style.color = '#2d3436';
+      // setTimeout(() => {
+      //   nextQuestionButton.current.disabled = false;
+      //   nextQuestionButton.current.style.backgroundColor = '#e84118';
+      //   nextQuestionButton.current.style.color = ':#FFFFF6';
+      // }, 4000);
     } else {
       endSession(true);
     }
