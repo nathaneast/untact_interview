@@ -64,6 +64,10 @@ const Avatar = styled.div`
   border-radius: 17px;
   color: #2f3640;  
   cursor: pointer;
+  &:hover {
+    background-color: #e55039;
+    border: 1px solid #2d3436;
+  }
 `;
 
 const Contents = styled.div`

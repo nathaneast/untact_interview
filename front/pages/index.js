@@ -9,7 +9,6 @@ import AppLayout from '../components/AppLayout';
 import wrapper from '../store/configureStore';
 
 const Container = styled.div`
-  background-color: #2f3640;
   width: 100%;
   height: 100%;
 `;
@@ -25,7 +24,7 @@ const Title = styled.div`
   margin-top: 25px;
   & h1 {
     font-size: 50px;
-    color: #FFFFF6;
+    color: #2d3436;
   }
 `;
 
@@ -33,7 +32,7 @@ const IntroMessage = styled.div`
   text-align: center;
   margin: 20px 0px;
   p {
-    color: #FFFFF6;
+    color: #2d3436;
     font-weight: bolder;
     font-size: 18px;
   }
@@ -42,15 +41,19 @@ const IntroMessage = styled.div`
 const ButtonWrapper = styled.div`
   text-align: center;
   border-radius: 10px;
+  & a {
+    color: #2d3436;
+    text-decoration: none;
+    padding: 10px 0px;
+  }
 `;
 
 const Button = styled(ButtonDefault)`
   background-color: #e55039;
   border-radius: 15px;
   padding: 8px 40px;
-  & a {
-    color: #fffff6;
-    text-decoration: none;
+  & span {
+    color: #2d3436;
   }
 `;
 
@@ -67,18 +70,21 @@ const ManualItem = styled.div`
   flex-direction: column;
   align-items: center;
   margin: 18px 0px;
-  & div {
-    background: #bdc3c7;;
-    color: #FFFFF6;
-    width: 550px;
-    height: 400px;
-    border-radius: 15px;
+  width: 570px;
+  /* height: 470px; */
+  display: flex;
+  background-color: #636e72;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+  & img {
+    padding: 10px;
   }
-  & p {
-    color: black;
-    text-align: center;
-    margin-top: 12px;
-    color: #FFFFF6;
+  & div {
+    padding-bottom: 10px;
+    & p {
+      text-align: center;
+      margin: 0px;
+      color: #FFFFF6;
+    }
   }
 `;
 
@@ -91,36 +97,46 @@ const Home = () => (
         </Title>
 
         <IntroMessage>
-          <p>인터뷰를 진행하고 <br /> 셀프 피드백을 해보세요 <br />당신의 성장을 응원합니다 😉👍</p>
+          <p>
+            인터뷰를 진행하고 <br /> 셀프 피드백을 해보세요 <br />
+            당신의 성장을 응원합니다 😉👍
+          </p>
         </IntroMessage>
 
         <ButtonWrapper>
-          <Button>
-            <a href="/interviews">
+          <a href="/interviews">
+            <Button>
               <span>시작하기</span>
-            </a>
-          </Button>
+            </Button>
+          </a>
         </ButtonWrapper>
       </IntroContents>
 
       <ManualBoard>
         <ManualItem>
+          <img src="/img1.png" width="550px" height="400px" alt="manualImage1" />
           <div>
-            {/* <img src={require('../images/img1.jpg')} width='550px' height='400px' /> */}
+            <p>1. 회원가입 로그인 후에 <b>'시작하기'</b>를 눌러 주세요</p>
           </div>
-          <p>설명 1</p>
         </ManualItem>
         <ManualItem>
-          <div>img 2</div>
-          <p>설명 2</p>
+          <img src="/img2.png" width="550px" height="400px" alt="manualImage2" />
+          <div>
+            <p>2. 진행할 인터뷰 카드의 <b>'인터뷰 시작'</b>을 눌러 주세요</p>
+          </div>
         </ManualItem>
         <ManualItem>
-          <div>img 3</div>
-          <p>설명 3</p>
+          <img src="/img3.png" width="550px" height="400px" alt="manualImage3" />
+          <div>
+            <p>3. 질문에 대한 답을 하면서 인터뷰를 진행합니다</p>
+          </div>
         </ManualItem>
         <ManualItem>
-          <div>img 4</div>
-          <p>설명 4</p>
+          <img src="/img4.png" width="550px" height="400px" alt="manualImage4" />
+          <div>
+            <p>4. 인터뷰가 끝이 나면 영상과 기록된 내 답변을 토대로 <br />
+              피드백을 작성해 보세요 :)</p>
+          </div>
         </ManualItem>
       </ManualBoard>
     </Container>

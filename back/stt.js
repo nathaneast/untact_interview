@@ -26,7 +26,7 @@ class SttProcess {
   constructor() {
     this.timeStamps = [];
     this.currentQuestionIndex = 0;
-    this.streamingLimit = 20000;
+    this.streamingLimit = 180000;
     this.recognizeStream = null;
     this.restartCounter = 0;
     this.audioInput = [];

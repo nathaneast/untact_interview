@@ -14,6 +14,7 @@ const Container = styled.section`
   display: grid;
   grid-gap: 15px;
   grid-template-columns: repeat(2, 1fr);
+  margin-bottom: 25px;
 `;
 
 const SessionCardList = ({ posts, meId }) => {

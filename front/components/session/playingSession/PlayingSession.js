@@ -17,7 +17,7 @@ const PlaySession = ({
   sessionTitle,
   moveFeedback,
 }) => {
-  const [limitTime, setLimitTime] = useState(30);
+  const [limitTime, setLimitTime] = useState(120);
   const [timer, setTimer] = useState(limitTime);
   const [questionIndex, setQuestionIndex] = useState(0);
   const [isRunning, setIsRunning] = useState(true);
@@ -103,14 +103,14 @@ const PlaySession = ({
       setQuestionIndex(questionIndex + 1);
       setTimer(limitTime);
       socketEmits.detectFirstSentence();
-      // nextQuestionButton.current.disabled = true;
-      // nextQuestionButton.current.style.backgroundColor = '#95a5a6';
-      // nextQuestionButton.current.style.color = '#2d3436';
-      // setTimeout(() => {
-      //   nextQuestionButton.current.disabled = false;
-      //   nextQuestionButton.current.style.backgroundColor = '#e84118';
-      //   nextQuestionButton.current.style.color = ':#FFFFF6';
-      // }, 4000);
+      nextQuestionButton.current.disabled = true;
+      nextQuestionButton.current.style.backgroundColor = '#95a5a6';
+      nextQuestionButton.current.style.color = '#2d3436';
+      setTimeout(() => {
+        nextQuestionButton.current.disabled = false;
+        nextQuestionButton.current.style.backgroundColor = '#e84118';
+        nextQuestionButton.current.style.color = ':#FFFFF6';
+      }, 4000);
     } else {
       endSession(true);
     }

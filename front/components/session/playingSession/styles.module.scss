@@ -11,7 +11,7 @@ $color-cream:#FFFFF6;
 .header {
   color: $color-cream;
   font-weight: bolder;
-  font-size: 15px;
+  font-size: 16px;
   background-color: $color-navy;
   display: flex;
   justify-content: space-between;
@@ -20,6 +20,8 @@ $color-cream:#FFFFF6;
   box-shadow: rgba(0, 0, 0, 0.25) 0px 2px 2px;
   & div {
     margin: 10px 30px;
+    display: flex;
+    align-items: center;
   }
   .exit {
     cursor: pointer;
