@@ -16,7 +16,7 @@ module.exports = (io) => {
       stt.endGoogleCloudStream();
       stt.stopRecoding();
       if (isFinal) {
-        stt.getTimeStamps((timeStamps) => client.emit('getTimeStamps', timeStamps));
+        stt.getTimeStamps(client);
       }
     });
 

@@ -73,23 +73,34 @@ const User = () => {
     selectedCategory,
   ]);
 
+  const extractClickedDateset = useCallback((target) => {
+    let categoryDataset;
+    if (target.tagName === 'LI') {
+      categoryDataset = target.dataset.name;
+    } else if (target.tagName === 'BUTTON') {
+      categoryDataset = target.parentNode.dataset.name;
+    } else if (target.tagName === 'SPAN') {
+      categoryDataset = target.parentNode.parentNode.dataset.name;
+    }
+    return categoryDataset;
+  });
+
   const onSelectCategory = useCallback(
     (e) => {
-      if (
-        e.target.tagName === 'BUTTON' && selectedCategory !== e.target.dataset.name
-      ) {
+      const clickedCategory = extractClickedDateset(e.target);
+      if (selectedCategory !== clickedCategory) {
         dispatch({
           type: LOAD_USER_POSTS_REQUEST,
           data: {
             category: {
-              name: e.target.dataset.name,
+              name: clickedCategory,
               isSame: false,
             },
             userId: userId.current,
             lastId: null,
           },
         });
-        setSelectedCategory(e.target.dataset.name);
+        setSelectedCategory(clickedCategory);
       }
     },
     [selectedCategory],
@@ -119,29 +130,29 @@ const User = () => {
             </Avatar>
             <UserInfo>
               <div>
-                <span>email: {userInfo.email}</span>
+                <span>이메일: {userInfo.email}</span>
               </div>
               <div>
-                <span>name: {userInfo.nickname}</span>
+                <span>닉네임: {userInfo.nickname}</span>
               </div>
               <div>
-                <span>createdAt: {userInfo.createdAt.split('T')[0]}</span>
+                <span>가입일: {userInfo.createdAt.split('T')[0]}</span>
               </div>
             </UserInfo>
           </Profile>
         )}
         <CategoryWrapper>
           <Category onClick={onSelectCategory}>
-            <CategoryItem>
-              <button data-name="writePosts"><span>내 인터뷰</span></button>
+            <CategoryItem data-name="writePosts">
+              <button><span>내 인터뷰</span></button>
             </CategoryItem>
             {me && me._id === userId.current && (
-              <CategoryItem>
-                <button data-name="feedback"><span>피드백</span></button>
+              <CategoryItem data-name="feedback">
+                <button><span>피드백</span></button>
               </CategoryItem>
             )}
-            <CategoryItem>
-              <button data-name="star"><span>스타 인터뷰</span></button>
+            <CategoryItem data-name="star">
+              <button><span>스타 인터뷰</span></button>
             </CategoryItem>
           </Category>
         </CategoryWrapper>

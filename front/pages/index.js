@@ -68,7 +68,7 @@ const ManualItem = styled.div`
   align-items: center;
   margin: 18px 0px;
   & div {
-    background: green;
+    background: #bdc3c7;;
     color: #FFFFF6;
     width: 550px;
     height: 400px;
@@ -105,19 +105,21 @@ const Home = () => (
 
       <ManualBoard>
         <ManualItem>
-          <div>이미지 1</div>
+          <div>
+            {/* <img src={require('../images/img1.jpg')} width='550px' height='400px' /> */}
+          </div>
           <p>설명 1</p>
         </ManualItem>
         <ManualItem>
-          <div>이미지 2</div>
+          <div>img 2</div>
           <p>설명 2</p>
         </ManualItem>
         <ManualItem>
-          <div>이미지 3</div>
+          <div>img 3</div>
           <p>설명 3</p>
         </ManualItem>
         <ManualItem>
-          <div>이미지 4</div>
+          <div>img 4</div>
           <p>설명 4</p>
         </ManualItem>
       </ManualBoard>

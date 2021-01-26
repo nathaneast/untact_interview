@@ -155,7 +155,6 @@ const feedbackPost = () => {
             targetVideo={videoElement.current}
           />
         )}
-        ;
       </MonitoringBoard>
 
       <PlayedSessionBoard ref={sessionCardElement}>
