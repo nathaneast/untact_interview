@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { END } from 'redux-saga';
 import axios from 'axios';
 import styled from 'styled-components';
+import Head from 'next/head';
 
 import wrapper from '../../store/configureStore';
 import { LOAD_MY_INFO_REQUEST } from '../../reducers/user';
@@ -119,6 +120,13 @@ const feedbackPost = () => {
 
   return (
     <AppLayout>
+      <Head>
+        <title>{singlePost.desc}</title>
+        <meta name="description" content={`${singlePost.desc}`} />
+        <meta property="og:title" content={`${singlePost.desc}`} />
+        <meta property="og:description" content={`${singlePost.desc}`} />
+        <meta property="og:url" content={`http://localhost:3000/feedback/${singlePost._id}`} />
+      </Head>
       <MonitoringBoard>
         <div>
           <div>
@@ -156,7 +164,6 @@ const feedbackPost = () => {
           />
         )}
       </MonitoringBoard>
-
       <PlayedSessionBoard ref={sessionCardElement}>
         <span>진행한 인터뷰 보기</span>
         {singlePost && isSessionFlipCard && (
@@ -181,7 +188,6 @@ const feedbackPost = () => {
           </SessionFlipCard>
         )}
       </PlayedSessionBoard>
-
       <section>
         {singlePost && (
           singlePost.sessionPost.questions.map((item, index) => (

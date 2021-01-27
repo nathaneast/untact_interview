@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { END } from 'redux-saga';
 import axios from 'axios';
 import { useRouter } from 'next/router';
+import Head from 'next/head';
 
 import wrapper from '../../store/configureStore';
 import { LOAD_MY_INFO_REQUEST } from '../../reducers/user';
@@ -37,6 +38,15 @@ const SessionPost = () => {
 
   return (
     <>
+      {singlePost && (
+        <Head>
+          <title>{singlePost.title} 인터뷰 진행</title>
+          <meta name="description" content={`${singlePost.desc}`} />
+          <meta property="og:title" content={`${singlePost.title}`} />
+          <meta property="og:description" content={`${singlePost.desc}`} />
+          <meta property="og:url" content={`http://localhost:3000/session/${singlePost._id}`} />
+        </Head>
+      )}
       {singlePost && (isEndSession ? (
         timeStamps && blob && (
           <Feedback

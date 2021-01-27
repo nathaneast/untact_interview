@@ -63,8 +63,7 @@ export const Category = styled.ul`
 export const CategoryItem = styled.li`
   margin: 0px 7px;
   & button {
-    padding: 3px 5px;
-    width: 88px;
+    padding: 4px 7px;
     font-size: 14px;
     font-weight: 500;
     color: #2d3436;

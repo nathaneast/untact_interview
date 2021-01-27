@@ -95,14 +95,12 @@ const Home = () => (
         <Title>
           <h1>Untact Interview</h1>
         </Title>
-
         <IntroMessage>
           <p>
             인터뷰를 진행하고 <br /> 셀프 피드백을 해보세요 <br />
             당신의 성장을 응원합니다 😉👍
           </p>
         </IntroMessage>
-
         <ButtonWrapper>
           <a href="/interviews">
             <Button>
@@ -111,7 +109,6 @@ const Home = () => (
           </a>
         </ButtonWrapper>
       </IntroContents>
-
       <ManualBoard>
         <ManualItem>
           <img src="/img1.png" width="550px" height="400px" alt="manualImage1" />

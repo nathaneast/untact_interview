@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useRouter } from 'next/router';
 import { END } from 'redux-saga';
 import axios from 'axios';
+import Head from 'next/head';
 
 import {
   UserBoard,
@@ -122,50 +123,63 @@ const User = () => {
     <AppLayout>
       <UserBoard>
         {userInfo && (
-          <Profile>
-            <Avatar>
-              <div>
-                <span>{userInfo.email[0]}</span>
-              </div>
-            </Avatar>
-            <UserInfo>
-              <div>
-                <span>이메일: {userInfo.email}</span>
-              </div>
-              <div>
-                <span>닉네임: {userInfo.nickname}</span>
-              </div>
-              <div>
-                <span>가입일: {userInfo.createdAt.split('T')[0]}</span>
-              </div>
-            </UserInfo>
-          </Profile>
+          <>
+            <Head>
+              <title>{userInfo.nickname}님의 프로필</title>
+              <meta name="description" content={`${userInfo.nickname}님의 프로필`} />
+              <meta property="og:title" content={`${userInfo.nickname}님의 프로필`} />
+              <meta property="og:description" content={`${userInfo.nickname}님의 프로필`} />
+              <meta property="og:url" content={`http://localhost:3000/user/${userInfo._id}`} />
+            </Head>
+            <Profile>
+              <Avatar>
+                <div>
+                  <span>{userInfo.email[0]}</span>
+                </div>
+              </Avatar>
+              <UserInfo>
+                <div>
+                  <span>email: {userInfo.email}</span>
+                </div>
+                <div>
+                  <span>nickname: {userInfo.nickname}</span>
+                </div>
+                <div>
+                  <span>createdAt: {userInfo.createdAt.split('T')[0]}</span>
+                </div>
+              </UserInfo>
+            </Profile>
+          </>
         )}
         <CategoryWrapper>
           <Category onClick={onSelectCategory}>
             <CategoryItem data-name="writePosts">
-              <button><span>내 인터뷰</span></button>
+              <button>
+                <span>작성한 인터뷰</span>
+              </button>
             </CategoryItem>
             {me && me._id === userId.current && (
               <CategoryItem data-name="feedback">
-                <button><span>피드백</span></button>
+                <button>
+                  <span>피드백</span>
+                </button>
               </CategoryItem>
             )}
             <CategoryItem data-name="star">
-              <button><span>스타 인터뷰</span></button>
+              <button>
+                <span>스타 인터뷰</span>
+              </button>
             </CategoryItem>
           </Category>
         </CategoryWrapper>
       </UserBoard>
-      {(isNonePosts() ? (
+      {isNonePosts() ? (
         <NonePostMessageCard />
+      ) : isSelectedFeedback() ? (
+        feedbackPosts && <FeedbackCardList posts={feedbackPosts} />
       ) : (
-        isSelectedFeedback() ? (
-          feedbackPosts && <FeedbackCardList posts={feedbackPosts} />
-        ) : (
-          sessionPosts && <SessionCardList posts={sessionPosts} meId={me?._id} />
-        )
-      ))}
+        sessionPosts && <SessionCardList posts={sessionPosts} meId={me?._id} />
+      )}
     </AppLayout>
   );
 };
