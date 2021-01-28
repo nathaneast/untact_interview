@@ -28,6 +28,9 @@ const io = require('socket.io')(server, {
   },
 });
 
+let RedisStore = require('connect-redis')(session);
+let redisClient = redis.createClient();
+
 mongoose
   .connect(MONGO_URI, {
     useNewUrlParser: true,
@@ -61,12 +64,11 @@ app.use(cookieParser(COOKIE_SECRET));
 
 app.use(
   session({
+    store: new RedisStore({ client: redisClient }),
     saveUninitialized: false,
     resave: false,
     secret: COOKIE_SECRET,
     // proxy: true,
-    store: new RedisStore(),
-    saveUninitialized: true,
     cookie: {
     httpOnly: true,
       secure: false,
