@@ -37,14 +37,22 @@ mongoose
   .catch((e) => console.error(e));
 passportConfig();
 
-// production, dev 설정
-app.use(morgan('dev'));
-app.use(
-  cors({
+if (process.env.NODE_ENV === 'production') {
+  // app.set('trust proxy', 1);
+  app.use(morgan('combined'));
+  app.use(hpp());
+  app.use(helmet());
+  app.use(cors({
+    origin: 'http://localhost:3000',
+    credentials: true,
+  }));
+} else {
+  app.use(morgan('dev'));
+  app.use(cors({
     origin: true,
     credentials: true,
-  })
-);
+  }));
+}
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
