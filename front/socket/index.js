@@ -1,6 +1,7 @@
 import socketIoClient from 'socket.io-client';
+import { backUrl } from '../config';
 
-const socket = socketIoClient.connect('http://localhost:7000');
+const socket = socketIoClient.connect(backUrl);
 
 export default (setSpeech, setSaveSpeech, saveTimeStamp) => {
   socket.on('connect', () => {
