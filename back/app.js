@@ -43,7 +43,7 @@ if (process.env.NODE_ENV === 'production') {
   app.use(hpp());
   app.use(helmet());
   app.use(cors({
-    origin: ['http://localhost:3000', 'http://3.35.175.12'],
+    origin: ['http://localhost:3000', 'untact-interview.site'],
     credentials: true,
   }));
 } else {
@@ -64,10 +64,11 @@ app.use(
     resave: false,
     secret: COOKIE_SECRET,
     // proxy: true,
-    // cookie: {
-    // httpOnly: true,
-    //   secure: false,
-    // },
+    cookie: {
+    httpOnly: true,
+      secure: false,
+      domain: process.env.NODE_ENV === 'production' && '.untact-interview.site',
+    },
   })
 );
 
