@@ -8,6 +8,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const hpp = require('hpp');
 const helmet = require('helmet');
+const redis = require('redis');
 
 const config = require('./config');
 const { MONGO_URI, PORT, COOKIE_SECRET } = config;
@@ -64,6 +65,8 @@ app.use(
     resave: false,
     secret: COOKIE_SECRET,
     // proxy: true,
+    store: new RedisStore(),
+    saveUninitialized: true,
     cookie: {
     httpOnly: true,
       secure: false,
@@ -71,6 +74,12 @@ app.use(
     },
   })
 );
+app.use(function (req, res, next) {
+  if (!req.session) {
+    return next(new Error('oh no'));
+  }
+  next();
+})
 
 app.use(passport.initialize());
 app.use(passport.session());
