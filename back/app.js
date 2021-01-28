@@ -44,7 +44,7 @@ if (process.env.NODE_ENV === 'production') {
   app.use(hpp());
   app.use(helmet());
   app.use(cors({
-    origin: ['http://localhost:3000', 'untact-interview.site'],
+    origin: 'http://untact-interview.site',
     credentials: true,
   }));
 } else {
