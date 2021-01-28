@@ -5,6 +5,5 @@
       "ssr": true,
       "displayName": true
     }],
-    ["styled-components", { "ssr": true }]
   ]
 }
