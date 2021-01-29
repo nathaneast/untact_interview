@@ -129,7 +129,7 @@ const User = () => {
               <meta name="description" content={`${userInfo.nickname}님의 프로필`} />
               <meta property="og:title" content={`${userInfo.nickname}님의 프로필`} />
               <meta property="og:description" content={`${userInfo.nickname}님의 프로필`} />
-              <meta property="og:url" content={`http://localhost:3000/user/${userInfo._id}`} />
+              <meta property="og:url" content={`http://untact-interview.site/user/${userInfo._id}`} />
             </Head>
             <Profile>
               <Avatar>

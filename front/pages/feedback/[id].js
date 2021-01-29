@@ -125,7 +125,7 @@ const feedbackPost = () => {
         <meta name="description" content={`${singlePost.desc}`} />
         <meta property="og:title" content={`${singlePost.desc}`} />
         <meta property="og:description" content={`${singlePost.desc}`} />
-        <meta property="og:url" content={`http://localhost:3000/feedback/${singlePost._id}`} />
+        <meta property="og:url" content={`http://untact-interview.site/feedback/${singlePost._id}`} />
       </Head>
       <MonitoringBoard>
         <div>

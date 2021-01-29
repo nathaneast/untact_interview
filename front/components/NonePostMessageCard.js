@@ -11,7 +11,7 @@ const Container = styled.div`
 
 const NonePostMessageCard = () => (
   <Container>
-    <span>해당 메뉴의 글이 없습니다. 😅</span>
+    <span>해당 카테고리의 글이 없습니다. 😅</span>
   </Container>
 );
 

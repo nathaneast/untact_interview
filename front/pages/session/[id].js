@@ -44,7 +44,7 @@ const SessionPost = () => {
           <meta name="description" content={`${singlePost.desc}`} />
           <meta property="og:title" content={`${singlePost.title}`} />
           <meta property="og:description" content={`${singlePost.desc}`} />
-          <meta property="og:url" content={`http://localhost:3000/session/${singlePost._id}`} />
+          <meta property="og:url" content={`http://untact-interview.site/session/${singlePost._id}`} />
         </Head>
       )}
       {singlePost && (isEndSession ? (
