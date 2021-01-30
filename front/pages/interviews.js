@@ -74,7 +74,6 @@ const Interviews = () => {
         e.target.tagName === 'LI'
           ? e.target.dataset.name
           : e.target.parentNode.dataset.name;
-      console.log(e.target.tagName, clickedCategory);
       if (e.target.tagName !== 'UL' && selectedCategory !== clickedCategory) {
         dispatch({
           type: LOAD_SESSION_POSTS_REQUEST,
