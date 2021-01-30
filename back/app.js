@@ -71,7 +71,7 @@ app.use(
     // proxy: true,
     cookie: {
     httpOnly: true,
-      secure: false,
+      secure: TextTrackCue,
       domain: process.env.NODE_ENV === 'production' && '.untact-interview.site',
     },
   })

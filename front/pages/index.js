@@ -59,9 +59,10 @@ const Button = styled(ButtonDefault)`
 
 const ManualBoard = styled.main`
   display: grid;
-  grid-template-columns: repeat(2,600px);
+  grid-template-columns: repeat(2,570px);
   margin: 18px 0px;
   justify-content: center;
+  grid-gap: 0px 10px;
 `;
 
 const ManualItem = styled.div`
@@ -71,7 +72,6 @@ const ManualItem = styled.div`
   align-items: center;
   margin: 18px 0px;
   width: 570px;
-  /* height: 470px; */
   display: flex;
   background-color: #636e72;
   box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
