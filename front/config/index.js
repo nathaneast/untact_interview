@@ -1,1 +1,1 @@
-export const backUrl = 'http://api.untact-interview.site';
+export const backUrl = 'https://api.untact-interview.site';
