@@ -42,7 +42,7 @@ mongoose
 passportConfig();
 
 if (process.env.NODE_ENV === 'production') {
-  // app.set('trust proxy', 1);
+  app.set('trust proxy', 1);
   app.use(morgan('combined'));
   app.use(hpp());
   app.use(helmet());
@@ -68,7 +68,7 @@ app.use(
     saveUninitialized: false,
     resave: false,
     secret: COOKIE_SECRET,
-    // proxy: true,
+    proxy: true,
     cookie: {
     httpOnly: true,
       secure: true,

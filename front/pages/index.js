@@ -62,7 +62,7 @@ const ManualBoard = styled.main`
   grid-template-columns: repeat(2,570px);
   margin: 18px 0px;
   justify-content: center;
-  grid-gap: 0px 10px;
+  grid-gap: 0px 25px;
 `;
 
 const ManualItem = styled.div`
