@@ -28,7 +28,7 @@ const PlaySession = ({
   const [isModal, setIsModal] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
-  const videoElement = useRecf();
+  const videoElement = useRef();
   const recorder = useRef();
   const recorderStream = useRef();
   const nextQuestionButton = useRef();
