@@ -22,14 +22,17 @@ const socket = require('./socket');
 
 const app = express();
 const server = require('http').createServer(app);
-const io = require('socket.io')(server, {
-  cors: {
-    origin: "https://untact-interview.site",
-    methods: ["GET", "POST"],
-    allowedHeaders: ["my-custom-header"],
-    credentials: true
-  }
-});
+
+const io = require('socket.io')(server);
+
+// const io = require('socket.io')(server, {
+//   cors: {
+//     origin: "https://untact-interview.site",
+//     methods: ["GET", "POST"],
+//     allowedHeaders: ["my-custom-header"],
+//     credentials: true
+//   }
+// });
 
 let RedisStore = require('connect-redis')(session);
 let redisClient = redis.createClient();
