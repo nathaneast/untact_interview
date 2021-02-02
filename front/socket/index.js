@@ -1,8 +1,6 @@
 import socketIoClient from 'socket.io-client';
 import { backUrl } from '../config';
 
-// const socket = socketIoClient.connect(backUrl);
-
 const socket = socketIoClient(backUrl, {
   transports: ['websocket'],
 });
