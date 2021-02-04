@@ -254,7 +254,7 @@ const startRecoding = (audioInputStreamTransform) => {
     threshold: 0,
     silence: 1000,
     keepSilence: true,
-    recordProgram: 'sox', // Try also "arecord" or "sox"
+    recordProgram: 'rec', // Try also "arecord" or "sox"
   });
 
   sttInstance.recording
