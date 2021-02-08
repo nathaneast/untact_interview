@@ -3,7 +3,6 @@ const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const passport = require('passport');
 const morgan = require('morgan');
-const path = require('path');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const hpp = require('hpp');
@@ -39,12 +38,11 @@ mongoose
 passportConfig();
 
 if (process.env.NODE_ENV === 'production') {
-  app.set('trust proxy', 1);
   app.use(morgan('combined'));
   app.use(hpp());
   app.use(helmet());
   app.use(cors({
-    origin: 'https://untact-interview.site',
+    origin: 'http://localhost:3000',
     credentials: true,
   }));
 } else {
@@ -65,11 +63,9 @@ app.use(
     saveUninitialized: false,
     resave: false,
     secret: COOKIE_SECRET,
-    proxy: true,
     cookie: {
     httpOnly: true,
-      secure: true,
-      domain: process.env.NODE_ENV === 'production' && '.untact-interview.site',
+    secure: false,
     },
   })
 );
