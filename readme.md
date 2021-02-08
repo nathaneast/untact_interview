@@ -3,8 +3,8 @@
 ![세션진행중](https://user-images.githubusercontent.com/47707076/107195595-e5bacb80-6a34-11eb-8901-e96495b2f1a5.gif)
 
 
-인터뷰를 진행하고 영상과 음성 인식으로 기록된 내 답변을 바탕으로 
-피드백을 작성함으로써 혼자 면접을 준비하는 사람에게 
+인터뷰를 진행하고 영상과 음성 인식으로 기록된 내 답변을 바탕으로  
+피드백을 작성함으로써 혼자 면접을 준비하는 사람에게  
 도움이 되는 웹 애플리케이션 입니다.
 
 ## 📌 배포 링크
@@ -17,9 +17,9 @@
 
 ## 💡 프로젝트 동기
 
-현재 코로나 바이러스로 인해 비대면 시대가 초래하게 되었습니다.  
-그래서 취업을 앞두고 있는 청년들이 혼자 면접 준비를 효과적으로  
-할 수 있는 애플리케이션을 만들어보자는 생각을 하게 되었습니다.
+현재 코로나 바이러스로 인해 비대면 시대가 초래하게 되었습니다.   
+그래서 취업을 앞두고 있는 청년들이 혼자 면접 준비를 효과적으로  할 수 있는  
+애플리케이션을 만들어보자는 생각을 하게 되었습니다.
 
 
 ## 🎯 주요 기능
@@ -63,14 +63,20 @@
 
 
 ## 💾 로컬환경 실행
+
 1.  깃 저장소를 클론 받습니다. 
 git clone https://github.com/nathaneast/untact_interview.git
 
-2. 음성인식을 사용하기 위해서 sox 설치와 환경변수 추가가 필요 합니다.
+2. 로컬 환경에서 실행 가능한 커밋으로 이동 합니다.
+ ```
+ 쿼리
+ ```
+
+3. 음성인식을 사용하기 위해서 sox 설치와 환경변수 추가가 필요 합니다.
 - Window:
     - [sox 14.4.1 download link](https://sourceforge.net/projects/sox/files/sox/14.4.1/)
 
-3. redis를 설치하고 redis-server를 실행 합니다.
+4. redis를 설치하고 redis-server를 실행 합니다.
 - Window:
     - [redis download link](https://github.com/microsoftarchive/redis/releases/tag/win-3.2.100)
 
@@ -79,27 +85,28 @@ git clone https://github.com/nathaneast/untact_interview.git
 
 ```
 front
-3-1. npm install
+5-1. npm install
 
-3-2. npm run build
+5-2. npm run build
 
-3-3. npm run start
+5-3. npm run start
 ```
 
 ```
 back
-3-4. npm install
+5-4. npm install
 
-3-5. .env 파일을 만들고 아래 내용을 복사하여 본인에 해당하는 값을 넣어 주세요
+5-5. .env 파일을 만들고 아래 내용을 복사하여 본인에 해당하는 값을 넣어 주세요
     PORT="7000"
     MONGO_URI="< YOUR SECRET KEY >"
     COOKIE_SECRET="< YOUR COOKIE SECRET >"
     GOOGLE_APPLICATION_CREDENTIALS="< YOUR PATH >"    
     
-3-6. npm run start
+5-6. npm run start
 ```
-[mongoDB]( https://account.mongodb.com/account/login?n=%2Fv2%2F5f4b240fb000ed4c2dc3c915&nextHash=%23clusters)
+[mongoDB Atlas]( https://account.mongodb.com/account/login?n=%2Fv2%2F5f4b240fb000ed4c2dc3c915&nextHash=%23clusters)
 [Google Speech-To-Text](https://console.cloud.google.com/apis/library/speech.googleapis.com?hl=ko&pli=1&project=sodium-port-298702&folder=&organizationId=)
+
 
 
 ##  📆 세부내용
