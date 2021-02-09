@@ -65,9 +65,9 @@
 git clone https://github.com/nathaneast/untact_interview.git
 ```
 
-2. 로컬 환경에서 실행 가능한 커밋으로 이동 합니다.
+2. local 브랜치로 이동 합니다.
  ```
- git checkout 511559730f3d73fc17e2bcf55ca22beed64b3ec0
+ git checkout local
  ```
 
 3. 음성인식을 사용하기 위해서 sox 설치와 환경변수 추가가 필요 합니다.
