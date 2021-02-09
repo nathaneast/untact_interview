@@ -114,7 +114,7 @@ back
 - 마인드맵을 이용한 브레인 스토밍
     -  ✨[프로젝트 아이디어 구상](https://nathaneast-dev.tistory.com/72) 
     -  📘  [기능 정리](https://nathaneast-dev.tistory.com/73)
-    -  💻 [페이지, 컴포넌트 구상](https://nathaneast-dev.tistory.com/74)
+    -  💻 [페이지, 컴포넌트 구조 구상](https://nathaneast-dev.tistory.com/74)
     -  📲  [백엔드 스키마 구조](https://nathaneast-dev.tistory.com/75)
 
 

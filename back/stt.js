@@ -40,9 +40,6 @@ class SttProcess {
     this.isNewStream = true;
     this.isFinalEndTime = 0;
     this.isDetectFirstSentence = true;
-    this.isSentenceFinal = false;
-    this.isDivideSentence = false;
-    this.isReStartStream = false;
     this.isResponseTimeStamps = false;
     this.realTimeSpeech = '';
   }
@@ -69,23 +66,16 @@ const reStartStream = (client) => {
     sttInstance.recognizeStream.removeListener('data', speechCallback);
     sttInstance.recognizeStream = null;
   }
-
   if (sttInstance.resultEndTime > 0) {
     sttInstance.finalRequestEndTime = sttInstance.isFinalEndTime;
   }
   sttInstance.resultEndTime = 0; // 문장마다 끝나는 시간 초기화
-
   sttInstance.lastAudioInput = [];
   sttInstance.lastAudioInput = sttInstance.audioInput;
-
   sttInstance.restartCounter++;
-  console.log('레코딩 재시작', `${sttInstance.streamingLimit * sttInstance.restartCounter}`);
-
   sttInstance.isNewStream = true;
-  
 
-  // sttInstance.isReStartStream = true;
-  
+  console.log('레코딩 재시작', `${sttInstance.streamingLimit * sttInstance.restartCounter}`);
   startStream(client);
 }
 
@@ -94,28 +84,20 @@ const speechCallback = (stream, client) => {
     stream.results[0].resultEndTime.seconds * 1000 +
     Math.round(stream.results[0].resultEndTime.nanos / 1000000);
 
-    const currentRecTime = 
-    sttInstance.resultEndTime -
-    sttInstance.bridgingOffset +
-    sttInstance.streamingLimit * sttInstance.restartCounter;
-    
-  // console.log(currentRecTime, 'currentRecTime');
-    
-  sttInstance.isSentenceFinal = stream.results[0].isFinal;
-  
-  const transcript = stream.results[0].alternatives[0].transcript;
-  sttInstance.realTimeSpeech += transcript;
+    const currentRecTime =
+      sttInstance.resultEndTime -
+      sttInstance.bridgingOffset +
+      sttInstance.streamingLimit * sttInstance.restartCounter;
+    const transcript = stream.results[0].alternatives[0].transcript;
+    sttInstance.realTimeSpeech += transcript;
 
-  // 문제의 첫 문장을 감지하여 타임스탬프 폼을 만듦
   if (sttInstance.isDetectFirstSentence) {
-    // console.log('speechCallback 문제의 첫 문장 감지! 현재문제 타임스탬프폼 만듬');
     markingTimeStamp(currentRecTime);
     sttInstance.isDetectFirstSentence = false;
   }
   
   // stt 문장 완성이 안되었는데 다음 문제로 넘어갈시 이전 문제의 length 저장
   if (sttInstance.isDivideSentence) {
-    // console.log('realTimeSpeech 있어서 문장 나누기 isDivideSentence');
     sttInstance.previousSentenceLength = transcript.length;
     sttInstance.isDivideSentence = false;
   }
@@ -127,12 +109,10 @@ const speechCallback = (stream, client) => {
 
   //문장 완성시
   if (stream.results[0].isFinal) {
-    // console.log('문장완성됨 isFinal !!!')
     // console.log('완성된 문장', `${currentRecTime} ${transcript}`);
     client.emit('speechResult', transcript);
 
     if (sttInstance.previousSentenceLength) {
-      // console.log('다음문제 => 문자완성 덜됨 => 문장완성 => previousSentenceLength');
       const previousSentence = transcript.substring(
         0,
         sttInstance.previousSentenceLength
@@ -142,53 +122,30 @@ const speechCallback = (stream, client) => {
         transcript.length
       );
       let previousTimeStampText = sttInstance.timeStamps[sttInstance.currentQuestionIndex - 1].text;
-
+      
       sttInstance.timeStamps[sttInstance.currentQuestionIndex - 1].text = previousTimeStampText
         ? previousTimeStampText + previousSentence
         : previousSentence;
 
       if (currentSentence) {
-        // console.log(
-        //   '현재 문제 문장 있음 => 현재 문제 타임스탬프에 저장', currentSentence
-        // );
         sttInstance.timeStamps[sttInstance.currentQuestionIndex].text = currentSentence;
       } else {
-        // console.log('현재 문장 없음 => 현재문제 타임스탬프 지움');
         sttInstance.timeStamps.pop();
         sttInstance.isDetectFirstSentence = true;
       }
-
-      // console.log(
-      //   '이전문장:',
-      //   transcript.substring(0, sttInstance.previousSentenceLength)
-      // );
-      // console.log(
-      //   '다음문장:',
-      //   transcript.substring(
-      //     sttInstance.previousSentenceLength,
-      //     transcript.length
-      //   )
-      // );
-
       sttInstance.previousSentenceLength = null;
     } else {
       let currentTimeStamp = sttInstance.timeStamps[sttInstance.currentQuestionIndex];
       sttInstance.timeStamps[sttInstance.currentQuestionIndex].text = currentTimeStamp.text 
         ? currentTimeStamp.text + transcript
         : transcript;
-      // console.log('문장 완성 => 현재 문제 타임스탬프에 추가: ', transcript);
     }
-    
-    console.log('문장완성된 후 타임 스탬프!: ', sttInstance.timeStamps);
-
     sttInstance.isFinalEndTime = sttInstance.resultEndTime; // 문장 완료 후 끝나는 시간 저장
     sttInstance.realTimeSpeech = '';
 
     if (sttInstance.isResponseTimeStamps) {
-      // console.log('stt끝 => 문장완성 덜됨 => 문장완성 => 응답 프론트 타임스탬프');
       client.emit('getTimeStamps', sttInstance.timeStamps);
     }
-
   }
 };
 
@@ -254,7 +211,7 @@ const startRecoding = (audioInputStreamTransform) => {
     threshold: 0,
     silence: 1000,
     keepSilence: true,
-    recordProgram: 'rec', // Try also "arecord" or "sox"
+    recordProgram: 'rec',
   });
 
   sttInstance.recording
@@ -267,22 +224,19 @@ const startRecoding = (audioInputStreamTransform) => {
 
 const checkEmptySTTResult = () => {
   if (!sttInstance.timeStamps[sttInstance.currentQuestionIndex]) {
-    // console.log('이전 문제 인스턴스 없으니 만들기 checkEmptySTTResult');
     sttInstance.timeStamps[sttInstance.currentQuestionIndex] = new MyAnswer();
   }
 }
 
 // 다음 문제로 넘어갈시 실행되는 함수
 const detectFirstSentence = () => {
-  // console.log('다음 문제로 넘어감');
+  console.log('detectFirstSentence');
   checkEmptySTTResult();
   sttInstance.isDetectFirstSentence = true;
   if (sttInstance.realTimeSpeech) {
-    // console.log('다음문제 => 리얼타임 스피치 있음 => isDivideSentence true');
     sttInstance.isDivideSentence = true;
   }
   sttInstance.currentQuestionIndex++;
-  // console.log('다음 문제로 넘어가고 현재상태 타임스탬프, 문제인덱스', sttInstance.timeStamps, sttInstance.currentQuestionIndex);
 }
 
 const stopRecoding = () => {
@@ -293,7 +247,7 @@ const stopRecoding = () => {
 }
 
 const endGoogleCloudStream = () => {
-  console.log('endGoogleCloudStream 스트리밍 끝');
+  console.log('endGoogleCloudStream');
   if (sttInstance && sttInstance.recognizeStream) {
     sttInstance.recognizeStream.end();
     sttInstance.recognizeStream = null;
@@ -303,7 +257,7 @@ const endGoogleCloudStream = () => {
 }
 
 const getTimeStamsProcess = (client) => {
-  console.log('getTimeStamsProcess stt끝 => timeStamps 응답');
+  console.log('getTimeStamsProcess');
   if (sttInstance.realTimeSpeech) {
     sttInstance.isResponseTimeStamps = true;
   } else {
