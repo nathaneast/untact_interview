@@ -65,21 +65,21 @@
 git clone https://github.com/nathaneast/untact_interview.git
 ```
 
-3. 로컬 환경에서 실행 가능한 커밋으로 이동 합니다.
+2. 로컬 환경에서 실행 가능한 커밋으로 이동 합니다.
  ```
  git checkout 511559730f3d73fc17e2bcf55ca22beed64b3ec0
  ```
 
-4. 음성인식을 사용하기 위해서 sox 설치와 환경변수 추가가 필요 합니다.
+3. 음성인식을 사용하기 위해서 sox 설치와 환경변수 추가가 필요 합니다.
 - Window:
-    - [sox 14.4.1 download link](https://sourceforge.net/projects/sox/files/sox/14.4.1/)
+    - [sox 14.4.1 download link](https://sourceforge.net/projects/sox/files/sox/14.4.1/){: target="_blank"}
 
-5. redis를 설치하고 redis-server를 실행 합니다.
+4. redis를 설치하고 redis-server를 실행 합니다.
 - Window:
-    - [redis download link](https://github.com/microsoftarchive/redis/releases/tag/win-3.2.100)
+    - [redis download link](https://github.com/microsoftarchive/redis/releases/tag/win-3.2.100){: target="_blank"}
 
 
-6.  front, back 각 폴더에서 터미널에 아래 명령어를 입력하고 .env 파일을 추가 합니다.
+5.  front, back 각 폴더에서 터미널에 아래 명령어를 입력하고 .env 파일을 추가 합니다.
 
 ```
 front
