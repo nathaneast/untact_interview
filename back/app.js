@@ -38,12 +38,11 @@ mongoose
 passportConfig();
 
 if (process.env.NODE_ENV === 'production') {
-  app.set('trust proxy', 1);
   app.use(morgan('combined'));
   app.use(hpp());
   app.use(helmet());
   app.use(cors({
-    origin: 'https://untact-interview.site',
+    origin: 'http://localhost:3000',
     credentials: true,
   }));
 } else {
@@ -64,15 +63,12 @@ app.use(
     saveUninitialized: false,
     resave: false,
     secret: COOKIE_SECRET,
-    proxy: true,
     cookie: {
-      httpOnly: true,
-      secure: true,
-      domain: process.env.NODE_ENV === 'production' && '.untact-interview.site',
+    httpOnly: true,
+    secure: false,
     },
   })
 );
-
 app.use(function (req, res, next) {
   if (!req.session) {
     return next(new Error('oh no'));
