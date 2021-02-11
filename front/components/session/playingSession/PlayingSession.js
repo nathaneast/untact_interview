@@ -1,30 +1,29 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
-import Head from 'next/head';
-import PropTypes from 'prop-types';
 import { useRouter } from 'next/router';
+import PropTypes from 'prop-types';
+import Head from 'next/head';
 import styles from './styles.module.scss';
 
+import socket, { socketEmits } from '../../../socket';
 import Modal from '../../modal/Modal';
 import ConfirmMessage from '../../modal/ConfirmMessage';
 import useInterval from '../../../hooks/useInterval';
-import socket, { socketEmits } from '../../../socket';
 import Loader from '../../Loader';
 
 const PlaySession = ({
   questions,
-  saveTimeStamp,
+  saveTimeStamps,
   saveBlob,
   sessionTitle,
   moveFeedback,
 }) => {
-  const [limitTime, setLimitTime] = useState(120);
+  const limitTime = 120;
   const [timer, setTimer] = useState(limitTime);
-  const [questionIndex, setQuestionIndex] = useState(0);
   const [isRunning, setIsRunning] = useState(true);
+  const [questionIndex, setQuestionIndex] = useState(0);
 
-  const [saveSpeech, setSaveSpeech] = useState(null);
-  const [speech, setSpeech] = useState(null);
-
+  const [allSpeech, setAllSpeech] = useState(null);
+  const [realtimeSpeech, setSpeechRealtime] = useState(null);
   const [isModal, setIsModal] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -51,18 +50,17 @@ const PlaySession = ({
           type: 'video',
           timeSlice: 1000,
         });
-
         recorderStream.current = stream;
         recorder.current.stream = stream;
         recorder.current.startRecording();
-        socket(setSpeech, setSaveSpeech, saveTimeStamp);
+        socket(setSpeechRealtime, setAllSpeech, saveTimeStamps);
         socketEmits.startGoogleCloudStream();
         setIsLoading(false);
       });
   }, []);
 
   const endSession = useCallback(
-    (isFinal) => {
+    (isFinal) => { // 인터뷰를 끝까지 마무리 했는지 여부
       if (isFinal) {
         recorder.current.stopRecording(() => {
           saveBlob(URL.createObjectURL(recorder.current.getBlob()));
@@ -78,16 +76,15 @@ const PlaySession = ({
         router.push('/interviews');
       }
     },
-    [sessionTitle],
   );
 
   useInterval(
     () => {
-      if (timer - 1 === 0 && questions.length - 1 === questionIndex) {
-        endSession(true);
-        return;
-      }
       if (timer - 1 === 0) {
+        if (questions.length - 1 === questionIndex) {
+          endSession(true);
+          return;
+        }
         setQuestionIndex(questionIndex + 1);
         setTimer(limitTime);
         socketEmits.detectFirstSentence();
@@ -98,7 +95,7 @@ const PlaySession = ({
     isRunning ? 1000 : null,
   );
 
-  const onClick = useCallback(() => {
+  const onClickNextQuestion = useCallback(() => {
     if (questions.length - 1 > questionIndex) {
       setQuestionIndex(questionIndex + 1);
       setTimer(limitTime);
@@ -109,18 +106,16 @@ const PlaySession = ({
       setTimeout(() => {
         nextQuestionButton.current.disabled = false;
         nextQuestionButton.current.style.backgroundColor = '#e84118';
-        nextQuestionButton.current.style.color = ':#FFFFF6';
+        nextQuestionButton.current.style.color = '#FFFFF6';
       }, 4000);
     } else {
       endSession(true);
     }
-  }, [questions, questionIndex, limitTime]);
+  }, [questions, questionIndex]);
 
   return (
     <>
       <Head>
-        <meta charSet="utf-8" />
-        <title>세션진행 | Untact_Interview </title>
         <script src="https://www.WebRTC-Experiment.com/RecordRTC.js" />
       </Head>
       {isLoading ? (
@@ -166,15 +161,16 @@ const PlaySession = ({
                 <p>speech board</p>
               </div>
               <div>
-                <p>{saveSpeech}</p>
+                <p>{allSpeech}</p>
               </div>
               <div>
-                <p>{speech}</p>
+                <p>{realtimeSpeech}</p>
               </div>
             </article>
           </main>
+
           <div className={styles.buttonWrapper}>
-            <button ref={nextQuestionButton} onClick={onClick}>
+            <button ref={nextQuestionButton} onClick={onClickNextQuestion}>
               다음 문제
             </button>
           </div>
@@ -196,7 +192,7 @@ const PlaySession = ({
 PlaySession.propTypes = {
   questions: PropTypes.array.isRequired,
   moveFeedback: PropTypes.func.isRequired,
-  saveTimeStamp: PropTypes.func.isRequired,
+  saveTimeStamps: PropTypes.func.isRequired,
   saveBlob: PropTypes.func.isRequired,
   sessionTitle: PropTypes.string.isRequired,
 };

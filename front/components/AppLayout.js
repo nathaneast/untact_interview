@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 
+import { LOG_OUT_REQUEST, CLEAR_LOGIN_ERROR_REQUEST } from '../reducers/user';
 import Modal from './modal/Modal';
 import LoginForm from './modal/LoginForm';
-import { LOG_OUT_REQUEST, CLEAR_LOGIN_ERROR_REQUEST } from '../reducers/user';
 
 const Container = styled.div`
   display: flex;
@@ -79,8 +79,8 @@ const Contents = styled.div`
 `;
 
 const AppLayout = ({ children }) => {
-  const [tryLogin, setTryLogin] = useState(false);
   const { me } = useSelector((state) => state.user);
+  const [tryLogin, setTryLogin] = useState(false);
   const dispatch = useDispatch();
 
   const onLogIn = useCallback(() => {

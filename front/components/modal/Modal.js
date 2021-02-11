@@ -36,7 +36,9 @@ const ModalContents = styled.div`
 
 const Modal = ({ children, onCancelModal }) => {
   const onClick = useCallback((e) => {
-    e.target === e.currentTarget ? onCancelModal() : '';
+    if (e.target === e.currentTarget) {
+      onCancelModal();
+    }
   }, [onCancelModal]);
 
   return (

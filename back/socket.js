@@ -16,11 +16,12 @@ module.exports = (io) => {
       stt.endGoogleCloudStream();
       stt.stopRecoding();
       if (isFinal) {
-        stt.getTimeStamps(client);
+        stt.timeStampsResult(client);
       }
     });
 
-    client.on('detectFirstSentence', () => { // 다음 문제로 넘어가는것
+    client.on('detectFirstSentence', () => { 
+      // 다음 문제로 넘어가서 첫 문장을 말한 시간을 감지하고 타임스탬프를 만듦
       stt.detectFirstSentence();
     });
   });

@@ -5,8 +5,8 @@ import styled from 'styled-components';
 
 import { ButtonDefault } from '../styles/reStyled';
 import { LOAD_MY_INFO_REQUEST } from '../reducers/user';
-import AppLayout from '../components/AppLayout';
 import wrapper from '../store/configureStore';
+import AppLayout from '../components/AppLayout';
 
 const Container = styled.div`
   width: 100%;

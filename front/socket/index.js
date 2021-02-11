@@ -5,7 +5,7 @@ const socket = socketIoClient(backUrl, {
   transports: ['websocket'],
 });
 
-export default (setSpeech, setSaveSpeech, saveTimeStamp) => {
+export default (setSpeechRealtime, setAllSpeech, saveTimeStamps) => {
   socket.on('connect', () => {
     socket.emit('join', '소켓 클라-서버 연결 성공!');
   });
@@ -13,16 +13,14 @@ export default (setSpeech, setSaveSpeech, saveTimeStamp) => {
     console.log(data);
   });
   socket.on('speechRealTime', (data) => {
-    setSpeech(data);
+    setSpeechRealtime(data);
   });
   socket.on('speechResult', (data) => {
-    console.log(data, 'speechResult');
-    setSaveSpeech((prev) => prev ? `${prev} ${data}` : data);
-    setSpeech('');
+    setAllSpeech((prev) => prev ? `${prev} ${data}` : data);
+    setSpeechRealtime('');
   });
-  socket.on('getTimeStamps', (data) => {
-    console.log(data, 'getTimeStamps');
-    saveTimeStamp(data);
+  socket.on('timeStampsResult', (data) => {
+    saveTimeStamps(data);
   });
 };
 

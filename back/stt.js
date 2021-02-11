@@ -89,6 +89,7 @@ const speechCallback = (stream, client) => {
       sttInstance.bridgingOffset +
       sttInstance.streamingLimit * sttInstance.restartCounter;
     const transcript = stream.results[0].alternatives[0].transcript;
+  
     sttInstance.realTimeSpeech += transcript;
 
   if (sttInstance.isDetectFirstSentence) {
@@ -144,7 +145,7 @@ const speechCallback = (stream, client) => {
     sttInstance.realTimeSpeech = '';
 
     if (sttInstance.isResponseTimeStamps) {
-      client.emit('getTimeStamps', sttInstance.timeStamps);
+      client.emit('timeStampsResult', sttInstance.timeStamps);
     }
   }
 };
@@ -256,12 +257,12 @@ const endGoogleCloudStream = () => {
   }
 }
 
-const getTimeStamsProcess = (client) => {
-  console.log('getTimeStamsProcess');
+const timeStamsResultProcess = (client) => {
+  console.log('timeStampsResultProcess');
   if (sttInstance.realTimeSpeech) {
     sttInstance.isResponseTimeStamps = true;
   } else {
-    client.emit('getTimeStamps', sttInstance.timeStamps);
+    client.emit('timeStampsResult', sttInstance.timeStamps);
   }
 }
 
@@ -278,8 +279,8 @@ module.exports = {
   },
   stopRecoding: () => stopRecoding(),
   endGoogleCloudStream: () => endGoogleCloudStream(),
-  getTimeStamps: (client) => {
-    getTimeStamsProcess(client);
+  timeStampsResult: (client) => {
+    timeStamsResultProcess(client);
   },
   detectFirstSentence: () => detectFirstSentence(),
 };

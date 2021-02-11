@@ -39,14 +39,14 @@ const Item = styled.div`
 const FeedbackFormCard = ({
   question,
   answer,
-  FeedbackNumber,
+  feedbackNumber,
   onChange,
   writeMode,
   feedback,
 }) => (
   <Container>
     <Item>
-      <span>{FeedbackNumber}번 질문: </span>
+      <span>{feedbackNumber}번 질문: </span>
       <p>{question}</p>
     </Item>
     <Item>
@@ -59,7 +59,7 @@ const FeedbackFormCard = ({
         <textarea
           rows="3"
           cols="82"
-          name={`feedback_${FeedbackNumber}`}
+          name={`feedback_${feedbackNumber}`}
           onChange={onChange}
         />
       ) : (
@@ -72,7 +72,7 @@ const FeedbackFormCard = ({
 FeedbackFormCard.propTypes = {
   question: PropTypes.string.isRequired,
   answer: PropTypes.string.isRequired,
-  FeedbackNumber: PropTypes.number.isRequired,
+  feedbackNumber: PropTypes.number.isRequired,
   writeMode: PropTypes.bool.isRequired,
   onChange: PropTypes.func,
   feedback: PropTypes.string,

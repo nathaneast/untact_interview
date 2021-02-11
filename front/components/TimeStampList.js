@@ -41,6 +41,7 @@ const TimeStampList = ({ timeStamps, targetVideo }) => {
     </Container>
   );
 };
+
 TimeStampList.propTypes = {
   timeStamps: PropTypes.array.isRequired,
   targetVideo: PropTypes.any.isRequired,

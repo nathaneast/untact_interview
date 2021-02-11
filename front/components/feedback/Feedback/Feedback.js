@@ -29,14 +29,14 @@ const Feedback = ({
   blob,
   timeStamps,
 }) => {
-  const dispatch = useDispatch();
-  const [feedbackform, setFeedbackValues] = useState({});
   const [feedbackDesc, onChangeFeedbackDesc] = useInput('');
-
+  const [feedbackform, setFeedbackValues] = useState({});
   const [isModal, setIsModal] = useState(true);
   const [isFinishedFeedback, setIsFinishedFeedback] = useState(false);
-  const videoElement = useRef();
+
+  const dispatch = useDispatch();
   const router = useRouter();
+  const videoElement = useRef();
 
   const onChange = (e) => {
     setFeedbackValues({
@@ -105,25 +105,22 @@ const Feedback = ({
           <span>피드백 설명: </span>
           <textarea rows="2" cols="70" onChange={onChangeFeedbackDesc} />
         </FeedbackDesc>
-
         <FeedbackFormBoard>
           {questions.map((item, index) => (
             <FeedbackFormCard
               key={index}
               question={item}
               answer={timeStamps[index].text}
-              FeedbackNumber={index + 1}
+              feedbackNumber={index + 1}
               onChange={onChange}
               writeMode={true}
             />
           ))}
         </FeedbackFormBoard>
-
         <ButtonWrapper>
           <SubmitButton onClick={onSubmit}>작성하기</SubmitButton>
         </ButtonWrapper>
       </AppLayout>
-
       {isModal && (
         (isFinishedFeedback ? (
           <Modal onCancelModal={onRedirectInterviews}>

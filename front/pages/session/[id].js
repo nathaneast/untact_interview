@@ -1,16 +1,16 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { END } from 'redux-saga';
-import axios from 'axios';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
+import axios from 'axios';
 
-import wrapper from '../../store/configureStore';
 import { LOAD_MY_INFO_REQUEST } from '../../reducers/user';
 import { LOAD_SESSION_POST_REQUEST } from '../../reducers/post';
+import { socketEmits } from '../../socket';
+import wrapper from '../../store/configureStore';
 import PlayingSession from '../../components/session/playingSession/PlayingSession';
 import Feedback from '../../components/feedback/Feedback/Feedback';
-import { socketEmits } from '../../socket';
 
 const SessionPost = () => {
   const { singlePost } = useSelector((state) => state.post);
@@ -61,10 +61,10 @@ const SessionPost = () => {
       ) : (
         <PlayingSession
           questions={singlePost.questions}
+          sessionTitle={singlePost.title}
           moveFeedback={() => setIsEndSession(true)}
           saveBlob={setBlob}
-          saveTimeStamp={setTimeStamps}
-          sessionTitle={singlePost.title}
+          saveTimeStamps={setTimeStamps}
         />
       ))}
     </>
