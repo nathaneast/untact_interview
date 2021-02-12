@@ -14,12 +14,12 @@ import {
   SubmitWrapper,
   SubmitButton,
 } from '../styles/sessionForm';
-import AppLayout from '../components/AppLayout';
-import QuestionFormCard from '../components/QuestionFormCard';
 import { UPLOAD_SESSION_POST_REQUEST } from '../reducers/post';
 import { LOAD_MY_INFO_REQUEST } from '../reducers/user';
-import useInput from '../hooks/useInput';
 import wrapper from '../store/configureStore';
+import useInput from '../hooks/useInput';
+import AppLayout from '../components/AppLayout';
+import QuestionFormCard from '../components/QuestionFormCard';
 
 const writeSessionPost = () => {
   const dispatch = useDispatch();
@@ -74,7 +74,6 @@ const writeSessionPost = () => {
               <input type="text" onChange={onChangeTitle} />
             </div>
           </TitleFormWrapper>
-
           <CategoryWrapper>
             <label>카테고리</label>
             <div>
@@ -85,14 +84,12 @@ const writeSessionPost = () => {
               </select>
             </div>
           </CategoryWrapper>
-
           <DescWrapper>
             <label>설명</label>
             <div>
               <textarea rows="2" cols="70" onChange={onChangeDesc} />
             </div>
           </DescWrapper>
-
           <QuestionWrappers>
             <span>질문 작성</span>
             {[...Array(5)].map((n, i) => (
@@ -103,7 +100,6 @@ const writeSessionPost = () => {
               />
             ))}
           </QuestionWrappers>
-
           <SubmitWrapper>
             <SubmitButton type="submit">작성하기</SubmitButton>
           </SubmitWrapper>

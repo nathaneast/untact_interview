@@ -147,6 +147,7 @@ const speechCallback = (stream, client) => {
     if (sttInstance.isResponseTimeStamps) {
       client.emit('timeStampsResult', sttInstance.timeStamps);
     }
+    console.log('sttInstance.timeStamps', sttInstance.timeStamps);
   }
 };
 
@@ -238,6 +239,7 @@ const detectFirstSentence = () => {
     sttInstance.isDivideSentence = true;
   }
   sttInstance.currentQuestionIndex++;
+  console.log('sttInstance.timeStamps', sttInstance.timeStamps);
 }
 
 const stopRecoding = () => {

@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
-import PropTypes from 'prop-types';
 import { useRouter } from 'next/router';
 import { useDispatch } from 'react-redux';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
 import { ON_STAR_POST_REQUEST } from '../../reducers/post';
@@ -20,8 +20,8 @@ const Container = styled.section`
 const SessionCardList = ({ posts, meId }) => {
   const [isModal, setIsModal] = useState(false);
   const [selectedPostId, setSelectedPostId] = useState('');
-  const router = useRouter();
   const dispatch = useDispatch();
+  const router = useRouter();
 
   const onStartSession = useCallback(() => {
     router.push(`/session/${selectedPostId}`);
@@ -58,7 +58,7 @@ const SessionCardList = ({ posts, meId }) => {
     [meId],
   );
 
-  const isStarUser = useCallback((staredUsers) => {
+  const displayStaredUser = useCallback((staredUsers) => {
     if (!meId) {
       return false;
     }
@@ -80,7 +80,7 @@ const SessionCardList = ({ posts, meId }) => {
             star={post.star}
             onClick={onClickStartSession}
             moveUserProfile={onClickRedirectUser}
-            isStarUser={isStarUser}
+            displayStaredUser={displayStaredUser}
             onStarHandler={onStarHandler}
           />
         ))}

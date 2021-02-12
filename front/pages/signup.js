@@ -1,16 +1,16 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
-import Head from 'next/head';
 import { useDispatch, useSelector } from 'react-redux';
-import Router from 'next/router';
 import { END } from 'redux-saga';
+import Router from 'next/router';
+import Head from 'next/head';
 import axios from 'axios';
 import styled from 'styled-components';
 
-import { ButtonDefault } from '../styles/reStyled';
+import wrapper from '../store/configureStore';
+import { SIGN_UP_REQUEST, LOAD_MY_INFO_REQUEST } from '../reducers/user';
 import AppLayout from '../components/AppLayout';
 import useInput from '../hooks/useInput';
-import { SIGN_UP_REQUEST, LOAD_MY_INFO_REQUEST } from '../reducers/user';
-import wrapper from '../store/configureStore';
+import { ButtonDefault } from '../styles/reStyled';
 
 const Container = styled.div`
   background-color: white;
@@ -62,7 +62,6 @@ const Button = styled(ButtonDefault)`
 
 const Signup = () => {
   const { me, signUpError } = useSelector((state) => state.user);
-  const dispatch = useDispatch();
 
   const [email, onChangeEmail] = useInput('');
   const [nickname, onChangeNickname] = useInput('');
@@ -71,6 +70,7 @@ const Signup = () => {
   const [displaySignUpError, setDisplaySignUpError] = useState('');
 
   const timerId = useRef();
+  const dispatch = useDispatch();
 
   const clearTimer = useCallback(() => {
     clearTimeout(timerId.current);

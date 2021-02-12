@@ -6,8 +6,8 @@ import styled from 'styled-components';
 
 import { LOAD_SESSION_POSTS_REQUEST } from '../reducers/post';
 import { LOAD_MY_INFO_REQUEST } from '../reducers/user';
-import AppLayout from '../components/AppLayout';
 import wrapper from '../store/configureStore';
+import AppLayout from '../components/AppLayout';
 import SessionCardList from '../components/session/SessionCardList';
 import NonePostMessageCard from '../components/NonePostMessageCard';
 
@@ -38,7 +38,7 @@ const Interviews = () => {
   const dispatch = useDispatch();
   const { me } = useSelector((state) => state.user);
   const { sessionPosts, hasMorePosts, loadSessionPostsLoading } = useSelector(
-    (state) => state.post
+    (state) => state.post,
   );
   const [selectedCategory, setSelectedCategory] = useState('all');
 

@@ -26,7 +26,6 @@ const SessionPost = () => {
   });
 
   useEffect(() => {
-    console.log('세션페이지 useEffect 실행');
     if (!me) {
       alert('로그인 후 이용 가능 합니다');
       return router.push('/');

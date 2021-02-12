@@ -86,7 +86,7 @@ router.get('/:userId', async (req, res, next) => {
         select: '-questions',
         match,
         options: {
-          sort: { createdAt: -1},
+          sort: { createdAt: -1 },
           limit: 8,
         },
         populate: [

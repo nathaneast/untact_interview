@@ -87,7 +87,7 @@ const SessionCard = ({
   star,
   onClick,
   moveUserProfile,
-  isStarUser,
+  displayStaredUser,
   onStarHandler,
 }) => (
   <Container>
@@ -105,7 +105,7 @@ const SessionCard = ({
           <span>{email}</span>
         </Creator>
         <Star onClick={() => onStarHandler(postId)}>
-          <span>{isStarUser(star) ? '⭐' : '☆'}</span>
+          <span>{displayStaredUser(star) ? '⭐' : '☆'}</span>
           <span> {star.length}</span>
         </Star>
       </PostDetail>
@@ -125,7 +125,7 @@ SessionCard.propTypes = {
   star: PropTypes.array.isRequired,
   onClick: PropTypes.func.isRequired,
   moveUserProfile: PropTypes.func.isRequired,
-  isStarUser: PropTypes.func.isRequired,
+  displayStaredUser: PropTypes.func.isRequired,
   onStarHandler: PropTypes.func.isRequired,
 };
 

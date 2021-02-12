@@ -2,8 +2,8 @@ import React, { useCallback, useEffect, useState, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useRouter } from 'next/router';
 import { END } from 'redux-saga';
-import axios from 'axios';
 import Head from 'next/head';
+import axios from 'axios';
 
 import {
   UserBoard,
@@ -23,11 +23,9 @@ import FeedbackCardList from '../../components/feedback/FeedbackCardList';
 import NonePostMessageCard from '../../components/NonePostMessageCard';
 
 const User = () => {
-  const dispatch = useDispatch();
-  const { me } = useSelector((state) => state.user);
-  const { hasMorePosts } = useSelector((state) => state.post);
-  const { userInfo } = useSelector((state) => state.user);
+  const { me, userInfo } = useSelector((state) => state.user);
   const {
+    hasMorePosts,
     feedbackPosts,
     sessionPosts,
     loadUserPostsLoading,
@@ -37,6 +35,11 @@ const User = () => {
 
   const router = useRouter();
   const userId = useRef(router.asPath.split('/user/')[1]);
+  const dispatch = useDispatch();
+
+  const isSelectedFeedback = useCallback(() => (
+    selectedCategory === 'feedback'
+  ), [selectedCategory]);
 
   useEffect(() => {
     function onScroll() {
@@ -45,7 +48,7 @@ const User = () => {
         document.documentElement.scrollHeight - 100
       ) {
         if (hasMorePosts && !loadUserPostsLoading) {
-          const anyPostLastId = selectedCategory === 'feedback'
+          const anyPostLastId = isSelectedFeedback()
             ? feedbackPosts[feedbackPosts.length - 1]?._id
             : sessionPosts[sessionPosts.length - 1]?._id;
           dispatch({
@@ -106,10 +109,6 @@ const User = () => {
     },
     [selectedCategory],
   );
-
-  const isSelectedFeedback = useCallback(() => (
-    selectedCategory === 'feedback'
-  ), [selectedCategory]);
 
   const isNonePosts = useCallback(
     () => (

@@ -18,8 +18,6 @@ const FeedbackCardList = ({ posts }) => {
     router.push(`/feedback/${feedbackId}`);
   });
 
-  console.log(posts, 'FeedbackCardList posts');
-
   return (
     <Container>
       {posts.map((post) => (

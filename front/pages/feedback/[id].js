@@ -1,9 +1,9 @@
 import React, { useCallback, useState, useRef, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { END } from 'redux-saga';
+import Head from 'next/head';
 import axios from 'axios';
 import styled from 'styled-components';
-import Head from 'next/head';
 
 import wrapper from '../../store/configureStore';
 import { LOAD_MY_INFO_REQUEST } from '../../reducers/user';
@@ -71,10 +71,7 @@ const SessionFlipCard = styled.div`
 `;
 
 const feedbackPost = () => {
-  const { singlePost } = useSelector(
-    (state) => state.post,
-  );
-
+  const { singlePost } = useSelector((state) => state.post);
   const [videoBlob, setVideoBlob] = useState(null);
   const [isSessionFlipCard, setIsSessionFlipCard] = useState(false);
 
@@ -193,10 +190,10 @@ const feedbackPost = () => {
           singlePost.sessionPost.questions.map((item, index) => (
             <FeedbackFormCard
               key={index}
+              question={item}
               answer={singlePost.timeStamps[index].text}
               feedback={singlePost.feedbacks[index]}
               FeedbackNumber={index + 1}
-              question={item}
               writeMode={false}
             />
           )))}
