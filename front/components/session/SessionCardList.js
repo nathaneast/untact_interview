@@ -23,11 +23,11 @@ const SessionCardList = ({ posts, meId }) => {
   const dispatch = useDispatch();
   const router = useRouter();
 
-  const onStartSession = useCallback(() => {
+  const onRedirectSession = useCallback(() => {
     router.push(`/session/${selectedPostId}`);
   });
 
-  const onClickStartSession = useCallback((postId) => {
+  const onClickTryStartSession = useCallback((postId) => {
     setIsModal(true);
     setSelectedPostId(postId);
   });
@@ -67,7 +67,7 @@ const SessionCardList = ({ posts, meId }) => {
 
   return (
     <>
-      <Container>
+      <Container data-testid='section'>
         {posts.map((post) => (
           <SessionCard
             key={post._id}
@@ -78,7 +78,7 @@ const SessionCardList = ({ posts, meId }) => {
             desc={post.desc}
             email={post.creator.email}
             star={post.star}
-            onClick={onClickStartSession}
+            onClick={onClickTryStartSession}
             moveUserProfile={onClickRedirectUser}
             displayStaredUser={displayStaredUser}
             onStarHandler={onStarHandler}
@@ -88,9 +88,9 @@ const SessionCardList = ({ posts, meId }) => {
       {isModal && (
         (meId ? (
           <Modal onCancelModal={onCancelModal}>
-            <ConfirmMessage
+            <ConfirmMessage data-testid='confirmModal'
               onCancel={onCancelModal}
-              onOk={onStartSession}
+              onOk={onRedirectSession}
               message={'인터뷰를 진행 하시겠습니까?'}
             />
           </Modal>

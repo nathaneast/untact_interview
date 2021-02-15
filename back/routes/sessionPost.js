@@ -102,7 +102,7 @@ router.patch('/:postId/star', isLoggedIn, async (req, res, next) => {
       update('star', userId),
       { new: true }
     );
-    const updateUser = await User.findByIdAndUpdate(
+    await User.findByIdAndUpdate(
       userId,
       update('starPosts', postId),
       { new: true }

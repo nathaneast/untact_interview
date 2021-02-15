@@ -45,6 +45,10 @@
     "jsx-a11y/click-events-have-key-events": "off",
     "no-nested-ternary": "off",
     "no-confusing-arrow": "off",
-    "no-case-declarations": "off"
+    "no-case-declarations": "off",
+    "no-undef": "off",
+    "comma-dangle": "off",
+    "quotes": "off",
+    "react/react-in-jsx-scope": "off"
   }
 }

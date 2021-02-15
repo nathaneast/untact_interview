@@ -27,7 +27,6 @@ import {
 } from '../reducers/post';
 
 function onStarPostAPI(data) {
-  console.log(data, 'onStarPostAPI');
   return axios.patch(`/sessionPost/${data.postId}/star`, {
     userId: data.userId,
   });
@@ -36,7 +35,6 @@ function onStarPostAPI(data) {
 function* onStarPost(action) {
   try {
     const result = yield call(onStarPostAPI, action.data);
-    console.log(result, 'onStarPost');
     yield put({
       type: ON_STAR_POST_SUCCESS,
       data: result.data,
@@ -62,7 +60,6 @@ function loadUserPostsAPI(data) {
 function* loadUserPosts(action) {
   try {
     const result = yield call(loadUserPostsAPI, action.data);
-    console.log(result, 'loadUserPosts');
     yield put({
       type: LOAD_USER_POSTS_SUCCESS,
       data: {
