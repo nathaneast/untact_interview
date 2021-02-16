@@ -67,7 +67,7 @@ const SessionCardList = ({ posts, meId }) => {
 
   return (
     <>
-      <Container data-testid='section'>
+      <Container>
         {posts.map((post) => (
           <SessionCard
             key={post._id}
@@ -88,7 +88,7 @@ const SessionCardList = ({ posts, meId }) => {
       {isModal && (
         (meId ? (
           <Modal onCancelModal={onCancelModal}>
-            <ConfirmMessage data-testid='confirmModal'
+            <ConfirmMessage
               onCancel={onCancelModal}
               onOk={onRedirectSession}
               message={'인터뷰를 진행 하시겠습니까?'}
