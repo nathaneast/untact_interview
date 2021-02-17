@@ -1,26 +1,46 @@
-import { render, fireEvent } from "@testing-library/react";
+import { render, fireEvent, findByText } from "@testing-library/react";
 import { Provider } from 'react-redux';
-import { RouterContext } from "next/dist/next-server/lib/router-context";
+import { act } from 'react-dom/test-utils';
 
-import { initialState, store, mockRouter } from "./setup";
+import { initialState, store } from "./setup";
 import PlayingSession from "../../components/session/playingSession/PlayingSession";
 
 describe("PlayingSession", () => {
-  it("open exit modal after clicked exit", () => {
-    const { getByText } = render(
-      // <Provider store={store}>
-      <PlayingSession
-        questions={initialState.posts[0].questions}
-        saveTimeStamps={jest.fn()}
-        saveBlob={jest.fn()}
-        sessionTitle={initialState.posts[0].title}
-        moveFeedback={jest.fn()}
-      />
-      // </Provider>
-    );
-    const exitButton = getByText('나가기');
-    fireEvent.click(exitButton);
-    getByText('나가시겠습니까?');
+  let container = document.createElement('div');
+
+  it("open exit modal after clicked exit", async () => {
+    act(() => {
+      ReactDOM.render(
+        <Provider store={store}>
+          <PlayingSession
+            questions={initialState.posts[0].questions}
+            saveTimeStamps={jest.fn()}
+            saveBlob={jest.fn()}
+            sessionTitle={initialState.posts[0].title}
+            moveFeedback={jest.fn()}
+          />
+        </Provider>, container
+      );
+    });
+
+    // const screen = render(
+    // // const { getByText } = render(
+    //   <Provider store={store}>
+    //     <PlayingSession
+    //       questions={initialState.posts[0].questions}
+    //       saveTimeStamps={jest.fn()}
+    //       saveBlob={jest.fn()}
+    //       sessionTitle={initialState.posts[0].title}
+    //       moveFeedback={jest.fn()}
+    //     />
+    //   </Provider>
+    // );
+
+    const title = await screen.findByText(initialState.posts[0].title);
+    screen.debug(title);
+    // const exitButton = await screen.findByText('나가기');
+    // fireEvent.click(exitButton)
+    // getByText('나가시겠습니까?');
   });
 
   // it("redirect session page after click onOk", () => {
