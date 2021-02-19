@@ -10,7 +10,7 @@ import ConfirmMessage from '../../modal/ConfirmMessage';
 import useInterval from '../../../hooks/useInterval';
 import Loader from '../../Loader';
 
-const PlaySession = ({
+const PlayingSession = ({
   questions,
   saveTimeStamps,
   saveBlob,
@@ -189,7 +189,7 @@ const PlaySession = ({
   );
 };
 
-PlaySession.propTypes = {
+PlayingSession.propTypes = {
   questions: PropTypes.array.isRequired,
   moveFeedback: PropTypes.func.isRequired,
   saveTimeStamps: PropTypes.func.isRequired,
@@ -197,4 +197,4 @@ PlaySession.propTypes = {
   sessionTitle: PropTypes.string.isRequired,
 };
 
-export default PlaySession;
+export default PlayingSession;

@@ -95,24 +95,26 @@ const LoginForm = ({ onCancelModal }) => {
       <form onSubmit={onSubmit}>
         <FormItem>
           <FormLabel>
-            <label>Email</label>
+            <span>Email</span>
           </FormLabel>
           <input
-            type="eamil"
+            type="email"
             maxLength="24"
             onChange={onChangeEmail}
             pattern="[a-zA-Z0-9.-_]{1,}@[a-zA-Z.-]{2,}[.]{1}[a-zA-Z]{2,}"
+            aria-label="email"
             required
           />
         </FormItem>
         <FormItem>
           <FormLabel>
-            <label>Password</label>
+            <span>Password</span>
           </FormLabel>
           <input
             type="password"
             maxLength="12"
             onChange={onChangePassword}
+            aria-label="password"
             required
           />
         </FormItem>

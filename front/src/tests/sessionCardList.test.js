@@ -5,26 +5,26 @@ import { RouterContext } from "next/dist/next-server/lib/router-context";
 import { initialState, store, mockRouter } from "./setup";
 import SessionCardList from "../../components/session/SessionCardList";
 
-describe.skip("SessionCardList Modal", () => {
-  it("open start sesison modal when login", () => {
-    const { getByText } = render(
-      <Provider store={store}>
-        <SessionCardList posts={initialState.posts} meId={initialState.user.me._id} />
-      </Provider>
-    );
-    const startSessionButton = getByText('인터뷰 시작');
-    fireEvent.click(startSessionButton);
-    getByText('인터뷰를 진행 하시겠습니까?');
-  });
-
-  it("redirect session page after click onOk", () => {
-    const { getByText } = render(
+describe("SessionCardList Modal", () => {
+  const setup = () => {
+    return render(
       <RouterContext.Provider value={mockRouter}>
         <Provider store={store}>
           <SessionCardList posts={initialState.posts} meId={initialState.user.me._id} />
         </Provider>
       </RouterContext.Provider>
     );
+  };
+
+  it("open start sesison modal when login", () => {
+    const { getByText } = setup();
+    const startSessionButton = getByText('인터뷰 시작');
+    fireEvent.click(startSessionButton);
+    expect(getByText('인터뷰를 진행 하시겠습니까?')).toBeTruthy();
+  });
+
+  it("redirect session page after click onOk", () => {
+    const { getByText } = setup();
 
     const spy = jest.spyOn(mockRouter, 'push');
     const startSessionButton = getByText('인터뷰 시작');

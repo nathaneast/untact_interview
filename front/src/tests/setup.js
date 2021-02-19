@@ -26,7 +26,7 @@ export const initialState = {
 };
 
 export const mockStore = configureStore();
-export const store = mockStore({ initialState });
+export const store = mockStore(initialState);
 
 export const mockRouter = {
   basePath: "",
