@@ -27,4 +27,13 @@ describe.skip("AppLayout", () => {
     expect(getByText('Email')).toBeTruthy();
     expect(getByText('Password')).toBeTruthy();
   });
+
+  it("start Interview and signUp are the correct links", () => {
+    const { getByTestId } = setup();
+    const startInterview = getByTestId('startInterview');
+    const signup = getByTestId('signup');
+
+    expect(startInterview.href).toBe('http://localhost/interviews');
+    expect(signup.href).toBe('http://localhost/signup');
+  });
 });

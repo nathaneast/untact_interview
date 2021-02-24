@@ -107,7 +107,7 @@ const AppLayout = ({ children }) => {
         <nav>
           <NavBar>
             <NavItem>
-              <Link href="/interviews">
+              <Link href="/interviews" data-testid="startInterview">
                 <span>시작하기</span>
               </Link>
             </NavItem>
@@ -135,7 +135,7 @@ const AppLayout = ({ children }) => {
                   <span>로그인</span>
                 </NavItem>
                 <NavItem>
-                  <Link href="/signup">
+                  <Link href="/signup" data-testid="signup">
                     <span>회원가입</span>
                   </Link>
                 </NavItem>

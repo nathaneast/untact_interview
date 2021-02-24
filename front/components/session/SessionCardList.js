@@ -67,7 +67,7 @@ const SessionCardList = ({ posts, meId }) => {
 
   return (
     <>
-      <Container>
+      <Container data-testid="section">
         {posts.map((post) => (
           <SessionCard
             key={post._id}

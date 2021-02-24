@@ -1,5 +1,30 @@
 import configureStore from 'redux-mock-store';
 
+const creator = {
+  _id: 'koko_id',
+  email: 'koko@koko.com',
+  nickname: 'koko',
+};
+
+const sessionPostMock = {
+  _id: 'sessionPost_id',
+  creator,
+  title: 'title1',
+  questions: ['q1', 'q2', 'q3', 'q4', 'q5'],
+  desc: 'desc',
+  category: 'frontEnd',
+  star: ['koko_id'],
+};
+
+export const feedbackPostMock = {
+  _id: 'feedPost_id',
+  creator,
+  desc: 'desc',
+  timeStamps: [{}, {}, {}, {}, {}],
+  feedbacks: ['f1', 'f2', 'f3', 'f4', 'f5'],
+  sessionPost: { ...sessionPostMock }
+};
+
 export const initialState = {
   user: {
     me: {
@@ -8,21 +33,13 @@ export const initialState = {
       _id: 'nathan_id',
     },
   },
-  posts: [
-    {
-      _id: 'post1_id',
-      title: 'title1',
-      creator: {
-        _id: 'koko_id',
-        email: 'koko@koko.com',
-        nickname: 'koko',
-      },
-      questions: ['q1', 'q2', 'q3', 'q4', 'q5'],
-      desc: 'desc',
-      category: 'frontEnd',
-      star: [],
-    },
-  ],
+  post: {
+    posts: [sessionPostMock],
+    sessionPosts: [sessionPostMock],
+    feedbackPosts: [feedbackPostMock],
+    hasMorePosts: false,
+    loadSessionPostsLoading: false,
+  }
 };
 
 export const mockStore = configureStore();
